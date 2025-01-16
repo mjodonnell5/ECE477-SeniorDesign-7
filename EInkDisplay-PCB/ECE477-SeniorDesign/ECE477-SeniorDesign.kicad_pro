@@ -402,6 +402,10 @@
     [
       "d642039c-7ff9-4563-b3ed-eeeecbf7dca7",
       "power"
+    ],
+    [
+      "d42a1836-b01e-48ae-a1fa-d50387cd95f6",
+      "USB-UART"
     ]
   ],
   "text_variables": {}
