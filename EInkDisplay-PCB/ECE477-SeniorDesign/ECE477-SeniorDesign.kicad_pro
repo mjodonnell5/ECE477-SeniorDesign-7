@@ -388,24 +388,8 @@
       "Root"
     ],
     [
-      "b8dd4e94-1195-4b2c-9e82-931efc7bbef0",
-      "e-ink display"
-    ],
-    [
-      "52bd88b6-ff79-4218-90b2-a5a01ff9daa1",
-      "e-ink driver"
-    ],
-    [
-      "f5816466-29f3-4e49-b2b8-4fd19d29f3d8",
-      "microcontroller"
-    ],
-    [
-      "d642039c-7ff9-4563-b3ed-eeeecbf7dca7",
-      "power"
-    ],
-    [
-      "d42a1836-b01e-48ae-a1fa-d50387cd95f6",
-      "USB-UART"
+      "84f681d6-f333-487d-84ed-82055efae89d",
+      "Power"
     ]
   ],
   "text_variables": {}
