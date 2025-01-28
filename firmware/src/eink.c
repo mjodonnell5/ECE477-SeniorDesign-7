@@ -4,23 +4,25 @@
 
 #include "../include/spi.h"
 #include "../include/eink.h"
+#include "../include/clock.h"
 
 static void eink_send_cmd(uint8_t cmd)
 {
+    GPIOA->ODR &= ~GPIO_ODR_OD8;
     spi_tx(EINK_SPI, cmd);
 }
 
 static void eink_send_data(uint8_t data)
 {
+    GPIOA->ODR |= GPIO_ODR_OD8;
     spi_tx(EINK_SPI, data);
 }
 
 static void eink_pin_init()
 {
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
-    /* BUSY - PA6 */
-    /* RESET - PA7 */
-    /* D/C - PA8 */
+
+    /* BUSY - PA6 ; RESET - PA7 ; D/C - PA8 */
     GPIOA->MODER &= ~(GPIO_MODER_MODER6 | GPIO_MODER_MODER7 | GPIO_MODER_MODER8);
     GPIOA->MODER |= (GPIO_MODER_MODER6_0 | GPIO_MODER_MODER7_0 | GPIO_MODER_MODER8_0);
 }
@@ -35,52 +37,55 @@ static void eink_reset()
 {
     /* RESET is active low */
     GPIOA->ODR &= ~GPIO_ODR_OD7;
-
-    /* WAIT */
-
+    delay_us(200);
     GPIOA->ODR |= GPIO_ODR_OD7;
+    delay_us(200);
 }
 
 void eink_init()
 {
-    /* Reset */
+    /* Wait 10ms after power on */
+    delay_ms(10);
+
+    /* Hardware reset */
     eink_reset();
-
-    /* Booster soft start */
-    eink_send_cmd(0x06);
-    eink_send_data(0x17);
-    eink_send_data(0x17);
-    eink_send_data(0x17);
-
-    /* Power setting */
-    eink_send_cmd(0x01);
-    eink_send_data(0x03);
-    eink_send_data(0x00);
-    eink_send_data(0x2b);
-    eink_send_data(0x2b);
-    eink_send_data(0x09);
-
-    /* Power on */
-    eink_send_cmd(0x04);
-
     eink_wait_until_idle();
 
-    /* Panel setting */
-    eink_send_cmd(0x00);
-    eink_send_data(0xbf);
+    /* Software reset */
+    eink_send_cmd(0x12);
+    eink_wait_until_idle();
 
-    /* PLL control */
-    eink_send_cmd(0x61);
+    /* Display size */
+    eink_send_cmd(0x01);
+    eink_send_data(0x2B);
     eink_send_data(0x01);
-    eink_send_data(0x90);
-    eink_send_data(0x01);
-    eink_send_data(0x2c);
+    eink_send_data(0x00);
 
-    /* VCM_DC setting */
-    eink_send_cmd(0x82);
-    eink_send_data(0x12);
+    /* Ram data entry mode (automation increment) */
+    eink_send_cmd(0x11);
+    eink_send_data(0x03);
 
-    /* Vcom and data interval setting */
-    eink_send_cmd(0x50);
-    eink_send_data(0x87);
+    /* Display update control (Ignore red pixels) */
+    eink_send_cmd(0x21);
+    eink_send_data(0x40);
+
+    /* Set Ram X address */
+    eink_send_cmd(0x44);
+    eink_send_data(0x00); /* Start */
+    eink_send_data(0x31); /* End */
+
+    /* Set Ram Y address */
+    eink_send_cmd(0x45);
+    eink_send_data(0x00); /* Start */
+    eink_send_data(0x2B); /* End LSB */
+    eink_send_data(0x01); /* End MSB */
+
+    /* Set Ram X address counter */
+    eink_send_cmd(0x4E);
+    eink_send_data(0x00);
+
+    /* Set Ram Y address counter */
+    eink_send_cmd(0x4F);
+    eink_send_data(0x00);
+    eink_send_data(0x00);
 }
