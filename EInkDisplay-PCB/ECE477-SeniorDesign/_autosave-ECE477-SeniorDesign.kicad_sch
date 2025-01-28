@@ -1,0 +1,89 @@
+(kicad_sch
+	(version 20231120)
+	(generator "eeschema")
+	(generator_version "8.0")
+	(uuid "527ae649-08be-4368-9cf9-441ebba18eca")
+	(paper "A4")
+	(lib_symbols)
+	(sheet
+		(at 74.93 58.42)
+		(size 27.94 19.05)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "84f681d6-f333-487d-84ed-82055efae89d")
+		(property "Sheetname" "Power"
+			(at 74.93 57.7084 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "untitled.kicad_sch"
+			(at 74.93 78.0546 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "ECE477-SeniorDesign"
+				(path "/527ae649-08be-4368-9cf9-441ebba18eca"
+					(page "2")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 54.61 90.17)
+		(size 26.67 17.78)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "bb67a79e-4b0b-4f17-afb6-0d7a620b56da")
+		(property "Sheetname" "EDP Driver"
+			(at 54.61 89.4584 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "untitled.kicad_sch"
+			(at 54.61 108.5346 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "ECE477-SeniorDesign"
+				(path "/527ae649-08be-4368-9cf9-441ebba18eca"
+					(page "3")
+				)
+			)
+		)
+	)
+	(sheet_instances
+		(path "/"
+			(page "1")
+		)
+	)
+)
