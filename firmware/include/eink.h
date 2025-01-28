@@ -7,6 +7,12 @@
 
 #define EINK_SPI (SPI1)
 
+#define EINK_HEIGHT (300)
+#define EINK_WIDTH  (400)
+
+#define WHITE_PIXEL (1)
+#define BLACK_PIXEL (0)
+
 void eink_init();
 
 #endif /* EINK_H */

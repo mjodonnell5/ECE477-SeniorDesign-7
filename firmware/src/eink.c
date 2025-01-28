@@ -6,6 +6,8 @@
 #include "../include/eink.h"
 #include "../include/clock.h"
 
+uint8_t framebuffer[(EINK_WIDTH * EINK_HEIGHT) / 8];
+
 static void eink_send_cmd(uint8_t cmd)
 {
     GPIOA->ODR &= ~GPIO_ODR_OD8;
@@ -88,4 +90,35 @@ void eink_init()
     eink_send_cmd(0x4F);
     eink_send_data(0x00);
     eink_send_data(0x00);
+}
+
+void eink_draw_pixel(uint16_t x, uint16_t y, uint8_t c)
+{
+    uint16_t index = y * EINK_WIDTH + x;
+
+    if (c) {
+        framebuffer[index / 8] |= (0x80 >> (x % 8));
+    } else {
+        framebuffer[index / 8] &= ~(0x80 >> (x % 8));
+    }
+}
+
+void eink_render_framebuffer()
+{
+    /* Start writing into B/W ram */
+    eink_send_cmd(0x24);
+    for (uint16_t x = 0; x < EINK_WIDTH; ++x) {
+        for (uint16_t y = 0; y < EINK_HEIGHT; ++y) {
+            uint16_t index = y * EINK_WIDTH + x;
+            eink_send_data(framebuffer[index]);
+        }
+    }
+
+    /* Soft start? */
+    // eink_send_cmd(0x0C);
+
+    /* Update display */
+    eink_send_cmd(0x22);
+    eink_send_data(0xC7);
+    eink_send_cmd(0x20);
 }
