@@ -386,14 +386,6 @@
     [
       "527ae649-08be-4368-9cf9-441ebba18eca",
       "Root"
-    ],
-    [
-      "84f681d6-f333-487d-84ed-82055efae89d",
-      "Power"
-    ],
-    [
-      "bb67a79e-4b0b-4f17-afb6-0d7a620b56da",
-      "EDP Driver and Display"
     ]
   ],
   "text_variables": {}
