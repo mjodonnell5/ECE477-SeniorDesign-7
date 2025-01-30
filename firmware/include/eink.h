@@ -14,5 +14,9 @@
 #define BLACK_PIXEL (0)
 
 void eink_init();
+void eink_draw_hline(uint16_t x, uint16_t y, uint8_t width, uint8_t c);
+void eink_sleep();
+void eink_send_data(uint8_t data);
+void eink_send_cmd(uint8_t cmd);
 
 #endif /* EINK_H */
