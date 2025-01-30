@@ -386,6 +386,22 @@
     [
       "527ae649-08be-4368-9cf9-441ebba18eca",
       "Root"
+    ],
+    [
+      "a47b6934-98dd-4056-b1df-1ab751d1c2a0",
+      "MCU"
+    ],
+    [
+      "b7e4818e-74b8-4bbc-96b7-b26a83655ade",
+      "LipoPower"
+    ],
+    [
+      "b5fe9c37-5cbb-4476-b922-2ef94ca58b1e",
+      "USB-UART"
+    ],
+    [
+      "9aa04ce4-4558-41ab-8351-e46b80335092",
+      "ExtraPeriphs"
     ]
   ],
   "text_variables": {}
