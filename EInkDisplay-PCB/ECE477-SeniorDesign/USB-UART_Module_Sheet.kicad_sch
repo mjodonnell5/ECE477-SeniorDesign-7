@@ -1630,50 +1630,6 @@
 		)
 		(uuid "ff915f08-ed8b-4485-a688-849cd7d65656")
 	)
-	(global_label "USART1_TX"
-		(shape input)
-		(at 167.64 69.85 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "4ae11aaa-c341-4c9f-bd71-f0f09671b8a5")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 180.8456 69.85 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "USART1_RX"
-		(shape input)
-		(at 167.64 67.31 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "71a54523-e066-4d4e-ad7d-ca5334fbcdc5")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 181.148 67.31 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-	)
 	(global_label "VBUS"
 		(shape input)
 		(at 119.38 85.09 90)
@@ -1695,6 +1651,28 @@
 				(hide yes)
 			)
 		)
+	)
+	(hierarchical_label "USART1_RX"
+		(shape input)
+		(at 167.64 69.85 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "90d3c3dd-ce52-4a43-adc8-d6d4eef6b9a0")
+	)
+	(hierarchical_label "USART1_TX"
+		(shape input)
+		(at 167.64 67.31 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "9ca8d311-6d89-476e-b595-31df65aeb4c5")
 	)
 	(symbol
 		(lib_id "Device:C_Small")

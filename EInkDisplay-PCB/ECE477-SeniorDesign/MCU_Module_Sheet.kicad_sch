@@ -5366,93 +5366,49 @@
 			)
 		)
 	)
-	(global_label "USART1_RX"
-		(shape input)
-		(at 238.76 80.01 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "be30f8da-5105-43d2-89c2-60a624f77814")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 252.268 80.01 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "SPI1_SCK"
-		(shape input)
-		(at 238.76 105.41 0)
-		(fields_autoplaced yes)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "e40e20eb-1d7f-44e6-9d1d-3e613f5007be")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 250.7561 105.41 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
-	)
-	(global_label "SPI1_MOSI"
+	(hierarchical_label "SPI1_MOSI"
 		(shape input)
 		(at 238.76 110.49 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left)
 		)
-		(uuid "f0239f97-86b3-4a06-9640-0330dd0e2f00")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 251.6028 110.49 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
+		(uuid "68c4daf4-580c-4622-a351-29236ba43142")
 	)
-	(global_label "USART1_TX"
+	(hierarchical_label "USART1_RX"
+		(shape input)
+		(at 238.76 80.01 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "97180c31-bf0d-4e88-924b-aa6c1633c416")
+	)
+	(hierarchical_label "SPI1_SCK"
+		(shape input)
+		(at 238.76 105.41 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "cd9e6967-23f4-4aeb-97dd-d551c583837b")
+	)
+	(hierarchical_label "USART1_TX"
 		(shape input)
 		(at 238.76 77.47 0)
-		(fields_autoplaced yes)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left)
 		)
-		(uuid "f0f9c448-6726-4a51-8150-8e0c22c2f9fc")
-		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 251.9656 77.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-				(hide yes)
-			)
-		)
+		(uuid "fd0b8819-9c04-40ad-97a0-faa649efa229")
 	)
 	(symbol
 		(lib_id "Device:C_Small")
