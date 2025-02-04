@@ -552,16 +552,6 @@
 	)
 	(wire
 		(pts
-			(xy 125.73 69.85) (xy 125.73 86.36)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f261f6ec-dbde-4c66-9d23-608773cd67fa")
-	)
-	(wire
-		(pts
 			(xy 162.56 104.14) (xy 173.99 104.14)
 		)
 		(stroke
@@ -820,65 +810,45 @@
 				(justify left top)
 			)
 		)
-		(pin "SDMMC1_D2" input
-			(at 128.27 69.85 270)
+		(pin "SD_CLK" input
+			(at 135.89 69.85 270)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "6beb3189-0b2a-428a-a486-b10338c0be95")
+			(uuid "5854b463-ca5a-42fc-95cf-01d930835466")
 		)
-		(pin "SDMMC1_D3" input
-			(at 125.73 69.85 270)
+		(pin "SD_CMD" input
+			(at 138.43 69.85 270)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "1f516e96-9654-4afd-938e-3302cb09c467")
+			(uuid "81b99c3f-01f9-4beb-8a5f-3d45ed6b0250")
 		)
-		(pin "SDMMC1_D1" input
-			(at 130.81 69.85 270)
+		(pin "SD_D0" input
+			(at 140.97 69.85 270)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "daff63e6-70d6-4015-9825-a57573257ca2")
+			(uuid "b65ed1a6-16b8-4366-8288-1b7a710c6e89")
 		)
-		(pin "SDMMC1_D0" input
-			(at 133.35 69.85 270)
+		(pin "SD_CD" input
+			(at 143.51 69.85 270)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "d88cac1a-bcae-4e77-a14f-45c181df8307")
-		)
-		(pin "SDMMC1_CK" input
-			(at 137.16 69.85 270)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "dd16a11c-7f10-47bf-95c3-be81a5b6e2ed")
-		)
-		(pin "SDMMC1_CMD" input
-			(at 139.7 69.85 270)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "366e5801-4b60-4b90-a772-1e25272ba96f")
+			(uuid "ac28403b-43b3-450b-9b51-d52ceea047ac")
 		)
 		(instances
 			(project "ECE477-SeniorDesign"
@@ -959,66 +929,6 @@
 				(justify right)
 			)
 			(uuid "63bb91a3-2c8d-42f8-ad47-aae4c5959f57")
-		)
-		(pin "SDMMC1_CK" input
-			(at 137.16 86.36 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "977d632b-a2d0-4043-8db3-2158a5fafaaa")
-		)
-		(pin "SDMMC1_CMD" input
-			(at 139.7 86.36 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "84a672ce-b1ff-4674-8ee0-5720173fe18b")
-		)
-		(pin "SDMMC1_D0" input
-			(at 133.35 86.36 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "25b788bd-b831-4c90-a8c7-dccc2e921e6b")
-		)
-		(pin "SDMMC1_D1" input
-			(at 130.81 86.36 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "b59412c1-9bb2-45c4-a230-862e335ba10c")
-		)
-		(pin "SDMMC1_D2" input
-			(at 128.27 86.36 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "458c9d27-9c5b-4eae-ab08-59331a7752da")
-		)
-		(pin "SDMMC1_D3" input
-			(at 125.73 86.36 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "a9bd6897-c247-48a0-a7c1-e706023e74b2")
 		)
 		(instances
 			(project "ECE477-SeniorDesign"
