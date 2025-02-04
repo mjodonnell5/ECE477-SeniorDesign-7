@@ -27,29 +27,19 @@ void spi1_init()
     SPI1->CR1 &= ~(SPI_CR1_SPE);
 
     SPI1->CR1 &= ~SPI_CR1_BR;
-    SPI1->CR1 |= SPI_CR1_BR_0;
-    // SPI1->CR1 |= SPI_CR1_BR_2;
-    /* Divide by 16 (We have 32Mhz clock) */
-    // SPI1->CR1 |= (SPI_CR1_BR_1 | SPI_CR1_BR_0);
-
-    // SPI1->CR1 |= SPI_CR1_BIDIMODE;
-
-    SPI1->CR2 &= ~SPI_CR2_FRF;
 
     /* 8 bit word size */
     SPI1->CR2 &= ~SPI_CR2_DS_3;
     SPI1->CR2 |= (SPI_CR2_DS_2 | SPI_CR2_DS_1 | SPI_CR2_DS_0);
 
+    /* RXNE generation for 8-bit */
+    SPI1->CR2 |= SPI_CR2_FRXTH;
+
     /* Software controlled CS */
     SPI1->CR1 |= SPI_CR1_SSM | SPI_CR1_SSI;
 
-    // SPI1->CR1 &= ~(SPI_CR1_CPHA);
-    // SPI1->CR1 |= (SPI_CR1_CPOL);
-    SPI1->CR1 &= ~(SPI_CR1_CPOL | SPI_CR1_CPHA);
-
-    SPI1->CR2 &= ~SPI_CR2_NSSP;
-
     SPI1->CR1 |= SPI_CR1_MSTR;
+
     SPI1->CR1 |= SPI_CR1_SPE;
 
 }
@@ -58,7 +48,8 @@ void spi_tx(SPI_TypeDef* spi, uint8_t data)
 {
     while (!(spi->SR & SPI_SR_TXE));
 
-    spi->DR = data;
+    /* Force to 8-bit */
+    *((volatile uint8_t*)&spi->DR) = data;
 
     while (spi->SR & SPI_SR_BSY);
 }
@@ -75,7 +66,8 @@ void spi_tx_buffer(SPI_TypeDef* spi, uint8_t* data, size_t size)
     for (size_t i = 0; i < size; ++size) {
         while (!(spi->SR & SPI_SR_TXE));
 
-        spi->DR = data[i];
+        /* Force to 8-bit */
+        *((volatile uint8_t*)&spi->DR) = data[i];
 
         while (spi->DR & SPI_SR_BSY);
     }

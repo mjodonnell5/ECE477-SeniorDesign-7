@@ -14,18 +14,22 @@ int main(void)
 
     eink_init();
 
-    delay_ms(10);
+    delay_ms(20);
 
     // eink_turn_on_display();
 
     eink_clear();
 
+    // delay_ms(5000);
+
     // eink_draw_hline(50, 50, 100, BLACK_PIXEL);
+
+    // delay_ms(100);
 
     // eink_render_framebuffer();
 
-    // eink_sleep();
+    eink_sleep();
 
-    // for (;;);
+    for (;;);
     return 0;
 }

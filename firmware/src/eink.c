@@ -6,26 +6,33 @@
 #include "../include/eink.h"
 #include "../include/clock.h"
 
-uint8_t framebuffer[(EINK_WIDTH * EINK_HEIGHT) / 8] = {0};
+uint8_t framebuffer[EINK_FRAMEBUFFER_SIZE] = {0xFF};
 
 void eink_send_cmd(uint8_t cmd)
 {
-    /* CS Low */
+    /* D/C low */
+    GPIOA->BSRR = GPIO_BSRR_BR8;
+
+    /* CS low */
     GPIOA->BSRR = GPIO_BSRR_BR4;
 
-    GPIOA->BSRR = GPIO_BSRR_BR8;
     spi_tx(EINK_SPI, cmd);
 
+    /* CS high */
     GPIOA->BSRR = GPIO_BSRR_BS4;
 }
 
 void eink_send_data(uint8_t data)
 {
+    /* D/C high */
+    GPIOA->BSRR = GPIO_BSRR_BS8;
+
+    /* CS low */
     GPIOA->BSRR = GPIO_BSRR_BR4;
 
-    GPIOA->BSRR = GPIO_BSRR_BS8;
     spi_tx(EINK_SPI, data);
 
+    /* CS high */
     GPIOA->BSRR = GPIO_BSRR_BS4;
 }
 
@@ -45,8 +52,15 @@ static void eink_pin_init()
 
 static void eink_wait_until_idle()
 {
-    /* BUSY is active low, return when it goes high */
-    while((GPIOA->IDR & GPIO_IDR_ID6) == 1);
+    /* The all mightly magical command */
+    eink_send_cmd(0x71);
+
+    while((GPIOA->IDR & GPIO_IDR_ID6) == 1) {
+        eink_send_cmd(0x71);
+    }
+
+    /* FIXME: Does it need to be this high?? */
+    delay_ms(200);
 }
 
 static void eink_reset()
@@ -60,6 +74,7 @@ static void eink_reset()
 
     delay_ms(2);
 
+    /* Set RESET high */
     GPIOA->BSRR = GPIO_BSRR_BS9;
 
     delay_ms(100);
@@ -69,14 +84,11 @@ void eink_init()
 {
     eink_pin_init();
 
-    /* Wait 10ms after power on */
-    // delay_ms(10);
-
     eink_reset();
-    eink_wait_until_idle();
-
     eink_send_cmd(0x12);
     eink_wait_until_idle();
+
+    delay_ms(1);
 
     eink_send_cmd(0x21);
     eink_send_data(0x40);
@@ -118,9 +130,9 @@ void eink_draw_pixel(uint16_t x, uint16_t y, uint8_t c)
     }
 }
 
-void eink_draw_hline(uint16_t x, uint16_t y, uint8_t width, uint8_t c)
+void eink_draw_hline(uint16_t x, uint16_t y, uint16_t length, uint8_t c)
 {
-    for (uint16_t i = x; i < x + width; ++i) {
+    for (uint16_t i = x; i < x + length; ++i) {
         eink_draw_pixel(i, y, c);
     }
 }
@@ -139,11 +151,11 @@ void eink_render_framebuffer()
     uint16_t width;
     uint16_t height;
 	width = EINK_WIDTH / 8;
-	// width = EINK_WIDTH;
 	height = EINK_HEIGHT;
 
     /* Start writing into B/W ram */
     eink_send_cmd(0x24);
+    delay_ms(1);
     for (uint16_t y = 0; y < height; ++y) {
         for (uint16_t x = 0; x < width; ++x) {
             uint16_t index = y * width + x;
@@ -151,9 +163,7 @@ void eink_render_framebuffer()
         }
     }
 
-    // eink_send_cmd(0x26);
-    /* Soft start? */
-    // eink_send_cmd(0x0C);
+    delay_ms(10);
 
     eink_wait_until_idle();
     eink_turn_on_display();
@@ -167,18 +177,26 @@ void eink_clear()
 	height = EINK_HEIGHT;
 
 	eink_send_cmd(0x24);
-	for (unsigned int j = 0; j < height; j++) {
-        for (unsigned int i = 0; i < width; i++) {
-            eink_send_data(0x00);
-        }
-	}
-    eink_send_cmd(0x26);
-    for (unsigned int j = 0; j < height; j++) {
-        for (unsigned int i = 0; i < width; i++) {
-        eink_send_data(0x00);
+    delay_ms(1);
+	for (uint16_t j = 0; j < height; j++) {
+        for (uint16_t i = 0; i < width; i++) {
+            eink_send_data(0xFF);
         }
 	}
 
+    // for (uint16_t k = 0; k < 15000; k++) {
+    //     eink_send_data(0xFF);
+    // }
+
+ //    eink_send_cmd(0x26);
+ //    for (unsigned int j = 0; j < height; j++) {
+ //        for (unsigned int i = 0; i < width; i++) {
+ //            eink_send_data(0xFF);
+ //        }
+	// }
+    delay_ms(10);
+
+    eink_wait_until_idle();
 	eink_turn_on_display();
 }
 
