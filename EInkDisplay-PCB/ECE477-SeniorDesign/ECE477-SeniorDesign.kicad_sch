@@ -462,6 +462,16 @@
 	)
 	(wire
 		(pts
+			(xy 182.88 124.46) (xy 227.33 124.46)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0703284c-7e50-4e55-8cef-a3cc65d88c56")
+	)
+	(wire
+		(pts
 			(xy 96.52 76.2) (xy 110.49 76.2)
 		)
 		(stroke
@@ -489,6 +499,16 @@
 			(type default)
 		)
 		(uuid "3027383b-bd3b-42db-91ba-d2c7f8fae489")
+	)
+	(wire
+		(pts
+			(xy 151.13 69.85) (xy 151.13 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "46208424-464d-4653-92d2-77393aaa4c18")
 	)
 	(wire
 		(pts
@@ -532,6 +552,16 @@
 	)
 	(wire
 		(pts
+			(xy 182.88 119.38) (xy 227.33 119.38)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6c1bccf1-08d1-4ef6-a2cc-8592fc0e9f00")
+	)
+	(wire
+		(pts
 			(xy 96.52 73.66) (xy 113.03 73.66)
 		)
 		(stroke
@@ -552,6 +582,46 @@
 	)
 	(wire
 		(pts
+			(xy 156.21 69.85) (xy 156.21 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "875996a9-f2ef-469f-9ca0-b4e4ccfd23cb")
+	)
+	(wire
+		(pts
+			(xy 153.67 69.85) (xy 153.67 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9d5c0de9-21b0-49d0-8675-23b66c86376a")
+	)
+	(wire
+		(pts
+			(xy 182.88 132.08) (xy 227.33 132.08)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9e424046-ec1c-4741-b5f4-b8488f180c30")
+	)
+	(wire
+		(pts
+			(xy 182.88 127) (xy 227.33 127)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "aa71afe0-bddc-4a68-a439-e8f49201220a")
+	)
+	(wire
+		(pts
 			(xy 138.43 69.85) (xy 138.43 86.36)
 		)
 		(stroke
@@ -559,6 +629,26 @@
 			(type default)
 		)
 		(uuid "b9b10901-c8f9-4a7d-b89b-cdbe059e9f88")
+	)
+	(wire
+		(pts
+			(xy 182.88 121.92) (xy 227.33 121.92)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c8f93f35-c831-499a-8c67-24401bb88c4e")
+	)
+	(wire
+		(pts
+			(xy 182.88 129.54) (xy 227.33 129.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e406cc89-ef52-4ef8-97d2-99be03d9e6d8")
 	)
 	(wire
 		(pts
@@ -960,26 +1050,6 @@
 			)
 			(uuid "d53a3d08-28e1-42a2-997f-8c5662de15a9")
 		)
-		(pin "SPI1_MOSI" input
-			(at 182.88 121.92 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "7d38afce-1f18-46d0-9ef1-c2525d0692b4")
-		)
-		(pin "SPI1_SCK" input
-			(at 182.88 127 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "63bb91a3-2c8d-42f8-ad47-aae4c5959f57")
-		)
 		(pin "SPI2_NSS" input
 			(at 138.43 86.36 90)
 			(effects
@@ -1029,6 +1099,96 @@
 				(justify right)
 			)
 			(uuid "9d4c9c37-e467-4888-a040-c4b18a4954e2")
+		)
+		(pin "SPI1_NSS" input
+			(at 182.88 124.46 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "be0c9bbe-bf73-4c7b-9af6-2f48228ff765")
+		)
+		(pin "SPI1_SCK" input
+			(at 182.88 121.92 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "9d6d26f3-ee2f-450d-be2e-757074bad476")
+		)
+		(pin "SPI1_MOSI" input
+			(at 182.88 119.38 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "8d1f3270-065f-4d0b-8c2e-712bbbcda821")
+		)
+		(pin "Eink_Busy" input
+			(at 182.88 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "a07c0d5a-c678-40ae-bd3b-7f1ce88078ab")
+		)
+		(pin "Eink_D{slash}C" input
+			(at 182.88 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "5527cbd1-ee65-4e67-96d3-15749ec98aef")
+		)
+		(pin "Eink_RST" input
+			(at 182.88 129.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "9d221f1e-94eb-482e-ba4f-2beff9db11bf")
+		)
+		(pin "button1" input
+			(at 156.21 86.36 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "157fd5bc-5b4b-4b7a-8141-494ca86ec62a")
+		)
+		(pin "button2" input
+			(at 153.67 86.36 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "10d37da6-ef11-49fb-97ef-6831f902923c")
+		)
+		(pin "button3" input
+			(at 151.13 86.36 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "d4664379-f1e9-46cc-ae18-6f18282e04d5")
 		)
 		(instances
 			(project "ECE477-SeniorDesign"
