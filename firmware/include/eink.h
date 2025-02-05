@@ -26,5 +26,10 @@ void eink_render_framebuffer();
 void eink_clear();
 static void eink_turn_on_display();
 static inline void eink_draw_pixel(uint16_t x, uint16_t y, uint8_t col);
+void eink_draw_string(uint16_t s_x, uint16_t s_y, char* string, uint8_t col);
+void eink_draw_char(uint16_t s_x, uint16_t s_y, uint16_t c, uint8_t col);
+
+/* TESTING ONLY */
+void draw_pixel(uint16_t x, uint16_t y, uint8_t col);
 
 #endif /* EINK_H */
