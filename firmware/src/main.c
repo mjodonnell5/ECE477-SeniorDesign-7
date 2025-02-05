@@ -8,25 +8,14 @@ int main(void)
 {
     spi1_init();
 
-    // for (;;) {
-    //     eink_send_data(0xAA);
-    // }
-
     eink_init();
 
-    delay_ms(20);
-
-    // eink_turn_on_display();
-
+    /* Set framebuffer to all white */
     eink_clear();
 
-    // delay_ms(5000);
+    eink_draw_hline(50, 50, 100, BLACK);
 
-    // eink_draw_hline(50, 50, 100, BLACK_PIXEL);
-
-    // delay_ms(100);
-
-    // eink_render_framebuffer();
+    eink_render_framebuffer();
 
     eink_sleep();
 

@@ -1,14 +1,15 @@
 #include <stm32l432xx.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <string.h>
 
 #include "../include/spi.h"
 #include "../include/eink.h"
 #include "../include/clock.h"
 
-uint8_t framebuffer[EINK_FRAMEBUFFER_SIZE] = {0xFF};
+uint8_t framebuffer[EINK_FRAMEBUFFER_SIZE] = {WHITE};
 
-void eink_send_cmd(uint8_t cmd)
+static void eink_send_cmd(uint8_t cmd)
 {
     /* D/C low */
     GPIOA->BSRR = GPIO_BSRR_BR8;
@@ -22,7 +23,7 @@ void eink_send_cmd(uint8_t cmd)
     GPIOA->BSRR = GPIO_BSRR_BS4;
 }
 
-void eink_send_data(uint8_t data)
+static void eink_send_data(uint8_t data)
 {
     /* D/C high */
     GPIOA->BSRR = GPIO_BSRR_BS8;
@@ -119,25 +120,49 @@ void eink_init()
     eink_wait_until_idle();
 }
 
-void eink_draw_pixel(uint16_t x, uint16_t y, uint8_t c)
+static inline void eink_draw_pixel(uint16_t x, uint16_t y, uint8_t col)
 {
     uint16_t index = y * EINK_WIDTH + x;
+    uint16_t byte_index = index / 8;
 
-    if (c) {
-        framebuffer[index / 8] |= (0x80 >> (x % 8));
+    if (x >= EINK_WIDTH || y >= EINK_HEIGHT) return;
+
+    if (col == WHITE) {
+        framebuffer[byte_index] |= (0x80 >> (x % 8));
     } else {
-        framebuffer[index / 8] &= ~(0x80 >> (x % 8));
+        framebuffer[byte_index] &= ~(0x80 >> (x % 8));
     }
 }
 
-void eink_draw_hline(uint16_t x, uint16_t y, uint16_t length, uint8_t c)
+void eink_draw_hline(uint16_t x, uint16_t y, uint16_t length, uint8_t col)
 {
     for (uint16_t i = x; i < x + length; ++i) {
-        eink_draw_pixel(i, y, c);
+        eink_draw_pixel(i, y, col);
     }
 }
 
-void eink_turn_on_display()
+void eink_draw_vline(uint16_t x, uint16_t y, uint16_t length, uint8_t col)
+{
+    for (uint16_t i = y; i < y + length; ++i) {
+        eink_draw_pixel(x, i, col);
+    }
+}
+
+void eink_draw_rect(uint16_t s_x, uint16_t s_y, uint16_t e_x, uint16_t e_y, uint8_t col)
+{
+    uint16_t length = e_x - s_x;
+    uint16_t height = e_y - s_y;
+    eink_draw_hline(s_x, s_y, length, col);
+    eink_draw_hline(s_x, s_y - height, height, col);
+    eink_draw_vline(s_x, s_y, height, col);
+    eink_draw_vline(e_x, e_y, height, col);
+}
+
+// void eink_draw_char(uint16_t x, uint16_t y, uint16_t c, uint8_t col)
+// {
+// }
+
+static void eink_turn_on_display()
 {
     /* Update display */
     eink_send_cmd(0x22);
@@ -148,22 +173,12 @@ void eink_turn_on_display()
 
 void eink_render_framebuffer()
 {
-    uint16_t width;
-    uint16_t height;
-	width = EINK_WIDTH / 8;
-	height = EINK_HEIGHT;
-
     /* Start writing into B/W ram */
     eink_send_cmd(0x24);
-    delay_ms(1);
-    for (uint16_t y = 0; y < height; ++y) {
-        for (uint16_t x = 0; x < width; ++x) {
-            uint16_t index = y * width + x;
-            eink_send_data(framebuffer[index]);
-        }
-    }
 
-    delay_ms(10);
+    for (uint16_t i = 0; i < EINK_FRAMEBUFFER_SIZE; ++i) {
+        eink_send_data(framebuffer[i]);
+    }
 
     eink_wait_until_idle();
     eink_turn_on_display();
@@ -171,33 +186,7 @@ void eink_render_framebuffer()
 
 void eink_clear()
 {
-    uint16_t width;
-    uint16_t height;
-	width = EINK_WIDTH / 8;
-	height = EINK_HEIGHT;
-
-	eink_send_cmd(0x24);
-    delay_ms(1);
-	for (uint16_t j = 0; j < height; j++) {
-        for (uint16_t i = 0; i < width; i++) {
-            eink_send_data(0xFF);
-        }
-	}
-
-    // for (uint16_t k = 0; k < 15000; k++) {
-    //     eink_send_data(0xFF);
-    // }
-
- //    eink_send_cmd(0x26);
- //    for (unsigned int j = 0; j < height; j++) {
- //        for (unsigned int i = 0; i < width; i++) {
- //            eink_send_data(0xFF);
- //        }
-	// }
-    delay_ms(10);
-
-    eink_wait_until_idle();
-	eink_turn_on_display();
+    memset(framebuffer, WHITE, EINK_FRAMEBUFFER_SIZE);
 }
 
 void eink_sleep()
