@@ -4676,6 +4676,16 @@
 	)
 	(wire
 		(pts
+			(xy 232.41 120.65) (xy 241.3 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1a67a437-ee0b-4d12-96f4-b5b31b2c4fd8")
+	)
+	(wire
+		(pts
 			(xy 199.39 31.75) (xy 203.2 31.75)
 		)
 		(stroke
@@ -4843,6 +4853,16 @@
 			(type default)
 		)
 		(uuid "4c7989d3-8552-455f-b908-a7d31b21dde9")
+	)
+	(wire
+		(pts
+			(xy 232.41 123.19) (xy 241.3 123.19)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4f541f6f-6619-464a-b181-ddc91271a72b")
 	)
 	(wire
 		(pts
@@ -5186,6 +5206,16 @@
 	)
 	(wire
 		(pts
+			(xy 232.41 133.35) (xy 241.3 133.35)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "bc8c22a3-4a47-4c76-a6f2-141639fd4838")
+	)
+	(wire
+		(pts
 			(xy 238.76 31.75) (xy 243.84 31.75)
 		)
 		(stroke
@@ -5256,6 +5286,16 @@
 	)
 	(wire
 		(pts
+			(xy 232.41 74.93) (xy 238.76 74.93)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dabf69f5-7566-4810-b327-bb331aaaff97")
+	)
+	(wire
+		(pts
 			(xy 184.15 36.83) (xy 184.15 41.91)
 		)
 		(stroke
@@ -5263,6 +5303,16 @@
 			(type default)
 		)
 		(uuid "dace7f80-0ad6-4f9d-bea9-667d792235cf")
+	)
+	(wire
+		(pts
+			(xy 232.41 130.81) (xy 241.3 130.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dce0b180-f199-41d7-a275-b2aa530bf6e8")
 	)
 	(wire
 		(pts
@@ -5346,6 +5396,17 @@
 			)
 		)
 	)
+	(hierarchical_label "SPI2_MISO"
+		(shape input)
+		(at 241.3 130.81 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "59835a66-ff1d-4cbf-97bd-5e8f70f79750")
+	)
 	(hierarchical_label "USART1_RX"
 		(shape input)
 		(at 238.76 80.01 0)
@@ -5356,6 +5417,50 @@
 			(justify left)
 		)
 		(uuid "97180c31-bf0d-4e88-924b-aa6c1633c416")
+	)
+	(hierarchical_label "SPI2_NSS"
+		(shape input)
+		(at 241.3 120.65 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "ba6a8a6f-d7e4-4bfa-ab49-84d55d17642c")
+	)
+	(hierarchical_label "SPI2_MOSI"
+		(shape input)
+		(at 241.3 133.35 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "c1dd96de-e4ee-49fa-8800-6f15afc50dca")
+	)
+	(hierarchical_label "SD_GPIO"
+		(shape input)
+		(at 238.76 74.93 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "c9639d23-7a2b-4d3e-8163-fa5a35da0006")
+	)
+	(hierarchical_label "SPI2_SCK"
+		(shape input)
+		(at 241.3 123.19 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "e5cfe65d-3161-4ca7-bb7c-168252fcf457")
 	)
 	(hierarchical_label "USART1_TX"
 		(shape input)

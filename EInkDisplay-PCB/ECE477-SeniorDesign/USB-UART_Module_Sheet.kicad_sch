@@ -1630,6 +1630,16 @@
 		)
 		(uuid "ff915f08-ed8b-4485-a688-849cd7d65656")
 	)
+	(text "Going to have to consider diff pairs when designing PCB\n"
+		(exclude_from_sim no)
+		(at 110.998 62.738 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "fa501195-b28d-4621-bb4a-46cf36fc5c87")
+	)
 	(global_label "VBUS"
 		(shape input)
 		(at 119.38 85.09 90)

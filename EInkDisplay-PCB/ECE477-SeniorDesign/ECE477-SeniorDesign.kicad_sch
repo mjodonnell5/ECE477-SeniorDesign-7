@@ -432,6 +432,16 @@
 	)
 	(wire
 		(pts
+			(xy 133.35 69.85) (xy 133.35 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "02034e99-a991-4ffc-bd18-8734e7af2725")
+	)
+	(wire
+		(pts
 			(xy 110.49 104.14) (xy 116.84 104.14)
 		)
 		(stroke
@@ -439,6 +449,16 @@
 			(type default)
 		)
 		(uuid "03f556de-7641-4961-83c6-74e02c9de016")
+	)
+	(wire
+		(pts
+			(xy 140.97 69.85) (xy 140.97 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "05175c92-2b36-4c61-9644-8e5e96f06819")
 	)
 	(wire
 		(pts
@@ -462,27 +482,17 @@
 	)
 	(wire
 		(pts
-			(xy 173.99 104.14) (xy 173.99 101.6)
+			(xy 130.81 69.85) (xy 130.81 86.36)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "29460a04-dce3-41d2-a463-1fb3c619ea8e")
+		(uuid "3027383b-bd3b-42db-91ba-d2c7f8fae489")
 	)
 	(wire
 		(pts
-			(xy 162.56 99.06) (xy 189.23 99.06)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3a228667-b00f-436a-9e2d-062de86efebe")
-	)
-	(wire
-		(pts
-			(xy 189.23 93.98) (xy 185.42 93.98)
+			(xy 227.33 114.3) (xy 223.52 114.3)
 		)
 		(stroke
 			(width 0)
@@ -492,7 +502,7 @@
 	)
 	(wire
 		(pts
-			(xy 185.42 88.9) (xy 185.42 93.98)
+			(xy 223.52 109.22) (xy 223.52 114.3)
 		)
 		(stroke
 			(width 0)
@@ -512,7 +522,7 @@
 	)
 	(wire
 		(pts
-			(xy 185.42 96.52) (xy 189.23 96.52)
+			(xy 223.52 116.84) (xy 227.33 116.84)
 		)
 		(stroke
 			(width 0)
@@ -542,27 +552,27 @@
 	)
 	(wire
 		(pts
-			(xy 173.99 101.6) (xy 189.23 101.6)
+			(xy 138.43 69.85) (xy 138.43 86.36)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "8d77adb4-f65e-4757-8aad-01a9c5e6e4ac")
+		(uuid "b9b10901-c8f9-4a7d-b89b-cdbe059e9f88")
 	)
 	(wire
 		(pts
-			(xy 162.56 104.14) (xy 173.99 104.14)
+			(xy 135.89 69.85) (xy 135.89 86.36)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "f50163b2-04a1-4ea2-8510-fe873399e9a5")
+		(uuid "e9c679be-a11c-44ac-bece-7a2f8e058667")
 	)
 	(symbol
 		(lib_id "EinkComponentLibrary:EinkDisplay")
-		(at 191.77 128.27 0)
+		(at 229.87 148.59 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -570,7 +580,7 @@
 		(dnp no)
 		(uuid "6e73af66-db53-47c6-87f3-ab11de2d3bc2")
 		(property "Reference" "EinkDispCon2"
-			(at 199.136 116.078 0)
+			(at 237.236 136.398 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -578,7 +588,7 @@
 			)
 		)
 		(property "Value" "~"
-			(at 198.12 115.57 0)
+			(at 236.22 135.89 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -586,7 +596,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 198.12 100.33 0)
+			(at 236.22 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -595,7 +605,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 198.12 100.33 0)
+			(at 236.22 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -604,7 +614,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 198.12 100.33 0)
+			(at 236.22 120.65 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -647,7 +657,7 @@
 	)
 	(symbol
 		(lib_id "power:+3.3V")
-		(at 185.42 88.9 0)
+		(at 223.52 109.22 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -656,7 +666,7 @@
 		(fields_autoplaced yes)
 		(uuid "755c1051-181d-4291-bd0c-5093d19ea12f")
 		(property "Reference" "#PWR012"
-			(at 185.42 92.71 0)
+			(at 223.52 113.03 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -665,7 +675,7 @@
 			)
 		)
 		(property "Value" "+3.3V"
-			(at 185.42 83.82 0)
+			(at 223.52 104.14 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -673,7 +683,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 185.42 88.9 0)
+			(at 223.52 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -682,7 +692,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 185.42 88.9 0)
+			(at 223.52 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -691,7 +701,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 185.42 88.9 0)
+			(at 223.52 109.22 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -713,7 +723,7 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 185.42 96.52 270)
+		(at 223.52 116.84 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -722,7 +732,7 @@
 		(fields_autoplaced yes)
 		(uuid "841e4df2-9b3f-49a8-a730-f9128ecafac4")
 		(property "Reference" "#PWR013"
-			(at 179.07 96.52 0)
+			(at 217.17 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -731,7 +741,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 181.61 96.5199 90)
+			(at 219.71 116.8399 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -740,7 +750,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 185.42 96.52 0)
+			(at 223.52 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -749,7 +759,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 185.42 96.52 0)
+			(at 223.52 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -758,7 +768,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 185.42 96.52 0)
+			(at 223.52 116.84 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -811,26 +821,26 @@
 			)
 		)
 		(pin "SD_CLK" input
-			(at 135.89 69.85 270)
+			(at 130.81 69.85 270)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "5854b463-ca5a-42fc-95cf-01d930835466")
+			(uuid "a469fdac-2ced-4906-87e2-85827541db79")
 		)
-		(pin "SD_CMD" input
-			(at 138.43 69.85 270)
+		(pin "SD_MOSI" input
+			(at 133.35 69.85 270)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "81b99c3f-01f9-4beb-8a5f-3d45ed6b0250")
+			(uuid "273e36b9-b48a-4085-b75d-429033d131d5")
 		)
-		(pin "SD_D0" input
+		(pin "SD_CD" input
 			(at 140.97 69.85 270)
 			(effects
 				(font
@@ -838,17 +848,57 @@
 				)
 				(justify left)
 			)
-			(uuid "b65ed1a6-16b8-4366-8288-1b7a710c6e89")
+			(uuid "4a580d71-6761-4db6-b3b9-9a73c7f9b7f2")
 		)
-		(pin "SD_CD" input
-			(at 143.51 69.85 270)
+		(pin "SD_MISO" input
+			(at 135.89 69.85 270)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(justify left)
 			)
-			(uuid "ac28403b-43b3-450b-9b51-d52ceea047ac")
+			(uuid "401e0d97-9acd-490e-91c2-a325d67e4aa6")
+		)
+		(pin "SD_CS" input
+			(at 138.43 69.85 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "119c9ff1-6dd1-4cd4-9525-3724e4165afc")
+		)
+		(pin "button3" input
+			(at 151.13 69.85 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "7ce1f447-0eb8-4020-a66d-3ae427713c7a")
+		)
+		(pin "button2" input
+			(at 153.67 69.85 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "397905f0-23c1-4c1c-8b79-3154f495134a")
+		)
+		(pin "button1" input
+			(at 156.21 69.85 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "91eb8b60-5d38-47fc-8254-878d56bc957c")
 		)
 		(instances
 			(project "ECE477-SeniorDesign"
@@ -860,7 +910,7 @@
 	)
 	(sheet
 		(at 116.84 86.36)
-		(size 45.72 54.61)
+		(size 66.04 54.61)
 		(fields_autoplaced yes)
 		(stroke
 			(width 0.1524)
@@ -911,7 +961,7 @@
 			(uuid "d53a3d08-28e1-42a2-997f-8c5662de15a9")
 		)
 		(pin "SPI1_MOSI" input
-			(at 162.56 99.06 0)
+			(at 182.88 121.92 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -921,7 +971,7 @@
 			(uuid "7d38afce-1f18-46d0-9ef1-c2525d0692b4")
 		)
 		(pin "SPI1_SCK" input
-			(at 162.56 104.14 0)
+			(at 182.88 127 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -929,6 +979,56 @@
 				(justify right)
 			)
 			(uuid "63bb91a3-2c8d-42f8-ad47-aae4c5959f57")
+		)
+		(pin "SPI2_NSS" input
+			(at 138.43 86.36 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "119dfe97-f645-4418-bf9f-6fbff8070bb9")
+		)
+		(pin "SPI2_SCK" input
+			(at 130.81 86.36 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "b6b1db7d-0e5e-4cc3-ae30-1a0c7c54acc6")
+		)
+		(pin "SPI2_MISO" input
+			(at 135.89 86.36 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "e754e62e-b3cc-4176-9cd1-428758bc4eb8")
+		)
+		(pin "SPI2_MOSI" input
+			(at 133.35 86.36 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "6811ef10-6298-4875-b591-521bd9d42356")
+		)
+		(pin "SD_GPIO" input
+			(at 140.97 86.36 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "9d4c9c37-e467-4888-a040-c4b18a4954e2")
 		)
 		(instances
 			(project "ECE477-SeniorDesign"
