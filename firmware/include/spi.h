@@ -7,7 +7,7 @@
 
 void spi1_init();
 void spi_tx(SPI_TypeDef* spi, uint8_t data);
-void spi_rx(SPI_TypeDef* spi, uint8_t data);
+void spi_rx(SPI_TypeDef* spi, uint8_t* data);
 void spi_tx_buffer(SPI_TypeDef* spi, uint8_t* data, size_t size);
 void spi_rx_buffer(SPI_TypeDef* spi, uint8_t* data, size_t size);
 
