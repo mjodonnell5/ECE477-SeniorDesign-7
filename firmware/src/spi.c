@@ -54,11 +54,11 @@ void spi_tx(SPI_TypeDef* spi, uint8_t data)
     while (spi->SR & SPI_SR_BSY);
 }
 
-void spi_rx(SPI_TypeDef* spi, uint8_t data)
+void spi_rx(SPI_TypeDef* spi, uint8_t* data)
 {
     while (!(spi->SR & SPI_SR_RXNE));
 
-    data = spi->DR;
+    *data = spi->DR;
 }
 
 void spi_tx_buffer(SPI_TypeDef* spi, uint8_t* data, size_t size)

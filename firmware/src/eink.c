@@ -7,9 +7,7 @@
 #include "../include/eink.h"
 #include "../include/clock.h"
 
-extern uint8_t font8x8_basic[128][8];
-
-uint8_t framebuffer[EINK_FRAMEBUFFER_SIZE] = {WHITE};
+uint8_t framebuffer[EINK_FRAMEBUFFER_SIZE] = {0xFF};
 
 static void eink_send_cmd(uint8_t cmd)
 {
@@ -62,8 +60,7 @@ static void eink_wait_until_idle()
         eink_send_cmd(0x71);
     }
 
-    /* FIXME: Does it need to be this high?? */
-    delay_ms(200);
+    delay_ms(10);
 }
 
 static void eink_reset()
@@ -122,14 +119,9 @@ void eink_init()
     eink_wait_until_idle();
 }
 
-void draw_pixel(uint16_t x, uint16_t y, uint8_t col)
+inline void eink_draw_pixel(uint16_t x, uint16_t y, uint8_t col)
 {
-    eink_draw_pixel(x, y, col);
-}
-
-static inline void eink_draw_pixel(uint16_t x, uint16_t y, uint8_t col)
-{
-    uint16_t index = y * EINK_WIDTH + x;
+    uint32_t index = y * EINK_WIDTH + x;
     uint16_t byte_index = index / 8;
 
     if (x >= EINK_WIDTH || y >= EINK_HEIGHT) return;
@@ -138,58 +130,6 @@ static inline void eink_draw_pixel(uint16_t x, uint16_t y, uint8_t col)
         framebuffer[byte_index] |= (0x80 >> (x % 8));
     } else {
         framebuffer[byte_index] &= ~(0x80 >> (x % 8));
-    }
-}
-
-void eink_draw_hline(uint16_t x, uint16_t y, uint16_t length, uint8_t col)
-{
-    for (uint16_t i = x; i < x + length; ++i) {
-        eink_draw_pixel(i, y, col);
-    }
-}
-
-void eink_draw_vline(uint16_t x, uint16_t y, uint16_t length, uint8_t col)
-{
-    for (uint16_t i = y; i < y + length; ++i) {
-        eink_draw_pixel(x, i, col);
-    }
-}
-
-void eink_draw_rect(uint16_t s_x, uint16_t s_y, uint16_t e_x, uint16_t e_y, uint8_t col)
-{
-    uint16_t min_x, min_y, max_x, max_y;
-    min_x = e_x > s_x ? s_x : e_x;
-    max_x = e_x > s_x ? e_x : s_x;
-    min_y = e_y > s_y ? s_y : e_y;
-    max_y = e_y > s_y ? e_y : s_y;
-    
-    eink_draw_hline(min_x, min_y, max_x - min_x + 1, col);
-    eink_draw_hline(min_x, max_y, max_x - min_x + 1, col);
-    eink_draw_vline(min_x, min_y, max_y - min_y + 1, col);
-    eink_draw_vline(max_x, min_y, max_y - min_y + 1, col);
-}
-
-void eink_draw_char(uint16_t s_x, uint16_t s_y, uint16_t c, uint8_t col)
-{ 
-    const uint8_t* bitmap = font8x8_basic[c];
-
-    for (uint8_t y = 0; y < 8; ++y) {
-        for (uint8_t x = 0; x < 8; ++x) {
-            uint8_t is_set = bitmap[y] & (1 << x);
-            if (is_set) {
-                eink_draw_pixel(s_x + x, s_y + y, col);
-            }
-        }
-    }
-}
-
-void eink_draw_string(uint16_t s_x, uint16_t s_y, char* string, uint8_t col)
-{
-    while (*string) {
-        eink_draw_char(s_x, s_y, *string, col);
-
-        string++;
-        s_x += 8;
     }
 }
 
@@ -215,9 +155,9 @@ void eink_render_framebuffer()
     eink_turn_on_display();
 }
 
-void eink_clear()
+void eink_clear(uint8_t col)
 {
-    memset(framebuffer, WHITE, EINK_FRAMEBUFFER_SIZE);
+    memset(framebuffer, col, EINK_FRAMEBUFFER_SIZE);
 }
 
 void eink_sleep()
