@@ -5,6 +5,108 @@
 	(uuid "0e29faa8-7375-4899-bb69-6ca4a54cff38")
 	(paper "A4")
 	(lib_symbols
+		(symbol "Connector:TestPoint"
+			(pin_numbers hide)
+			(pin_names
+				(offset 0.762) hide)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "TP"
+				(at 0 6.858 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "TestPoint"
+				(at 0 5.08 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 5.08 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 5.08 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "test point"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "test point tp"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "Pin* Test*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "TestPoint_0_1"
+				(circle
+					(center 0 3.302)
+					(radius 0.762)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "TestPoint_1_1"
+				(pin passive line
+					(at 0 0 90)
+					(length 2.54)
+					(name "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+		)
 		(symbol "Connector:USB_B"
 			(pin_names
 				(offset 1.016)
@@ -1191,6 +1293,12 @@
 		(uuid "04fd4911-53a1-4017-a7ee-2229c24a7531")
 	)
 	(junction
+		(at 119.38 85.09)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "3420e27f-66c0-45d8-9464-14a197f9cdea")
+	)
+	(junction
 		(at 133.35 100.33)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1319,6 +1427,16 @@
 			(type default)
 		)
 		(uuid "081ec9c2-f404-47d8-9f43-79edf2a2b8c5")
+	)
+	(wire
+		(pts
+			(xy 119.38 85.09) (xy 119.38 90.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0993b558-2d9f-4d3e-be3e-48b551a46494")
 	)
 	(wire
 		(pts
@@ -1512,7 +1630,7 @@
 	)
 	(wire
 		(pts
-			(xy 119.38 85.09) (xy 119.38 90.17)
+			(xy 119.38 78.74) (xy 119.38 85.09)
 		)
 		(stroke
 			(width 0)
@@ -1642,7 +1760,7 @@
 	)
 	(global_label "VBUS"
 		(shape input)
-		(at 119.38 85.09 90)
+		(at 119.38 78.74 90)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -1652,7 +1770,7 @@
 		)
 		(uuid "79992516-2a68-4073-9128-2030f58f24fa")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 119.38 77.2062 90)
+			(at 119.38 70.8562 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1683,6 +1801,71 @@
 			(justify left)
 		)
 		(uuid "9ca8d311-6d89-476e-b595-31df65aeb4c5")
+	)
+	(symbol
+		(lib_id "Connector:TestPoint")
+		(at 119.38 85.09 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "002d3d76-7f0c-4e7b-a1f6-7b9090194e34")
+		(property "Reference" "TP14"
+			(at 116.078 80.01 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "VBUS"
+			(at 116.078 82.55 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 119.38 80.01 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 119.38 80.01 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "test point"
+			(at 119.38 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "3d62a2ca-822b-4a0f-8c55-3b335a5d6065")
+		)
+		(instances
+			(project ""
+				(path "/527ae649-08be-4368-9cf9-441ebba18eca/b5fe9c37-5cbb-4476-b922-2ef94ca58b1e"
+					(reference "TP14")
+					(unit 1)
+				)
+			)
+		)
 	)
 	(symbol
 		(lib_id "Device:C_Small")
