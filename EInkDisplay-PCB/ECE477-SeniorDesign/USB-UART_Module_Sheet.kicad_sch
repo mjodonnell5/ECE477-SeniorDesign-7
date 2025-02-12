@@ -114,22 +114,20 @@
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
-			(property "Reference" "J"
-				(at -5.08 11.43 0)
+			(property "Reference" "J2"
+				(at 0 12.7 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
-					(justify left)
 				)
 			)
 			(property "Value" "USB_B"
-				(at -5.08 8.89 0)
+				(at 0 10.16 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
-					(justify left)
 				)
 			)
 			(property "Footprint" ""
@@ -394,7 +392,7 @@
 						)
 					)
 				)
-				(pin power_out line
+				(pin bidirectional line
 					(at 0 -10.16 90)
 					(length 2.54)
 					(name "GND"
@@ -1293,12 +1291,6 @@
 		(uuid "04fd4911-53a1-4017-a7ee-2229c24a7531")
 	)
 	(junction
-		(at 119.38 85.09)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "3420e27f-66c0-45d8-9464-14a197f9cdea")
-	)
-	(junction
 		(at 133.35 100.33)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -1309,6 +1301,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "47fc12bf-ef72-4a55-98a2-75f71f6dc161")
+	)
+	(junction
+		(at 119.38 78.74)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "52b4f7a1-6979-404b-9e61-4dde2076eb1f")
 	)
 	(junction
 		(at 119.38 90.17)
@@ -1427,16 +1425,6 @@
 			(type default)
 		)
 		(uuid "081ec9c2-f404-47d8-9f43-79edf2a2b8c5")
-	)
-	(wire
-		(pts
-			(xy 119.38 85.09) (xy 119.38 90.17)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0993b558-2d9f-4d3e-be3e-48b551a46494")
 	)
 	(wire
 		(pts
@@ -1620,6 +1608,16 @@
 	)
 	(wire
 		(pts
+			(xy 119.38 78.74) (xy 119.38 90.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "96c9e999-3ed8-4f48-8506-ab23d86430bc")
+	)
+	(wire
+		(pts
 			(xy 124.46 87.63) (xy 133.35 87.63)
 		)
 		(stroke
@@ -1630,7 +1628,7 @@
 	)
 	(wire
 		(pts
-			(xy 119.38 78.74) (xy 119.38 85.09)
+			(xy 119.38 71.12) (xy 119.38 78.74)
 		)
 		(stroke
 			(width 0)
@@ -1720,7 +1718,7 @@
 	)
 	(wire
 		(pts
-			(xy 119.38 90.17) (xy 111.76 90.17)
+			(xy 111.76 90.17) (xy 119.38 90.17)
 		)
 		(stroke
 			(width 0)
@@ -1760,7 +1758,7 @@
 	)
 	(global_label "VBUS"
 		(shape input)
-		(at 119.38 78.74 90)
+		(at 119.38 71.12 90)
 		(fields_autoplaced yes)
 		(effects
 			(font
@@ -1770,7 +1768,7 @@
 		)
 		(uuid "79992516-2a68-4073-9128-2030f58f24fa")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 119.38 70.8562 90)
+			(at 119.38 63.2362 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1804,7 +1802,7 @@
 	)
 	(symbol
 		(lib_id "Connector:TestPoint")
-		(at 119.38 85.09 90)
+		(at 119.38 78.74 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -1813,7 +1811,7 @@
 		(fields_autoplaced yes)
 		(uuid "002d3d76-7f0c-4e7b-a1f6-7b9090194e34")
 		(property "Reference" "TP14"
-			(at 116.078 80.01 90)
+			(at 116.078 73.66 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1821,7 +1819,7 @@
 			)
 		)
 		(property "Value" "VBUS"
-			(at 116.078 82.55 90)
+			(at 116.078 76.2 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1829,7 +1827,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 119.38 80.01 0)
+			(at 119.38 73.66 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1838,7 +1836,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 119.38 80.01 0)
+			(at 119.38 73.66 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1847,7 +1845,7 @@
 			)
 		)
 		(property "Description" "test point"
-			(at 119.38 85.09 0)
+			(at 119.38 78.74 0)
 			(effects
 				(font
 					(size 1.27 1.27)

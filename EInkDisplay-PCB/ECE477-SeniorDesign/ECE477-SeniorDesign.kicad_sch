@@ -642,6 +642,16 @@
 	)
 	(wire
 		(pts
+			(xy 96.52 123.19) (xy 116.84 123.19)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "164786d3-6f88-4886-82ef-ed15ab9576a9")
+	)
+	(wire
+		(pts
 			(xy 201.93 132.08) (xy 227.33 132.08)
 		)
 		(stroke
@@ -682,6 +692,26 @@
 	)
 	(wire
 		(pts
+			(xy 96.52 132.08) (xy 116.84 132.08)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "423da70f-a53d-4914-94e2-55082509267d")
+	)
+	(wire
+		(pts
+			(xy 96.52 134.62) (xy 116.84 134.62)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "44e73621-8150-4f64-bdad-53a93dccd803")
+	)
+	(wire
+		(pts
 			(xy 151.13 69.85) (xy 151.13 86.36)
 		)
 		(stroke
@@ -689,6 +719,16 @@
 			(type default)
 		)
 		(uuid "46208424-464d-4653-92d2-77393aaa4c18")
+	)
+	(wire
+		(pts
+			(xy 96.52 120.65) (xy 116.84 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4de3aa76-52a0-4a51-a7f2-269193919ffa")
 	)
 	(wire
 		(pts
@@ -709,6 +749,16 @@
 			(type default)
 		)
 		(uuid "4ec5b8ad-7372-4666-8669-d8ca2a72e9c2")
+	)
+	(wire
+		(pts
+			(xy 96.52 129.54) (xy 116.84 129.54)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "506c3020-1a90-494c-b565-4af18399bc66")
 	)
 	(wire
 		(pts
@@ -839,6 +889,16 @@
 			(type default)
 		)
 		(uuid "b0532d33-4714-4366-a0e6-d812f055e64d")
+	)
+	(wire
+		(pts
+			(xy 96.52 118.11) (xy 116.84 118.11)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b653000f-dcc2-495a-b1ac-759248d0c4c7")
 	)
 	(wire
 		(pts
@@ -1956,6 +2016,66 @@
 			)
 			(uuid "d4664379-f1e9-46cc-ae18-6f18282e04d5")
 		)
+		(pin "GPIO_1" input
+			(at 116.84 118.11 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "66a30918-c2c3-45c0-9666-823a21424ae8")
+		)
+		(pin "GPIO_5" input
+			(at 116.84 120.65 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "d332d645-f728-455d-870d-4b636306f9a6")
+		)
+		(pin "GPIO_2" input
+			(at 116.84 123.19 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "d51c3298-39a3-41ff-a8b6-a2aa2f7ff0f8")
+		)
+		(pin "GPIO_3" input
+			(at 116.84 129.54 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "7dd95793-3348-4b10-a2c9-285a7fff62d2")
+		)
+		(pin "GPIO_4" input
+			(at 116.84 132.08 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "841b2d4c-61b6-4c62-980b-c37c7aa1b143")
+		)
+		(pin "GPIO_6" input
+			(at 116.84 134.62 180)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "5b35b535-8aba-4dcb-81bc-a8a6eccec285")
+		)
 		(instances
 			(project "ECE477-SeniorDesign"
 				(path "/527ae649-08be-4368-9cf9-441ebba18eca"
@@ -2055,6 +2175,66 @@
 				)
 				(justify left top)
 			)
+		)
+		(pin "Monitor_SCL" input
+			(at 96.52 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "db6e730b-9e43-40aa-8811-cffc0ced6f57")
+		)
+		(pin "Monitor_SDA" input
+			(at 96.52 120.65 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "85b5b750-c40f-4da5-8916-72f0deb4dac9")
+		)
+		(pin "Monitor_GPOUT" input
+			(at 96.52 123.19 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "3c653a99-eaad-425e-b47d-73274d29a4a4")
+		)
+		(pin "Recharge_PG" input
+			(at 96.52 129.54 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "969e6975-80b6-42de-98f6-4c8e4c9dd967")
+		)
+		(pin "Recharge_ST1" input
+			(at 96.52 132.08 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "170d0008-5b17-47b7-8f14-fe3c8f171b1f")
+		)
+		(pin "Recharge_ST2" input
+			(at 96.52 134.62 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "3f994ceb-7f8b-4195-bd57-9d30f323357d")
 		)
 		(instances
 			(project "ECE477-SeniorDesign"
