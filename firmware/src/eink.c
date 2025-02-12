@@ -51,16 +51,16 @@ static void eink_pin_init()
 
 }
 
-static void eink_wait_until_idle()
+void eink_wait_until_idle()
 {
     /* The all mightly magical command */
-    eink_send_cmd(0x71);
+    // eink_send_cmd(0x71);
 
     while((GPIOA->IDR & GPIO_IDR_ID6) == 1) {
-        eink_send_cmd(0x71);
+        // eink_send_cmd(0x71);
     }
 
-    delay_ms(10);
+    delay_ms(100);
 }
 
 static void eink_reset()
@@ -96,6 +96,14 @@ void eink_init()
 
     eink_send_cmd(0x3C);
     eink_send_data(0x05);
+
+    /* Stuff for FAST MODE */
+    eink_send_cmd(0x1A);
+    eink_send_data(0x5A);
+    eink_send_cmd(0x22);
+    eink_send_data(0x91);
+    eink_send_cmd(0x20);
+    eink_wait_until_idle();
 
     eink_send_cmd(0x11);
     eink_send_data(0x03);
@@ -136,8 +144,14 @@ inline void eink_draw_pixel(uint16_t x, uint16_t y, uint8_t col)
 static void eink_turn_on_display()
 {
     /* Update display */
+    // eink_send_cmd(0x22);
+    // eink_send_data(0xF7);
+    // eink_send_cmd(0x20);
+    // eink_wait_until_idle();
+
+    /* FAST MODE */
     eink_send_cmd(0x22);
-    eink_send_data(0xF7);
+    eink_send_data(0xC7);
     eink_send_cmd(0x20);
     eink_wait_until_idle();
 }
@@ -153,6 +167,7 @@ void eink_render_framebuffer()
 
     eink_wait_until_idle();
     eink_turn_on_display();
+    delay_ms(900);
 }
 
 void eink_clear(uint8_t col)
