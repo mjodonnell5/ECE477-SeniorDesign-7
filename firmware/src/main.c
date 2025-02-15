@@ -119,7 +119,7 @@ int main(void)
 
     eink_init();
 
-    // button_init();
+    button_init();
 
     // #define WRAP_TEST
     #ifdef WRAP_TEST

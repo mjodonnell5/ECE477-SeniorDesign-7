@@ -143,12 +143,6 @@ inline void eink_draw_pixel(uint16_t x, uint16_t y, uint8_t col)
 
 static void eink_turn_on_display()
 {
-    /* Update display */
-    // eink_send_cmd(0x22);
-    // eink_send_data(0xF7);
-    // eink_send_cmd(0x20);
-    // eink_wait_until_idle();
-
     /* FAST MODE */
     eink_send_cmd(0x22);
     eink_send_data(0xC7);

@@ -13,16 +13,14 @@ extern uint8_t font8x8_basic[128][8];
 
 void draw_header(char* title)
 {
-    /* Draw header */
+    /* Current title */
+    draw_centered_string_in_filled_rect(0, 0, EINK_WIDTH - 1, 10, title, BLACK);
+
+    /* Battery percentage */
     char battery_perc_str[9];
     uint8_t battery_perc = 95;
     snprintf(battery_perc_str, 9, "BAT:%d%%", battery_perc);
-    draw_string(EINK_WIDTH - (8 * strlen(battery_perc_str)), 0, battery_perc_str, BLACK);
-
-    /* Current title */
-    draw_string(0, 0, title, BLACK);
-
-    draw_hline(0, 8, EINK_WIDTH, BLACK);
+    draw_string(EINK_WIDTH - (8 * strlen(battery_perc_str)), 2, battery_perc_str, WHITE);
 }
 
 void draw_main_menu(uint8_t curr_selected_deck)
@@ -143,12 +141,19 @@ void draw_string_wrapped(uint16_t s_x, uint16_t s_y, char* string, uint8_t col) 
     while (word != NULL) {
         uint16_t word_length_pixels = strlen(word) * 8;
 
-        if (word_length_pixels + c_x >= EINK_WIDTH) {
+        /* subtracting c_x will "center" it so that it wraps not at the end
+         * of the display, but so that the text is centered. */
+        /* FIXME: Should I have a mode for this center wrapping or have it
+         * be default? */
+        if (word_length_pixels + c_x >= EINK_WIDTH - c_x) {
             /* Write this word on next line */
             c_x = s_x;
             c_y += 10;
         }
+
         draw_string(c_x, c_y, word, col);
+
+        /* +8 is to add a space after the word*/
         c_x += word_length_pixels + 8;
 
         word = strtok(NULL, " ");
@@ -173,7 +178,7 @@ void draw_centered_string_in_filled_rect(uint16_t s_x, uint16_t s_y, uint16_t e_
 
     draw_filled_rect(min_x, min_y, max_x, max_y, col);
 
-    draw_string_wrapped(text_x, text_y, string, !col);
+    draw_string(text_x, text_y, string, !col);
 }
 
 void draw_centered_string_in_rect(uint16_t s_x, uint16_t s_y, uint16_t e_x, uint16_t e_y, char* string, uint8_t col)
@@ -194,5 +199,5 @@ void draw_centered_string_in_rect(uint16_t s_x, uint16_t s_y, uint16_t e_x, uint
 
     draw_rect(min_x, min_y, max_x, max_y, col);
 
-    draw_string_wrapped(text_x, text_y, string, col);
+    draw_string(text_x, text_y, string, col);
 }
