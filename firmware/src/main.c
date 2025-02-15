@@ -1,4 +1,5 @@
 #include <stm32l432xx.h>
+#include <string.h>
 
 #include "../include/eink.h"
 #include "../include/spi.h"
@@ -66,8 +67,6 @@ void state_machine()
         case STATE_FLASHCARD_NAVIGATION:
             break;
         }
-
-        delay_ms(200);
     }
 }
 
@@ -108,7 +107,7 @@ void EXTI3_IRQHandler(void) {
     // curr_selected_deck++;
     curr_selected_deck = (curr_selected_deck + 1) % 6;  
     rendering = 1;
-    delay_ms(50);
+    // delay_ms(50);
     // eink_clear(0xFF);
     // draw_main_menu();
     // eink_render_framebuffer();
@@ -120,20 +119,55 @@ int main(void)
 
     eink_init();
 
-    button_init();
+    // button_init();
 
+    // #define WRAP_TEST
+    #ifdef WRAP_TEST
+    eink_clear(0xFF);
+    char str[150] = "Hello, this is a test of the wrapping on the display :) lkasdflaskldfj kasdkjl asdflk jj mm fjfjjf fjjfjfjf jjfjf";
+    // char str[100] = "Hello :)";
+    draw_string_wrapped(0, 0, str, BLACK);
+    draw_string(0, 35, str, BLACK);
+    eink_render_framebuffer();
+    #endif /* WRAP_TEST */
+
+    // #define FLASHCARD_FRONT
+    #ifdef FLASHCARD_FRONT
+    eink_clear(0xFF);
+    struct flashcard fc;
+    char front[250] = "MITOCHONDRIA";
+    // char back[300] = "It is the powerhouse of the cell. This is learned in Biology class.";
+    char back[300] = "Biology class. asdflk jlkasjdf alksdjf kljasdg f";
+    strcpy(fc.front, front);
+    strcpy(fc.back, back);
+    draw_flashcard(fc, 1, BLACK);
+    eink_render_framebuffer();
+    #endif /* FLASHCARD_FRONT */
+
+    #define CLEAR
+    #ifdef CLEAR
     eink_clear(0xFF);
     eink_render_framebuffer();
+    #endif /* CLEAR */
 
-    // state_machine();
+    // #define STATE_MACHINE
+    #ifdef STATE_MACHINE
+    eink_clear(0xFF);
+    draw_main_menu(0);
+    eink_render_framebuffer();
+    state_machine();
+    #endif /* STATE_MACHINE */
 
-    // for (uint8_t i = 0; i < 6; ++i) {
-    //     eink_clear(0xFF);
-    //
-    //     draw_main_menu(i);
-    //
-    //     eink_render_framebuffer();
-    // }
+    // #define SHIFT
+    #ifdef SHIFT
+    for (uint8_t i = 0; i < 6; ++i) {
+        eink_clear(0xFF);
+
+        draw_main_menu(i);
+
+        eink_render_framebuffer();
+    }
+    #endif /* STATE */
 
     eink_sleep();
 

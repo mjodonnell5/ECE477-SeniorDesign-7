@@ -11,7 +11,7 @@
 
 extern uint8_t font8x8_basic[128][8];
 
-void draw_main_menu(uint8_t curr_selected_deck)
+void draw_header(char* title)
 {
     /* Draw header */
     char battery_perc_str[9];
@@ -20,11 +20,14 @@ void draw_main_menu(uint8_t curr_selected_deck)
     draw_string(EINK_WIDTH - (8 * strlen(battery_perc_str)), 0, battery_perc_str, BLACK);
 
     /* Current title */
-    char title[20] = "SELECT A DECK";
     draw_string(0, 0, title, BLACK);
 
     draw_hline(0, 8, EINK_WIDTH, BLACK);
+}
 
+void draw_main_menu(uint8_t curr_selected_deck)
+{
+    draw_header("SELECT A DECK");
     /* Draw menu */
     /* TODO: I need to only render however many decks on the screen that can fit at one
      * time based on the height, and then scroll if we hit the bottom*/
@@ -39,6 +42,21 @@ void draw_main_menu(uint8_t curr_selected_deck)
             /* Normal */
             draw_centered_string_in_rect(0 + 50, 20 + DIST_DECKS * i, EINK_WIDTH - 1 - 50, 60 + DIST_DECKS * i, deck_names[i], BLACK);
         }
+    }
+}
+
+#define FRONT (1)
+#define BACK (0)
+void draw_flashcard(struct flashcard fc, uint8_t f_b, uint8_t col)
+{
+    if (f_b) {
+        draw_header("FLASHCARD FRONT");
+        draw_string_wrapped(20, 20, fc.front, col);
+        // draw_centered_string_in_rect(20, 20, EINK_WIDTH - 20, EINK_HEIGHT - 20, fc.front, col);
+    } else {
+        // draw_centered_string_in_rect(20, 20, EINK_WIDTH - 20, EINK_HEIGHT - 20, fc.back, col);
+        draw_header("FLASHCARD BACK");
+        draw_string_wrapped(20, 20, fc.back, col);
     }
 }
 
@@ -112,6 +130,31 @@ void draw_string(uint16_t s_x, uint16_t s_y, char* string, uint8_t col)
     }
 }
 
+void draw_string_wrapped(uint16_t s_x, uint16_t s_y, char* string, uint8_t col) {
+    uint16_t c_x = s_x;
+    uint16_t c_y = s_y;
+
+    char buffer[2048];
+    strncpy(buffer, string, sizeof(buffer) - 1);
+    buffer[sizeof(buffer) - 1] = '\0';
+
+    char* word = strtok(buffer, " ");
+
+    while (word != NULL) {
+        uint16_t word_length_pixels = strlen(word) * 8;
+
+        if (word_length_pixels + c_x >= EINK_WIDTH) {
+            /* Write this word on next line */
+            c_x = s_x;
+            c_y += 10;
+        }
+        draw_string(c_x, c_y, word, col);
+        c_x += word_length_pixels + 8;
+
+        word = strtok(NULL, " ");
+    }
+}
+
 void draw_centered_string_in_filled_rect(uint16_t s_x, uint16_t s_y, uint16_t e_x, uint16_t e_y, char* string, uint8_t col)
 {
     uint16_t min_x = e_x > s_x ? s_x : e_x;
@@ -130,7 +173,7 @@ void draw_centered_string_in_filled_rect(uint16_t s_x, uint16_t s_y, uint16_t e_
 
     draw_filled_rect(min_x, min_y, max_x, max_y, col);
 
-    draw_string(text_x, text_y, string, !col);
+    draw_string_wrapped(text_x, text_y, string, !col);
 }
 
 void draw_centered_string_in_rect(uint16_t s_x, uint16_t s_y, uint16_t e_x, uint16_t e_y, char* string, uint8_t col)
@@ -151,5 +194,5 @@ void draw_centered_string_in_rect(uint16_t s_x, uint16_t s_y, uint16_t e_x, uint
 
     draw_rect(min_x, min_y, max_x, max_y, col);
 
-    draw_string(text_x, text_y, string, col);
+    draw_string_wrapped(text_x, text_y, string, col);
 }
