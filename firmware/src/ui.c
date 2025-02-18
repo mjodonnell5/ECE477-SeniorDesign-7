@@ -23,15 +23,12 @@ void draw_header(char* title)
     draw_string(EINK_WIDTH - (8 * strlen(battery_perc_str)), 2, battery_perc_str, WHITE);
 }
 
-void draw_main_menu(uint8_t curr_selected_deck)
+void draw_main_menu(uint8_t curr_selected_deck, char* deck_names[], uint16_t num_decks)
 {
     draw_header("SELECT A DECK");
     /* Draw menu */
     /* TODO: I need to only render however many decks on the screen that can fit at one
      * time based on the height, and then scroll if we hit the bottom*/
-    uint8_t num_decks = 6;
-    char deck_names[6][20] = {"BIOL 10100", "PHIL 32200", "ECE 20002", "ANTH 33700", "ECE 47700", "CS 15900"};
-
     for (uint8_t i = 0; i < num_decks; ++i) {
         if (i == curr_selected_deck) {
             /* Draw filled & inverted rectangle */
@@ -43,8 +40,6 @@ void draw_main_menu(uint8_t curr_selected_deck)
     }
 }
 
-#define FRONT (1)
-#define BACK (0)
 void draw_flashcard(struct flashcard fc, uint8_t f_b, uint8_t col)
 {
     if (f_b) {

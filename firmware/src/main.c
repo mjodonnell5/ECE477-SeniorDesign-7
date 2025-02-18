@@ -1,5 +1,6 @@
 #include <stm32l432xx.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "../include/eink.h"
 #include "../include/spi.h"
@@ -10,7 +11,8 @@ enum STATES {
     STATE_IDLE = 0,
     STATE_DOWNLOAD, /* DISABLE INTERRUPTS */
     STATE_MENU_NAVIGATION,
-    STATE_FLASHCARD_NAVIGATION
+    STATE_FLASHCARD_NAVIGATION,
+    STATE_DECK_SELECTION
 };
 
 void draw_test()
@@ -34,21 +36,39 @@ void draw_test()
 }
 
 
-volatile enum STATES state = STATE_IDLE;
+volatile enum STATES state = STATE_MENU_NAVIGATION;
 
 /* NOTE: This will be set to 1 in the GPIO button interrupts. This will make sure that
  * we do not queue a bunch of renders back to back. If buttons are spammed this will just
  * continue being set, therefore queueing only a single render. This will ONLY be cleared
  * once the current render is completed */
-volatile uint8_t rendering = 0;
+volatile uint8_t render = 0;
 
 volatile uint8_t button_presses = 0;
-volatile uint8_t curr_selected_deck = 0;
+volatile uint8_t curr_deck_selection = 0;
+volatile uint8_t curr_card_selection = 0;
+volatile uint8_t f_b = FRONT;
+
+char* deck_names[6] = {"BIO 10100", "PHIL 32200", "ECE 20002", "ANTH 33700", "ECE 47700", "CS 15900"};
+struct flashcard decks[1][3];
+void setup_deck()
+{
+    /* BIO 10100 */
+    strcpy(decks[0][0].front, "MITOCHONDRIA");
+    strcpy(decks[0][0].back, "The powerhouse of the cell");
+
+    strcpy(decks[0][1].front, "Testing 1");
+    strcpy(decks[0][1].back, "back of testing 1");
+
+    strcpy(decks[0][2].front, "Testing 2");
+    strcpy(decks[0][2].back, "back of testing 2");
+}
 
 /* This will always be running when there is no interrupt happening */
 void state_machine()
 {
     for (;;) {
+        delay_ms(10);
         switch (state) {
         case STATE_IDLE:
             break;
@@ -57,14 +77,27 @@ void state_machine()
         case STATE_MENU_NAVIGATION:
             /* FIXME: We need to draw everything to the framebuffer BEFORE
              * we render. */
-            if (rendering) {
+            if (render) {
                 eink_clear(0xFF);
-                draw_main_menu(curr_selected_deck);
+                draw_main_menu(curr_deck_selection, deck_names, 6);
                 eink_render_framebuffer();
-                rendering = 0;
+                render = 0;
             }
             break;
+        case STATE_DECK_SELECTION:
         case STATE_FLASHCARD_NAVIGATION:
+            if (render) {
+                eink_clear(0xFF);
+                draw_header(deck_names[curr_deck_selection]);
+                char buf[512];
+                if (f_b == FRONT)
+                    sprintf(buf, "%s", decks[curr_deck_selection][curr_card_selection].front);
+                else if (f_b == BACK)
+                    sprintf(buf, "%s", decks[curr_deck_selection][curr_card_selection].back);
+                draw_string(20, 20, buf, BLACK);
+                eink_render_framebuffer();
+                render = 0;
+            }
             break;
         }
     }
@@ -88,7 +121,7 @@ void button_init()
     EXTI->RTSR1 |= EXTI_RTSR1_RT3
                 | EXTI_RTSR1_RT4 | EXTI_RTSR1_RT5;
 
-    EXTI->IMR1 |= EXTI_IMR1_IM0 | EXTI_IMR1_IM2
+    EXTI->IMR1 |= EXTI_IMR1_IM0 | EXTI_IMR1_IM5
                | EXTI_IMR1_IM3 | EXTI_IMR1_IM4;
 
     NVIC->ISER[0] |= (1 << EXTI3_IRQn) | (1 << EXTI4_IRQn) | (1 << EXTI9_5_IRQn);
@@ -97,20 +130,50 @@ void button_init()
 /* FIXME: I can have a "display variable" that stores the current item selected on the
  * display. If this differs from the internal state I can queue a render. */
 
-void EXTI3_IRQHandler(void) {
-    EXTI->PR1 = EXTI_PR1_PIF3;
-    if (rendering) {
+void EXTI9_5_IRQHandler(void)
+{
+    if (EXTI->PR1 & EXTI_PR1_PIF5) {
+        EXTI->PR1 = EXTI_PR1_PIF5;
+        if (render) {
+            return;
+        }
+        if (state == STATE_FLASHCARD_NAVIGATION) {
+            f_b = !f_b;
+        } else {
+            state = STATE_FLASHCARD_NAVIGATION;
+        }
+        render = 1;
+    }
+}
+
+void EXTI4_IRQHandler(void)
+{
+    EXTI->PR1 = EXTI_PR1_PIF4;
+    if (render) {
         return;
     }
-    state = STATE_MENU_NAVIGATION;
-    button_presses++;
-    // curr_selected_deck++;
-    curr_selected_deck = (curr_selected_deck + 1) % 6;  
-    rendering = 1;
-    // delay_ms(50);
-    // eink_clear(0xFF);
-    // draw_main_menu();
-    // eink_render_framebuffer();
+    if (state == STATE_MENU_NAVIGATION) {
+        curr_deck_selection = (curr_deck_selection - 1);  
+    } else if (state == STATE_FLASHCARD_NAVIGATION) {
+        curr_card_selection = (curr_card_selection - 1);  
+        if (f_b == BACK) f_b = FRONT;
+    }
+    render = 1;
+}
+
+void EXTI3_IRQHandler(void)
+{
+    EXTI->PR1 = EXTI_PR1_PIF3;
+    if (render) {
+        return;
+    }
+    if (state == STATE_MENU_NAVIGATION) {
+        curr_deck_selection = (curr_deck_selection + 1);  
+    } else if (state == STATE_FLASHCARD_NAVIGATION) {
+        curr_card_selection = (curr_card_selection + 1);  
+        if (f_b == BACK) f_b = FRONT;
+    }
+    render = 1;
 }
 
 int main(void)
@@ -120,6 +183,8 @@ int main(void)
     eink_init();
 
     button_init();
+
+    setup_deck();
 
     // #define WRAP_TEST
     #ifdef WRAP_TEST
@@ -144,16 +209,16 @@ int main(void)
     eink_render_framebuffer();
     #endif /* FLASHCARD_FRONT */
 
-    #define CLEAR
+    // #define CLEAR
     #ifdef CLEAR
     eink_clear(0xFF);
     eink_render_framebuffer();
     #endif /* CLEAR */
 
-    // #define STATE_MACHINE
+    #define STATE_MACHINE
     #ifdef STATE_MACHINE
     eink_clear(0xFF);
-    draw_main_menu(0);
+    draw_main_menu(0, deck_names, 6);
     eink_render_framebuffer();
     state_machine();
     #endif /* STATE_MACHINE */
