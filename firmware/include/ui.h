@@ -5,9 +5,23 @@
 
 #define FRONT (1)
 #define BACK (0)
+#define MAX_FRONT_SIZE     (100)
+#define MAX_BACK_SIZE      (200)
+#define MAX_CARDS_PER_DECK (5)
+
 struct flashcard {
-    char front[250];
-    char back[300];
+    /* Metadata */
+    /* ... */
+
+    char front[MAX_FRONT_SIZE];
+    char back[MAX_BACK_SIZE];
+};
+
+struct deck {
+    /* Metadata */
+    /* ... */
+
+    struct flashcard cards[MAX_CARDS_PER_DECK];
 };
 
 void draw_main_menu(uint8_t curr_selected_deck, char* deck_names[], uint16_t num_decks);

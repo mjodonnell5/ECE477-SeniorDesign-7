@@ -8,8 +8,7 @@
 #include "../include/ui.h"
 
 enum STATES {
-    STATE_IDLE = 0,
-    STATE_DOWNLOAD, /* DISABLE INTERRUPTS */
+    STATE_DOWNLOAD = 0, /* DISABLE INTERRUPTS */
     STATE_MENU_NAVIGATION,
     STATE_FLASHCARD_NAVIGATION,
     STATE_DECK_SELECTION
@@ -47,57 +46,103 @@ volatile uint8_t render = 0;
 volatile uint8_t button_presses = 0;
 volatile uint8_t curr_deck_selection = 0;
 volatile uint8_t curr_card_selection = 0;
+volatile uint8_t get_deck_from_sd = 0;
 volatile uint8_t f_b = FRONT;
 
-char* deck_names[6] = {"BIO 10100", "PHIL 32200", "ECE 20002", "ANTH 33700", "ECE 47700", "CS 15900"};
-struct flashcard decks[1][3];
-void setup_deck()
+char* deck_names[6];
+struct deck main_deck;
+
+/* TODO: Needs to get `ls` from SD card and fill array */
+void get_deck_names(char* deck_names[6])
 {
-    /* BIO 10100 */
-    strcpy(decks[0][0].front, "MITOCHONDRIA");
-    strcpy(decks[0][0].back, "The powerhouse of the cell");
-
-    strcpy(decks[0][1].front, "Testing 1");
-    strcpy(decks[0][1].back, "back of testing 1");
-
-    strcpy(decks[0][2].front, "Testing 2");
-    strcpy(decks[0][2].back, "back of testing 2");
+    deck_names[0] = "BIO 10100";
+    deck_names[1] = "PHIL 32200";
+    deck_names[2] = "ECE 20002";
+    deck_names[3] = "ANTH 33700";
+    deck_names[4] = "ECE 47700";
+    deck_names[5] = "CS 15900";
 }
+
+/* TODO: we will only have one deck based on (deck number or name?) */
+struct deck get_deck(uint8_t deck_number)
+{
+    struct deck d = {0};
+    /* BIO 10100 */
+    if (deck_number == 0) {
+        strcpy(d.cards[0].front, "What is the mitochrondria?");
+        strcpy(d.cards[0].back, "The powerhouse of the cell!");
+
+        strcpy(d.cards[1].front, "Testing BIO 1");
+        strcpy(d.cards[1].back, "BACK of testing 1");
+
+        strcpy(d.cards[2].front, "Testing BIO 2");
+        strcpy(d.cards[2].back, "BACK of testing 2");
+    } else if (deck_number == 1) {
+        strcpy(d.cards[0].front, "Who was Socrates?");
+        strcpy(d.cards[0].back, "An awesome guy :)");
+
+        strcpy(d.cards[1].front, "Testing PHIL 1");
+        strcpy(d.cards[1].back, "BACK of testing PHIL 1");
+
+        strcpy(d.cards[2].front, "Testing PHIL 2");
+        strcpy(d.cards[2].back, "BACK of testing PHIL 2");
+    }
+    return d;
+}
+
 
 /* This will always be running when there is no interrupt happening */
 void state_machine()
 {
     for (;;) {
         delay_ms(10);
+
         switch (state) {
-        case STATE_IDLE:
-            break;
         case STATE_DOWNLOAD:
+            __disable_irq();
+            /* Download */
+            __enable_irq();
+
             break;
+
         case STATE_MENU_NAVIGATION:
-            /* FIXME: We need to draw everything to the framebuffer BEFORE
-             * we render. */
-            if (render) {
-                eink_clear(0xFF);
-                draw_main_menu(curr_deck_selection, deck_names, 6);
-                eink_render_framebuffer();
-                render = 0;
+            /* Get deck names */
+            if (deck_names[0] == NULL) {
+                get_deck_names(deck_names);
             }
+
+            if (!render) break;
+
+            eink_clear(0xFF);
+            draw_main_menu(curr_deck_selection, deck_names, 6);
+            eink_render_framebuffer();
+            render = 0;
+
             break;
+
         case STATE_DECK_SELECTION:
+
         case STATE_FLASHCARD_NAVIGATION:
-            if (render) {
-                eink_clear(0xFF);
-                draw_header(deck_names[curr_deck_selection]);
-                char buf[512];
-                if (f_b == FRONT)
-                    sprintf(buf, "%s", decks[curr_deck_selection][curr_card_selection].front);
-                else if (f_b == BACK)
-                    sprintf(buf, "%s", decks[curr_deck_selection][curr_card_selection].back);
-                draw_string(20, 20, buf, BLACK);
-                eink_render_framebuffer();
-                render = 0;
+            if (get_deck_from_sd) {
+                /* TODO: Call function that returns deck */
+                main_deck = get_deck(curr_deck_selection);
+                get_deck_from_sd = 0;
             }
+            if (!render) break;
+
+            eink_clear(0xFF);
+            draw_header(deck_names[curr_deck_selection]);
+            char buf[MAX_BACK_SIZE]; /* Back is larger than front */
+            if (f_b == FRONT) {
+                snprintf(buf, MAX_FRONT_SIZE, "%s", main_deck.cards[curr_card_selection].front);
+            }
+            else if (f_b == BACK) {
+                snprintf(buf, MAX_BACK_SIZE, "%s", main_deck.cards[curr_card_selection].back);
+            }
+            draw_string(20, 20, buf, BLACK);
+            eink_render_framebuffer();
+            render = 0;
+
             break;
         }
     }
@@ -121,14 +166,15 @@ void button_init()
     EXTI->RTSR1 |= EXTI_RTSR1_RT3
                 | EXTI_RTSR1_RT4 | EXTI_RTSR1_RT5;
 
+    /* FIXME: Cannot do long press until we do debouncing */
+    /* Also set falling edge */
+    // EXTI->FTSR1 |= EXTI_FTSR1_FT5;
+
     EXTI->IMR1 |= EXTI_IMR1_IM0 | EXTI_IMR1_IM5
                | EXTI_IMR1_IM3 | EXTI_IMR1_IM4;
 
     NVIC->ISER[0] |= (1 << EXTI3_IRQn) | (1 << EXTI4_IRQn) | (1 << EXTI9_5_IRQn);
 }
-
-/* FIXME: I can have a "display variable" that stores the current item selected on the
- * display. If this differs from the internal state I can queue a render. */
 
 void EXTI9_5_IRQHandler(void)
 {
@@ -138,9 +184,11 @@ void EXTI9_5_IRQHandler(void)
             return;
         }
         if (state == STATE_FLASHCARD_NAVIGATION) {
+            /* Flip */
             f_b = !f_b;
         } else {
             state = STATE_FLASHCARD_NAVIGATION;
+            get_deck_from_sd = 1;
         }
         render = 1;
     }
@@ -184,8 +232,6 @@ int main(void)
 
     button_init();
 
-    setup_deck();
-
     // #define WRAP_TEST
     #ifdef WRAP_TEST
     eink_clear(0xFF);
@@ -217,9 +263,7 @@ int main(void)
 
     #define STATE_MACHINE
     #ifdef STATE_MACHINE
-    eink_clear(0xFF);
-    draw_main_menu(0, deck_names, 6);
-    eink_render_framebuffer();
+    render = 1;
     state_machine();
     #endif /* STATE_MACHINE */
 
