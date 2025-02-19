@@ -6618,7 +6618,7 @@
 		)
 		(uuid ca68e7df-1216-49d7-a00f-bdde8274763f)
 	)
-	(text "force reset\n"
+	(text "consider pull up"
 		(exclude_from_sim no)
 		(at 143.764 44.958 0)
 		(effects

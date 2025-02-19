@@ -427,7 +427,9 @@
     }
   },
   "libraries": {
-    "pinned_footprint_libs": [],
+    "pinned_footprint_libs": [
+      "Project_PCB_Library"
+    ],
     "pinned_symbol_libs": []
   },
   "meta": {

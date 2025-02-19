@@ -1,4 +1,11 @@
-24654418009102399
+24651232808061452
+ABS04W-32.768KHZ-4-D2-T5
+XTAL_ABS04W-32.768KHZ-4-D2-T5
+
+
+0
+4
+4
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -13,6 +20,13 @@ audio belton reverb
 0
 7
 7
+BSS138
+SOT95P240X111-3N
+
+
+0
+3
+3
 Battery
 BatteryClip_Keystone_54_D16-19mm
 Battery clip for batteries with a diameter between 16-19 mm: https://www.keyelco.com/product.cfm/product_id/826
@@ -2568,27 +2582,6 @@ speaker CUI
 0
 2
 2
-CP2102-GMR
-QFN28_5X5_SIL
-
-CP2102-GMR 
-0
-29
-29
-CP2102-GMR
-QFN28_5X5_SIL-L
-
-CP2102-GMR 
-0
-29
-29
-CP2102-GMR
-QFN28_5X5_SIL-M
-
-CP2102-GMR 
-0
-29
-29
 Calibration_Scale
 Gauge_10mm_Type1_CopperTop
 Gauge, Massstab, 10mm, CopperTop, Type 1,
@@ -69775,6 +69768,27 @@ DIL DIP PDIP 2.54mm 7.62mm 300mil
 0
 4
 4
+PCB_Lib
+JST Conn
+
+5025850270 
+0
+4
+4
+PCB_Lib
+SD_Reader
+
+MEM2075-00-140-01-A 
+0
+15
+15
+PCB_Lib
+XTAL_ABS04W-32.768KHZ-4-D2-T5
+
+
+0
+4
+4
 Package_BGA
 Alliance_TFBGA-36_6x8mm_Layout6x8_P0.75mm
 Alliance TFBGA-36, NSMD, 6.0x8.0mm, 36 Ball, 6x8 Layout, 0.75mm Pitch, https://www.alliancememory.com/wp-content/uploads/pdf/AS6C1008_Mar_2023V1.2.pdf
@@ -87527,6 +87541,13 @@ Potentiometer vertical vishay
 0
 3
 3
+Project_PCB_Library
+XTAL_ABS04W-32.768KHZ-4-D2-T5
+
+
+0
+4
+4
 RF
 Skyworks_SKY13575_639LF
 http://www.skyworksinc.com/uploads/documents/SKY13575_639LF_203270D.pdf

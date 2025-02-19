@@ -2501,7 +2501,7 @@
 	)
 	(wire
 		(pts
-			(xy 217.17 49.53) (xy 223.52 49.53)
+			(xy 217.17 49.53) (xy 237.49 49.53)
 		)
 		(stroke
 			(width 0)
@@ -3119,7 +3119,7 @@
 	)
 	(hierarchical_label "Monitor_GPOUT"
 		(shape input)
-		(at 223.52 49.53 0)
+		(at 237.49 49.53 0)
 		(effects
 			(font
 				(size 1.27 1.27)
