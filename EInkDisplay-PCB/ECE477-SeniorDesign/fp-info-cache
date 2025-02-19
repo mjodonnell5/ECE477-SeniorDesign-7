@@ -1,4 +1,4 @@
-24646012803681063
+24647752804437878
 ABS04W-32.768KHZ-4-D2-T5
 XTAL_ABS04W-32.768KHZ-4-D2-T5
 
@@ -87527,6 +87527,13 @@ Potentiometer vertical vishay
 0
 3
 3
+Project_PCB_Library
+XTAL_ABS04W-32.768KHZ-4-D2-T5
+
+
+0
+4
+4
 RF
 Skyworks_SKY13575_639LF
 http://www.skyworksinc.com/uploads/documents/SKY13575_639LF_203270D.pdf
