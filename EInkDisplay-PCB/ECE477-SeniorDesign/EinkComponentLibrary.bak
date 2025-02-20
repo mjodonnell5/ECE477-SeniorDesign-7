@@ -229,7 +229,7 @@
 			)
 		)
 		(property "Value" "INTERFACE-CP2102-GMR_QFN28_"
-			(at -17.7978 -17.7978 0)
+			(at -14.986 -3.302 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -288,8 +288,8 @@
 				)
 			)
 			(rectangle
-				(start -17.145 17.145)
-				(end 18.415 -18.415)
+				(start -17.78 17.78)
+				(end 17.78 -17.78)
 				(stroke
 					(width 0.254)
 					(type default)
