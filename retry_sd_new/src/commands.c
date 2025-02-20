@@ -8,7 +8,24 @@
 #include <string.h>
 #include <stdio.h>
 
+Data Structure for flashcards
+#define MAX_FRONT_SIZE     100
+#define MAX_BACK_SIZE      200
+#define MAX_CARD_PER_DECK  250
 
+// Flashcard structure
+struct flashcard {
+    char front[MAX_FRONT_SIZE];
+    char back[MAX_BACK_SIZE];
+};
+
+// Deck structure
+struct deck {
+    char name[64];  // Store flashcard set name
+    // char description[128]; // Store description
+    int num_cards;   // Number of flashcards in the deck
+    struct flashcard cards[MAX_CARDS_PER_DECK];
+};
 
 // Data structure for the mounted file system.
 FATFS fs_storage;
@@ -233,6 +250,8 @@ static const char *month_name[] = {
 };
 
 void set_fattime(int,int,int,int,int,int);
+
+
 void date(int argc, char *argv[])
 {
     if (argc == 2) {
@@ -300,6 +319,7 @@ void input(int argc, char *argv[])
     f_close(&fil);
 }
 
+//DEBUGGING FUNCTION
 void log_to_sd(const char *message)
 {
     FIL fil;        /* File object */
@@ -327,6 +347,8 @@ void log_to_sd(const char *message)
     f_close(&fil);
 }
 
+
+//DELETE A SET
 void delete_file(const char *filename){
     FRESULT fr;
     //try to delete
@@ -338,6 +360,8 @@ void delete_file(const char *filename){
     
 }
 
+
+//LISTS ALL OF FLASHCARD SETS
 void ls(int argc, char *argv[])
 {
     FRESULT res;
@@ -393,7 +417,7 @@ void ls(int argc, char *argv[])
 }
 
 
-
+//NECESSARY FOR USING SD
 void mount()
 {
     FATFS *fs = &fs_storage;
@@ -419,6 +443,7 @@ void pwd(int argc, char *argv[])
         printf("%s\n", line);
 }
 
+//for removing a file from the directory 
 void rm(int argc, char *argv[])
 {
     FRESULT res;
@@ -487,6 +512,88 @@ void parseJson(const char *filename){
 
 
 }
+
+//parse Json to structures
+int parseJSON_file(const char* filename, struct deck* deck){
+    FIL fil;
+    FRESULT fr;
+    char jsonBuffer[4096]; //can change, buffer size
+    UINT bytesRead;
+
+    //open file for reading
+    fr = f_open(&fil, filename, FA_READ);
+    if (fr){
+        log_to_sd("Error opening file!");
+        return -1;
+    }
+
+    //read content into a buffer
+    fr = f_read(&fil, jsonBuffer, sizeof(jsonBuffer)-1, &bytesRead);
+    f_close(&fil)
+
+    //ensure data actually read
+    if(fr || bytesRead == 0){
+        log_to_sd("Error reading file!");
+        return -1;
+    }
+
+    jsonBuffer[bytesRead] = '\0'; //null terminate
+
+    //start JSON parsing
+    cJSON * json = cJSON_Parse(jsonBuffer);
+    if (!json){
+        log_to_sd("Error parsing JSON!");
+        return -1;
+    }
+
+    //GETTING AND SAVING NAME IN DECK
+    cJSON* name = cJSON_GetObjectName(json, "flashcardSetName")
+
+    if(cJSON_IsString(name)){
+        strncpy(deck->name, name->valuestring, sizeof(deck->name)-1);
+        deck->name[sizeof(deck->name) - 1] = '\0'; //null terminate
+    }
+
+    //GET FLASHCARD ARRAY AND SAVE
+    cJSON* flashcards = cJSON_GetObjectItem(json, "flashcards");
+    if(cJSON_isArray(flashcards)){
+        cJSON * flashcard;
+        int index = 0;
+        cJSON_ArrayForEach(flashcard, flashcards){
+            if (index >= MAX_CARDS_PER_DECK){
+                log_to_sd("warning mx flashcards reached!");
+                break;
+            }
+
+            cJSON* term = cJSON_GetObjectItem(flashcard, "term");
+            cJSON* definition = cJSON_GetObjectItem(flashcard, "definition");
+
+            if(cJSON_IsString(term) && cJSON_IsString(definition)) {
+                strncpy(deck->cards[index].front, term->valuestring, MAX_FRONT_SIZE -1);
+                strncpy(deck->cards[index].back, definition->valuestring, MAX_FRONT_SIZE -1);
+
+                deck->cards[index].front[MAX_FRONT_SIZE - 1] = '\0';
+                deck->cards[index].back[MAX_BACK_SIZE - 1] = '\0';
+
+                index++;
+
+            }
+
+        }
+        deck->num_cards = index;
+        
+    }
+    else{
+        deck->num_cards = 0;
+    }
+
+    //cleanup
+    cJSON_Delete(json);
+    return 0;
+
+    
+}
+
 
 
 //yeah ignore dis shi
@@ -632,11 +739,3 @@ void command_shell(void)
     }
 }
 
-
-
-// static void insert_echo_string(const char *s)
-// {
-//     // This puts a string into the *input* stream, so it can be edited.
-//     while(*s)
-//         insert_echo_char(*s++);
-// }
