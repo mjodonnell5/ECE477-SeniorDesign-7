@@ -20,5 +20,6 @@ void eink_sleep();
 void eink_render_framebuffer();
 void eink_clear(uint8_t col);
 extern void eink_draw_pixel(uint16_t x, uint16_t y, uint8_t col);
+void eink_wait_until_idle();
 
 #endif /* EINK_H */
