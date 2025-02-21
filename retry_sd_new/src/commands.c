@@ -8,10 +8,10 @@
 #include <string.h>
 #include <stdio.h>
 
-Data Structure for flashcards
+// Data Structure for flashcards
 #define MAX_FRONT_SIZE     100
 #define MAX_BACK_SIZE      200
-#define MAX_CARD_PER_DECK  250
+#define MAX_CARDS_PER_DECK  250
 
 // Flashcard structure
 struct flashcard {
@@ -529,7 +529,7 @@ int parseJSON_file(const char* filename, struct deck* deck){
 
     //read content into a buffer
     fr = f_read(&fil, jsonBuffer, sizeof(jsonBuffer)-1, &bytesRead);
-    f_close(&fil)
+    f_close(&fil);
 
     //ensure data actually read
     if(fr || bytesRead == 0){
@@ -547,7 +547,7 @@ int parseJSON_file(const char* filename, struct deck* deck){
     }
 
     //GETTING AND SAVING NAME IN DECK
-    cJSON* name = cJSON_GetObjectName(json, "flashcardSetName")
+    cJSON* name = cJSON_GetObjectItem(json, "flashcardSetName");
 
     if(cJSON_IsString(name)){
         strncpy(deck->name, name->valuestring, sizeof(deck->name)-1);
@@ -556,7 +556,7 @@ int parseJSON_file(const char* filename, struct deck* deck){
 
     //GET FLASHCARD ARRAY AND SAVE
     cJSON* flashcards = cJSON_GetObjectItem(json, "flashcards");
-    if(cJSON_isArray(flashcards)){
+    if(cJSON_IsArray(flashcards)){
         cJSON * flashcard;
         int index = 0;
         cJSON_ArrayForEach(flashcard, flashcards){
