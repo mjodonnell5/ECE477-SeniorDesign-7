@@ -88,7 +88,7 @@ void eink_init()
     eink_send_cmd(0x12);
     eink_wait_until_idle();
 
-    delay_ms(1);
+    delay_ms(10);
 
     eink_send_cmd(0x21);
     eink_send_data(0x40);

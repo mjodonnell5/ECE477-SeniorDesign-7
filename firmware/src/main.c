@@ -11,6 +11,8 @@
 
 int main(void)
 {
+    clock_init();
+
     spi1_init();
 
     eink_init();
@@ -40,13 +42,13 @@ int main(void)
     eink_render_framebuffer();
     #endif /* FLASHCARD_FRONT */
 
-    #define CLEAR
+    // #define CLEAR
     #ifdef CLEAR
     eink_clear(0xFF);
     eink_render_framebuffer();
     #endif /* CLEAR */
 
-    // #define STATE_MACHINE
+    #define STATE_MACHINE
     #ifdef STATE_MACHINE
     render = 1;
     state_machine();

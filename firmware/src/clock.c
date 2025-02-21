@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include <stm32l432xx.h>
 
+#include "../include/clock.h"
+
 void clock_init()
 {
     /* MSI is already on */
@@ -14,40 +16,29 @@ void clock_init()
     while(!(RCC->CR & RCC_CR_MSIRDY));
 
     SystemCoreClock = 16000000;
+
+    /* Setup delay_ms() */
+    delay_init();
 }
 
 void delay_init()
 {
-    /* Use TIM2 and just compare values when delaying instead of generating interrupts */
+    /* Use TIM2 and just compare values when delaying instead of generating interrupts
+     * with SysTick */
 
-    /* Configure for 1kHz aka 1ms period */
     RCC->APB1ENR1 |= RCC_APB1ENR1_TIM2EN;
 
     TIM2->CR1 &= ~TIM_CR1_CEN;
-    TIM2->PSC = 160 - 1;
-    TIM2->ARR = 100 - 1;
-    // TIM2->CR1 |= TIM_CR1_CEN;
 
+    /* 1 tick == 1ms */
+    TIM2->PSC = 16000 - 1;
+    TIM2->ARR = 0xFFFFFFFF - 1;
+
+    TIM2->CR1 |= TIM_CR1_CEN;
 }
 
-/* NOTE: Probably don't use systick for this, run a timer and compare values when
-* delaying, no point in generating a ton of interrupts, will interfere with wfi
-* as well. */
 void delay_ms(uint32_t ms)
 {
-    TIM2->CR1 |= TIM_CR1_CEN;
     uint32_t start = TIM2->CNT;
-    uint32_t end = TIM2->CNT + ms;
-    if (end > TIM2->ARR) {
-        end -= TIM2->ARR;
-    }
-    while (start < end);
-    TIM2->CR1 &= ~TIM_CR1_CEN;
-    // uint32_t count;
-    // while (ms--) {
-    //     count = 1000;  // Approximate count for 1 ms at 4 MHz
-    //     while (count--) {
-    //         __asm__("nop");  // Prevent compiler optimization
-    //     }
-    // }
+    while ((TIM2->CNT - start) < (ms));
 }

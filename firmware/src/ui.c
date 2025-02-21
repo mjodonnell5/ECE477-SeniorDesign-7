@@ -18,24 +18,31 @@ void draw_header(char* title)
 
     /* Battery percentage */
     char battery_perc_str[9];
-    uint8_t battery_perc = 95;
+    uint8_t battery_perc = 100;
     snprintf(battery_perc_str, 9, "BAT:%d%%", battery_perc);
     draw_string(EINK_WIDTH - (8 * strlen(battery_perc_str)), 2, battery_perc_str, WHITE);
 }
 
-void draw_main_menu(uint8_t curr_selected_deck, char* deck_names[], uint16_t num_decks)
+void draw_main_menu(uint8_t curr_selected_deck, char* deck_names[], uint16_t num_decks, uint8_t curr_page)
 {
-    draw_header("SELECT A DECK");
-    /* Draw menu */
-    /* TODO: I need to only render however many decks on the screen that can fit at one
-     * time based on the height, and then scroll if we hit the bottom*/
-    for (uint8_t i = 0; i < num_decks; ++i) {
-        if (i == curr_selected_deck) {
+    char header[50];
+    snprintf(header, 50, "SELECT A DECK: %d/%d", curr_selected_deck + 1, num_decks);
+    draw_header(header);
+    uint8_t decks_on_page = num_decks - (curr_page * MAX_DECKS_PER_PAGE);
+
+    /* If curr_page == 0 */
+    if (decks_on_page > MAX_DECKS_PER_PAGE) {
+        decks_on_page = MAX_DECKS_PER_PAGE;
+    }
+
+    for (uint8_t i = 0; i < decks_on_page; ++i) {
+        uint8_t index = i + (curr_page * MAX_DECKS_PER_PAGE);
+        if (index == curr_selected_deck) {
             /* Draw filled & inverted rectangle */
-            draw_centered_string_in_filled_rect(0 + 50, 20 + DIST_DECKS * i, EINK_WIDTH - 1 - 50, 60 + DIST_DECKS * i, deck_names[i], BLACK);
+            draw_centered_string_in_filled_rect(0 + 50, 20 + DIST_DECKS * i, EINK_WIDTH - 1 - 50, 60 + DIST_DECKS * i, deck_names[index], BLACK);
         } else {
             /* Normal */
-            draw_centered_string_in_rect(0 + 50, 20 + DIST_DECKS * i, EINK_WIDTH - 1 - 50, 60 + DIST_DECKS * i, deck_names[i], BLACK);
+            draw_centered_string_in_rect(0 + 50, 20 + DIST_DECKS * i, EINK_WIDTH - 1 - 50, 60 + DIST_DECKS * i, deck_names[index], BLACK);
         }
     }
 }
