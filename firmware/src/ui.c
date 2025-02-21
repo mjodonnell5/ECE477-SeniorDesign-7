@@ -23,7 +23,7 @@ void draw_header(char* title)
     draw_string(EINK_WIDTH - (8 * strlen(battery_perc_str)), 2, battery_perc_str, WHITE);
 }
 
-void draw_main_menu(uint8_t curr_selected_deck, char* deck_names[], uint16_t num_decks, uint8_t curr_page)
+void draw_main_menu(uint8_t curr_selected_deck, char deck_names[][MAX_NAME_SIZE], uint16_t num_decks, uint8_t curr_page)
 {
     char header[50];
     snprintf(header, 50, "SELECT A DECK: %d/%d", curr_selected_deck + 1, num_decks);

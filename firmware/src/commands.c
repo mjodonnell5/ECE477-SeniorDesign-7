@@ -8,24 +8,8 @@
 #include <string.h>
 #include <stdio.h>
 
-// Data Structure for flashcards
-#define MAX_FRONT_SIZE     100
-#define MAX_BACK_SIZE      200
-#define MAX_CARDS_PER_DECK  250
+#include "../include/ui.h"
 
-// Flashcard structure
-struct flashcard {
-    char front[MAX_FRONT_SIZE];
-    char back[MAX_BACK_SIZE];
-};
-
-// Deck structure
-struct deck {
-    char name[64];  // Store flashcard set name
-    // char description[128]; // Store description
-    int num_cards;   // Number of flashcards in the deck
-    struct flashcard cards[MAX_CARDS_PER_DECK];
-};
 
 // Data structure for the mounted file system.
 FATFS fs_storage;
@@ -360,6 +344,45 @@ void delete_file(const char *filename){
     
 }
 
+void get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
+{
+    FRESULT res;
+    DIR dir;
+    static FILINFO fno;
+    const char *path = "";
+    int i=0;
+        // if (argv[i][0] == '-') {
+        //     for(char *c=&argv[i][1]; *c; c++)
+        //         if (*c == 'l')
+        //             info=1;
+        //     if (i+1 < argc) {
+        //         i += 1;
+        //         continue;
+        //     }
+        // } else {
+        //     path = argv[i];
+        // }
+
+        res = f_opendir(&dir, path);                       /* Open the directory */
+        if (res != FR_OK) {
+            return;
+        }
+        for (;;) {
+            res = f_readdir(&dir, &fno);                   /* Read a directory item */
+            if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+
+            if (i > MAX_DECKS) break;
+            strncpy(decks[i], fno.fname, strlen(fno.fname));
+            // decks[i][MAX_NAME_SIZE - 1] = '\0';
+            // decks[i] = fno.fname;
+            i++;
+            // if (path[0] != '\0')
+            //     printf("%s/%s\n", path, fno.fname);
+            // else
+            //     printf("%s\n", fno.fname);
+        }
+        f_closedir(&dir);
+}
 
 //LISTS ALL OF FLASHCARD SETS
 void ls(int argc, char *argv[])

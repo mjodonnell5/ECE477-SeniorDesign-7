@@ -9,6 +9,8 @@
 #include "../include/buttons.h"
 #include "../include/state.h"
 
+#include "../include/commands.h"
+
 int main(void)
 {
     clock_init();
@@ -18,6 +20,26 @@ int main(void)
     eink_init();
 
     button_init();
+
+    mount();
+
+    // struct deck d = {0};
+
+    // static char decks[MAX_DECKS][MAX_NAME_SIZE] = {0};
+
+    // parseJSON_file("test.txt", &d);
+    // get_decks(decks);
+
+    // eink_clear(0xFF);
+    // log_to_sd("FIRST DECK");
+    // log_to_sd(decks[1]);
+    // draw_string(0, 0, decks[2], BLACK);
+    // draw_string(0, 10, decks[3], BLACK);
+    // draw_string(0, 20, decks[4], BLACK);
+    // draw_string(0, 30, decks[5], BLACK);
+    // draw_string(0, 0, d.cards[0].front, BLACK);
+    // draw_string_wrapped(15, 15, d.cards[0].back, BLACK);
+    // eink_render_framebuffer();
 
     // #define WRAP_TEST
     #ifdef WRAP_TEST
