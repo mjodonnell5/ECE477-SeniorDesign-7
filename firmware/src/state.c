@@ -62,14 +62,15 @@ void state_machine()
 
             eink_clear(0xFF);
             draw_header(deck_names[curr_deck_selection]);
-            char buf[MAX_BACK_SIZE]; /* Back is larger than front */
-            if (f_b == FRONT) {
-                snprintf(buf, MAX_FRONT_SIZE, "%s", main_deck.cards[curr_card_selection].front);
-            }
-            else if (f_b == BACK) {
-                snprintf(buf, MAX_BACK_SIZE, "%s", main_deck.cards[curr_card_selection].back);
-            }
-            draw_string_wrapped(0, 20, buf, BLACK);
+            // char buf[MAX_BACK_SIZE]; /* Back is larger than front */
+            draw_flashcard(main_deck.cards[curr_card_selection], f_b, BLACK);
+            // if (f_b == FRONT) {
+            //     snprintf(buf, MAX_FRONT_SIZE, "%s", main_deck.cards[curr_card_selection].front);
+            // }
+            // else if (f_b == BACK) {
+            //     snprintf(buf, MAX_BACK_SIZE, "%s", main_deck.cards[curr_card_selection].back);
+            // }
+            // draw_string_wrapped(0, 20, buf, BLACK);
             eink_render_framebuffer();
             render = 0;
 

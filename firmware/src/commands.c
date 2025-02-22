@@ -350,19 +350,7 @@ void get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
     DIR dir;
     static FILINFO fno;
     const char *path = "";
-    int i=0;
-        // if (argv[i][0] == '-') {
-        //     for(char *c=&argv[i][1]; *c; c++)
-        //         if (*c == 'l')
-        //             info=1;
-        //     if (i+1 < argc) {
-        //         i += 1;
-        //         continue;
-        //     }
-        // } else {
-        //     path = argv[i];
-        // }
-
+    int i = 0;
         res = f_opendir(&dir, path);                       /* Open the directory */
         if (res != FR_OK) {
             return;
@@ -373,13 +361,6 @@ void get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
 
             if (i > MAX_DECKS) break;
             strncpy(decks[i], fno.fname, strlen(fno.fname));
-            // decks[i][MAX_NAME_SIZE - 1] = '\0';
-            // decks[i] = fno.fname;
-            i++;
-            // if (path[0] != '\0')
-            //     printf("%s/%s\n", path, fno.fname);
-            // else
-            //     printf("%s\n", fno.fname);
         }
         f_closedir(&dir);
 }

@@ -51,12 +51,12 @@ void draw_flashcard(struct flashcard fc, uint8_t f_b, uint8_t col)
 {
     if (f_b) {
         draw_header("FLASHCARD FRONT");
-        draw_string_wrapped(20, 20, fc.front, col);
-        // draw_centered_string_in_rect(20, 20, EINK_WIDTH - 20, EINK_HEIGHT - 20, fc.front, col);
+        // draw_string_wrapped(20, 20, fc.front, col);
+        draw_centered_string_wrapped(fc.front, col);
     } else {
-        // draw_centered_string_in_rect(20, 20, EINK_WIDTH - 20, EINK_HEIGHT - 20, fc.back, col);
         draw_header("FLASHCARD BACK");
-        draw_string_wrapped(20, 20, fc.back, col);
+        draw_centered_string_wrapped(fc.back, col);
+        // draw_string_wrapped(20, 20, fc.back, col);
     }
 }
 
@@ -147,7 +147,7 @@ void draw_string_wrapped(uint16_t s_x, uint16_t s_y, char* string, uint8_t col) 
          * of the display, but so that the text is centered. */
         /* FIXME: Should I have a mode for this center wrapping or have it
          * be default? */
-        if (word_length_pixels + c_x >= EINK_WIDTH - c_x) {
+        if (word_length_pixels + c_x >= EINK_WIDTH - s_x) {
             /* Write this word on next line */
             c_x = s_x;
             c_y += 10;
@@ -202,4 +202,16 @@ void draw_centered_string_in_rect(uint16_t s_x, uint16_t s_y, uint16_t e_x, uint
     draw_rect(min_x, min_y, max_x, max_y, col);
 
     draw_string(text_x, text_y, string, col);
+}
+
+void draw_centered_string_wrapped(char* string, uint8_t col)
+{
+    uint16_t text_width = strlen(string) * 8;
+    uint8_t num_wraps = text_width / (EINK_WIDTH - 20);
+    uint8_t height = (EINK_HEIGHT - (num_wraps * 10)) / 2;
+
+    uint8_t width = (EINK_WIDTH - text_width) / 2;
+    if (num_wraps > 0) width = 20;
+
+    draw_string_wrapped(width, height, string, col);
 }

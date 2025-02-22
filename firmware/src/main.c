@@ -67,6 +67,7 @@ int main(void)
     // #define CLEAR
     #ifdef CLEAR
     eink_clear(0xFF);
+    // draw_centered_string_wrapped("Condensation", BLACK);
     eink_render_framebuffer();
     #endif /* CLEAR */
 
