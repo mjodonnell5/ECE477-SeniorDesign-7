@@ -344,7 +344,7 @@ void delete_file(const char *filename){
     
 }
 
-void get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
+int get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
 {
     FRESULT res;
     DIR dir;
@@ -361,8 +361,10 @@ void get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
 
             if (i > MAX_DECKS) break;
             strncpy(decks[i], fno.fname, strlen(fno.fname));
+            i++;
         }
         f_closedir(&dir);
+    return i;
 }
 
 //LISTS ALL OF FLASHCARD SETS

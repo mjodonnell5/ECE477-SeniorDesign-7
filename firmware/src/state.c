@@ -21,14 +21,18 @@ uint8_t num_decks = 0;
 /* This will always be running when there is no interrupt happening */
 void state_machine()
 {
-    num_decks = 6;
     uint8_t curr_page = 0;
     for (;;) {
         delay_ms(10);
         switch (state) {
         case STATE_DOWNLOAD:
             __disable_irq();
-            /* Download */
+            /* 1. Receive deck name */
+            /* 2. Create and open file on SD card with that name */
+            /* 3. Read in file contents until EOF or something so that we know its over */
+            /* 4. Write each char/chunk as we get it (probably wanna read into a
+             * buffer and write that buffer to the file occasionally) */
+            /* 5. Stop reading from UART once we get the EOF, close file */
             __enable_irq();
 
             break;
@@ -36,7 +40,7 @@ void state_machine()
         case STATE_MENU_NAVIGATION:
             /* Get deck names */
             if (deck_names[0][0] == 0) {
-                get_decks(deck_names);
+                num_decks = get_decks(deck_names);
             }
 
             if (!render) break;
