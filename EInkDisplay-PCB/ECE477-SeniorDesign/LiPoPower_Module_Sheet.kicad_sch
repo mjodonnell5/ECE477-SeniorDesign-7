@@ -3115,6 +3115,26 @@
 		)
 		(uuid "f22bc771-c2c0-4682-a09e-d20889e310f1")
 	)
+	(text "rscl & rsda\n"
+		(exclude_from_sim no)
+		(at 179.07 29.21 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "fcdb9d05-2066-4e4d-82cc-224404acf1d0")
+	)
+	(label "cbat add"
+		(at 173.99 34.29 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "74348658-130b-4cf2-a1e9-0c01f3a0ac96")
+	)
 	(global_label "V_Batt"
 		(shape input)
 		(at 156.21 39.37 180)
@@ -3310,7 +3330,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C_Small"
+		(property "Value" "0.47uF"
 			(at 222.25 40.6462 0)
 			(effects
 				(font
@@ -3450,7 +3470,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C_Small"
+		(property "Value" "4.7 uF"
 			(at 111.76 99.0662 0)
 			(effects
 				(font
@@ -5345,7 +5365,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Inductor_SMD:L_0805_2012Metric_Pad1.15x1.40mm_HandSolder"
+		(property "Footprint" "Inductor_SMD:L_1008_2520Metric_Pad1.43x2.20mm_HandSolder"
 			(at 57.15 53.34 0)
 			(effects
 				(font
