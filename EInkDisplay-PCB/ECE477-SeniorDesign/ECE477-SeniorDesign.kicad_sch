@@ -602,16 +602,6 @@
 	)
 	(wire
 		(pts
-			(xy 140.97 69.85) (xy 140.97 86.36)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "05175c92-2b36-4c61-9644-8e5e96f06819")
-	)
-	(wire
-		(pts
 			(xy 182.88 124.46) (xy 190.5 124.46)
 		)
 		(stroke
@@ -1736,56 +1726,6 @@
 				(justify left top)
 			)
 		)
-		(pin "SD_CLK" input
-			(at 130.81 69.85 270)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "a469fdac-2ced-4906-87e2-85827541db79")
-		)
-		(pin "SD_MOSI" input
-			(at 133.35 69.85 270)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "273e36b9-b48a-4085-b75d-429033d131d5")
-		)
-		(pin "SD_CD" input
-			(at 140.97 69.85 270)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "4a580d71-6761-4db6-b3b9-9a73c7f9b7f2")
-		)
-		(pin "SD_MISO" input
-			(at 135.89 69.85 270)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "401e0d97-9acd-490e-91c2-a325d67e4aa6")
-		)
-		(pin "SD_CS" input
-			(at 138.43 69.85 270)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-			(uuid "119c9ff1-6dd1-4cd4-9525-3724e4165afc")
-		)
 		(pin "button3" input
 			(at 151.13 69.85 270)
 			(effects
@@ -1815,6 +1755,46 @@
 				(justify left)
 			)
 			(uuid "91eb8b60-5d38-47fc-8254-878d56bc957c")
+		)
+		(pin "SD_SCK" input
+			(at 130.81 69.85 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "042324ac-698f-4cf6-adc9-049a770c00cb")
+		)
+		(pin "SD_MOSI" input
+			(at 133.35 69.85 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "8a605e5f-b909-467d-b2ce-07c60a6a248f")
+		)
+		(pin "SD_MISO" input
+			(at 135.89 69.85 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "6b2303e4-b407-467f-a991-a89b70f93646")
+		)
+		(pin "SD_CS" input
+			(at 138.43 69.85 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "66827521-ed6f-46b6-93e6-1d02e28f25fb")
 		)
 		(instances
 			(project "ECE477-SeniorDesign"
@@ -1915,16 +1895,6 @@
 				(justify right)
 			)
 			(uuid "6811ef10-6298-4875-b591-521bd9d42356")
-		)
-		(pin "SD_GPIO" input
-			(at 140.97 86.36 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "9d4c9c37-e467-4888-a040-c4b18a4954e2")
 		)
 		(pin "SPI1_NSS" input
 			(at 182.88 124.46 0)
