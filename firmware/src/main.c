@@ -8,6 +8,7 @@
 #include "../include/ui.h"
 #include "../include/buttons.h"
 #include "../include/state.h"
+#include "../include/uart.h"
 
 #include "../include/commands.h"
 
@@ -20,6 +21,8 @@ int main(void)
     eink_init();
 
     button_init();
+
+    uart_init();
 
     mount();
 
