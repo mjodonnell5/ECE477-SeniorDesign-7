@@ -3229,16 +3229,6 @@
 		)
 		(uuid "f22bc771-c2c0-4682-a09e-d20889e310f1")
 	)
-	(label "cbat add"
-		(at 176.53 27.94 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "74348658-130b-4cf2-a1e9-0c01f3a0ac96")
-	)
 	(global_label "V_Batt"
 		(shape input)
 		(at 156.21 39.37 180)
