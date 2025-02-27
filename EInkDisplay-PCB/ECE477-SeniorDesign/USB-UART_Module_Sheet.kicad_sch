@@ -2050,6 +2050,12 @@
 		(uuid "69a9cda2-b78b-407c-8807-b310d30da9cb")
 	)
 	(junction
+		(at 78.74 81.28)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "73c7821a-869b-49bb-9e99-8dada634e824")
+	)
+	(junction
 		(at 106.68 95.25)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2078,12 +2084,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "ef7e386d-69b2-421d-ad8e-853a981b6894")
-	)
-	(junction
-		(at 77.47 81.28)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "faac40ae-7ff1-4323-bfdd-912095819c86")
 	)
 	(no_connect
 		(at 66.04 91.44)
@@ -2195,7 +2195,7 @@
 	)
 	(wire
 		(pts
-			(xy 77.47 81.28) (xy 77.47 96.52)
+			(xy 78.74 81.28) (xy 78.74 96.52)
 		)
 		(stroke
 			(width 0)
@@ -2385,16 +2385,6 @@
 	)
 	(wire
 		(pts
-			(xy 77.47 81.28) (xy 119.38 81.28)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8a09b1a5-2bd8-4e34-ba6e-4d96abbed304")
-	)
-	(wire
-		(pts
 			(xy 109.22 80.01) (xy 109.22 86.36)
 		)
 		(stroke
@@ -2405,7 +2395,7 @@
 	)
 	(wire
 		(pts
-			(xy 76.2 81.28) (xy 77.47 81.28)
+			(xy 76.2 81.28) (xy 78.74 81.28)
 		)
 		(stroke
 			(width 0)
@@ -2442,6 +2432,26 @@
 			(type default)
 		)
 		(uuid "aac9f322-b379-45f9-b8dc-c8757ab9ea2e")
+	)
+	(wire
+		(pts
+			(xy 78.74 96.52) (xy 77.47 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b1c940a5-3eb7-4d3b-b517-39e606425d72")
+	)
+	(wire
+		(pts
+			(xy 78.74 81.28) (xy 119.38 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b4f5a6f2-e8b1-4b25-82c1-28d17761bc56")
 	)
 	(wire
 		(pts
@@ -2602,6 +2612,26 @@
 			)
 		)
 		(uuid "fa501195-b28d-4621-bb4a-46cf36fc5c87")
+	)
+	(label "D_P"
+		(at 77.47 81.28 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "4f0e4f1b-c0ad-436a-99d3-3387c02eee2d")
+	)
+	(label "D_N"
+		(at 77.47 83.82 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "783971f8-f431-47af-bc7f-dfe2f64729d5")
 	)
 	(hierarchical_label "USART1_RX"
 		(shape input)
@@ -3080,7 +3110,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Connector_USB:USB_A_Receptacle_GCT_USB1046"
 			(at 72.39 82.55 0)
 			(effects
 				(font
