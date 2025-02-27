@@ -1184,7 +1184,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "MountingHole:MountingHole_2.1mm"
 			(at 209.55 48.26 0)
 			(effects
 				(font
@@ -1248,7 +1248,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "MountingHole:MountingHole_2.1mm"
 			(at 209.55 39.37 0)
 			(effects
 				(font
@@ -1597,7 +1597,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "MountingHole:MountingHole_2.1mm"
 			(at 231.14 48.26 0)
 			(effects
 				(font
@@ -1795,7 +1795,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "MountingHole:MountingHole_2.1mm"
 			(at 231.14 39.37 0)
 			(effects
 				(font
@@ -2194,46 +2194,6 @@
 			)
 			(uuid "d53a3d08-28e1-42a2-997f-8c5662de15a9")
 		)
-		(pin "SPI2_NSS" input
-			(at 138.43 86.36 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "119dfe97-f645-4418-bf9f-6fbff8070bb9")
-		)
-		(pin "SPI2_SCK" input
-			(at 130.81 86.36 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "b6b1db7d-0e5e-4cc3-ae30-1a0c7c54acc6")
-		)
-		(pin "SPI2_MISO" input
-			(at 135.89 86.36 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "e754e62e-b3cc-4176-9cd1-428758bc4eb8")
-		)
-		(pin "SPI2_MOSI" input
-			(at 133.35 86.36 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "6811ef10-6298-4875-b591-521bd9d42356")
-		)
 		(pin "SPI1_NSS" input
 			(at 182.88 124.46 0)
 			(effects
@@ -2294,36 +2254,6 @@
 			)
 			(uuid "9d221f1e-94eb-482e-ba4f-2beff9db11bf")
 		)
-		(pin "button1" input
-			(at 156.21 86.36 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "157fd5bc-5b4b-4b7a-8141-494ca86ec62a")
-		)
-		(pin "button2" input
-			(at 153.67 86.36 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "10d37da6-ef11-49fb-97ef-6831f902923c")
-		)
-		(pin "button3" input
-			(at 151.13 86.36 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "d4664379-f1e9-46cc-ae18-6f18282e04d5")
-		)
 		(pin "I2C2_SDA" input
 			(at 116.84 120.65 180)
 			(effects
@@ -2383,6 +2313,76 @@
 				(justify left)
 			)
 			(uuid "3dcea311-a6c0-447e-8c72-10958bdd9cb6")
+		)
+		(pin "SPI3_MISO" input
+			(at 135.89 86.36 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "51607faf-6b3c-4f0e-952b-ca1751d58ea2")
+		)
+		(pin "SPI3_MOSI" input
+			(at 133.35 86.36 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "9e8c53d9-9ac9-4a97-b41f-de235ab67f69")
+		)
+		(pin "SPI3_SCK" input
+			(at 130.81 86.36 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "e98d416d-a4a4-420b-9346-27c1e138aaaa")
+		)
+		(pin "SPI3_NSS" input
+			(at 138.43 86.36 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "b5a18240-a4a7-481e-bc7b-fd13c051caff")
+		)
+		(pin "button2" input
+			(at 153.67 86.36 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "1dedb8d1-1df5-4ccc-83c4-02468bfb0e03")
+		)
+		(pin "button1" input
+			(at 156.21 86.36 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "59ca37c2-2ec3-4d9a-8336-72897345c9d8")
+		)
+		(pin "button3" input
+			(at 151.13 86.36 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "e55de780-dd8f-46e1-88d1-28d009dcef08")
 		)
 		(instances
 			(project "ECE477-SeniorDesign"
