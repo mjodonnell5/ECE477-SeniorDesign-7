@@ -2354,16 +2354,6 @@
 			)
 			(uuid "b5a18240-a4a7-481e-bc7b-fd13c051caff")
 		)
-		(pin "button2" input
-			(at 153.67 86.36 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-			(uuid "1dedb8d1-1df5-4ccc-83c4-02468bfb0e03")
-		)
 		(pin "button1" input
 			(at 156.21 86.36 90)
 			(effects
@@ -2372,7 +2362,17 @@
 				)
 				(justify right)
 			)
-			(uuid "59ca37c2-2ec3-4d9a-8336-72897345c9d8")
+			(uuid "dea793e5-2b7f-49e0-a1b8-98733d5ed0af")
+		)
+		(pin "button2" input
+			(at 153.67 86.36 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "8026025a-4e08-40af-b2d8-604aa9c82843")
 		)
 		(pin "button3" input
 			(at 151.13 86.36 90)
@@ -2382,7 +2382,7 @@
 				)
 				(justify right)
 			)
-			(uuid "e55de780-dd8f-46e1-88d1-28d009dcef08")
+			(uuid "6955c30f-03ac-4e16-87a4-c847d6152b23")
 		)
 		(instances
 			(project "ECE477-SeniorDesign"
