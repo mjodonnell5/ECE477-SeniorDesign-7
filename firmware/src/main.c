@@ -1,6 +1,6 @@
-#include <stm32l432xx.h>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
+#include <stm32l432xx.h>
 
 #include "../include/eink.h"
 #include "../include/spi.h"
@@ -9,7 +9,6 @@
 #include "../include/buttons.h"
 #include "../include/state.h"
 #include "../include/uart.h"
-
 #include "../include/commands.h"
 
 int main(void)
@@ -26,24 +25,6 @@ int main(void)
 
     mount();
 
-    // struct deck d = {0};
-
-    // static char decks[MAX_DECKS][MAX_NAME_SIZE] = {0};
-
-    // parseJSON_file("test.txt", &d);
-    // get_decks(decks);
-
-    // eink_clear(0xFF);
-    // log_to_sd("FIRST DECK");
-    // log_to_sd(decks[1]);
-    // draw_string(0, 0, decks[2], BLACK);
-    // draw_string(0, 10, decks[3], BLACK);
-    // draw_string(0, 20, decks[4], BLACK);
-    // draw_string(0, 30, decks[5], BLACK);
-    // draw_string(0, 0, d.cards[0].front, BLACK);
-    // draw_string_wrapped(15, 15, d.cards[0].back, BLACK);
-    // eink_render_framebuffer();
-
     // #define WRAP_TEST
     #ifdef WRAP_TEST
     eink_clear(0xFF);
@@ -53,19 +34,6 @@ int main(void)
     draw_string(0, 35, str, BLACK);
     eink_render_framebuffer();
     #endif /* WRAP_TEST */
-
-    // #define FLASHCARD_FRONT
-    #ifdef FLASHCARD_FRONT
-    eink_clear(0xFF);
-    struct flashcard fc;
-    char front[250] = "MITOCHONDRIA";
-    // char back[300] = "It is the powerhouse of the cell. This is learned in Biology class.";
-    char back[300] = "Biology class. asdflk jlkasjdf alksdjf kljasdg f";
-    strcpy(fc.front, front);
-    strcpy(fc.back, back);
-    draw_flashcard(fc, 1, BLACK);
-    eink_render_framebuffer();
-    #endif /* FLASHCARD_FRONT */
 
     // #define CLEAR
     #ifdef CLEAR

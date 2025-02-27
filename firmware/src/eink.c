@@ -1,7 +1,7 @@
-#include <stm32l432xx.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>
+#include <stm32l432xx.h>
 
 #include "../include/spi.h"
 #include "../include/eink.h"

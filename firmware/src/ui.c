@@ -1,7 +1,7 @@
-#include <stm32l432xx.h>
 #include <stdint.h>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
+#include <stm32l432xx.h>
 
 #include "../include/eink.h"
 #include "../include/clock.h"
@@ -10,6 +10,7 @@
 #define DIST_DECKS (45)
 
 extern uint8_t font8x8_basic[128][8];
+extern struct deck main_deck;
 
 void draw_header(char* title)
 {
@@ -23,11 +24,9 @@ void draw_header(char* title)
     draw_string(EINK_WIDTH - (8 * strlen(battery_perc_str)), 2, battery_perc_str, WHITE);
 }
 
-void draw_main_menu(uint8_t curr_selected_deck, char deck_names[][MAX_NAME_SIZE], uint16_t num_decks, uint8_t curr_page)
+void draw_main_menu(uint8_t curr_selected_deck, char deck_names[][MAX_NAME_SIZE], uint16_t num_decks)
 {
-    char header[50];
-    snprintf(header, 50, "SELECT A DECK: %d/%d", curr_selected_deck + 1, num_decks);
-    draw_header(header);
+    uint8_t curr_page = curr_selected_deck / MAX_DECKS_PER_PAGE;
     uint8_t decks_on_page = num_decks - (curr_page * MAX_DECKS_PER_PAGE);
 
     /* If curr_page == 0 */
@@ -50,11 +49,11 @@ void draw_main_menu(uint8_t curr_selected_deck, char deck_names[][MAX_NAME_SIZE]
 void draw_flashcard(struct flashcard fc, uint8_t f_b, uint8_t col)
 {
     if (f_b) {
-        draw_header("FLASHCARD FRONT");
+        // draw_header("FLASHCARD FRONT");
         // draw_string_wrapped(20, 20, fc.front, col);
         draw_centered_string_wrapped(fc.front, col);
     } else {
-        draw_header("FLASHCARD BACK");
+        // draw_header("FLASHCARD BACK");
         draw_centered_string_wrapped(fc.back, col);
         // draw_string_wrapped(20, 20, fc.back, col);
     }
