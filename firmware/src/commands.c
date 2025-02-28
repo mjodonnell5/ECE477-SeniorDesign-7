@@ -339,7 +339,7 @@ void delete_file(const char *filename){
     fr = f_unlink(filename);
 
     if(fr == FR_OK){
-        log_to_sd("working!!!");
+        // log_to_sd("working!!!");
     }
     
 }
@@ -428,14 +428,14 @@ void mount()
 {
     FATFS *fs = &fs_storage;
     if (fs->id != 0) {
-        print_error(FR_DISK_ERR, "Already mounted.");
-        log_to_sd("Already mounted");
+        // print_error(FR_DISK_ERR, "Already mounted.");
+        // log_to_sd("Already mounted");
         return;
     }
     int res = f_mount(fs, "", 1);
     if (res != FR_OK){
-        print_error(res, "Error occurred while mounting");
-        log_to_sd("Error occured while mounting");
+        // print_error(res, "Error occurred while mounting");
+        // log_to_sd("Error occured while mounting");
     }
 }
 
@@ -470,7 +470,7 @@ void parseJson(const char *filename){
     //open file for reading
     fr = f_open(&fil, filename, FA_READ);
     if(fr) {
-        log_to_sd("Error opening file!");
+        // log_to_sd("Error opening file!");
         return;
     }
 
@@ -479,7 +479,7 @@ void parseJson(const char *filename){
     f_close(&fil);
 
     if (fr || bytesRead == 0){
-        log_to_sd("Error reading file!");
+        // log_to_sd("Error reading file!");
         return;
     }
 
@@ -488,7 +488,7 @@ void parseJson(const char *filename){
     //parse JSON
     cJSON *json = cJSON_Parse(jsonBuffer);
     if(!json){
-        log_to_sd("Error parsing JSON");
+        // log_to_sd("Error parsing JSON");
         return;
     }
 
@@ -498,7 +498,7 @@ void parseJson(const char *filename){
     if (cJSON_IsString(name) && cJSON_IsString(des)) {
         char logEntry[256];
         snprintf(logEntry, sizeof(logEntry), "Flashcard Set: %s\nDescription: %s\n", name->valuestring, des->valuestring);
-        log_to_sd(logEntry);
+        // log_to_sd(logEntry);
     }
 
     //extract flashcard array
@@ -511,7 +511,7 @@ void parseJson(const char *filename){
             if (cJSON_IsString(term) && cJSON_IsString(definition)){
                 char logEntry[512];
                 snprintf(logEntry, sizeof(logEntry), "Term: %s\nDefinition: %s\n", term->valuestring, definition->valuestring);
-                log_to_sd(logEntry);
+                // log_to_sd(logEntry);
             }
         }
     }
@@ -529,7 +529,7 @@ int parseJSON_file(const char* filename, struct deck* deck){
     //open file for reading
     fr = f_open(&fil, filename, FA_READ);
     if (fr){
-        log_to_sd("Error opening file!");
+        // log_to_sd("Error opening file!");
         return -1;
     }
 
@@ -539,7 +539,7 @@ int parseJSON_file(const char* filename, struct deck* deck){
 
     //ensure data actually read
     if(fr || bytesRead == 0){
-        log_to_sd("Error reading file!");
+        // log_to_sd("Error reading file!");
         return -1;
     }
 
@@ -548,7 +548,7 @@ int parseJSON_file(const char* filename, struct deck* deck){
     //start JSON parsing
     cJSON * json = cJSON_Parse(jsonBuffer);
     if (!json){
-        log_to_sd("Error parsing JSON!");
+        // log_to_sd("Error parsing JSON!");
         return -1;
     }
 
@@ -567,7 +567,7 @@ int parseJSON_file(const char* filename, struct deck* deck){
         int index = 0;
         cJSON_ArrayForEach(flashcard, flashcards){
             if (index >= MAX_CARDS_PER_DECK){
-                log_to_sd("warning mx flashcards reached!");
+                // log_to_sd("warning mx flashcards reached!");
                 break;
             }
 

@@ -7,7 +7,7 @@
 #define BACK  (0)
 #define MAX_FRONT_SIZE     (100)
 #define MAX_BACK_SIZE      (200)
-#define MAX_NAME_SIZE      (50)
+#define MAX_NAME_SIZE      (13)
 #define MAX_CARDS_PER_DECK (10)
 #define MAX_DECKS          (8)
 

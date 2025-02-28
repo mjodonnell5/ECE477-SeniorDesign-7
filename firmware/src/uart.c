@@ -21,7 +21,7 @@ void uart_init(void) {
     GPIOA->AFR[0] |= GPIO_AFRL_AFSEL2_2 | GPIO_AFRL_AFSEL2_1 | GPIO_AFRL_AFSEL2_0; /* Enable USART2_Tx for PA_2 */
 
     // SystemCoreClockUpdate();  // Update system clock
-    USART2->BRR = 4000000 / 9600;  /* 9600 baudrate */
+    USART2->BRR = 16000000 / 9600;  /* 9600 baudrate */
 
     USART2->CR1 |= USART_CR1_RE; /* Enable Receiver */
     USART2->CR1 |= USART_CR1_TE; /* Enable Transmitter */

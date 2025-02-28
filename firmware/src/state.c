@@ -13,14 +13,14 @@
 #include "../include/uart.h"
 #include "../include/ff.h"
 
-volatile enum STATES state = STATE_MENU_NAVIGATION;
-// volatile enum STATES state = STATE_DOWNLOAD;
+// volatile enum STATES state = STATE_MENU_NAVIGATION;
+volatile enum STATES state = STATE_DOWNLOAD;
 volatile uint8_t render = 0;
 
 extern volatile uint8_t curr_deck_selection;
 
 #define UART_DELIM    ((char)0xBC)
-#define UART_EOF      ((char)0x00)
+#define UART_EOF      ((char)0x01)
 #define UART_BUF_SIZE (16384)
 
 /* NOTE: This will always be running when there is no interrupt happening */
@@ -40,10 +40,11 @@ void state_machine()
             draw_header("DOWNLOADING DECK");
             eink_render_framebuffer();
 
+            char contents[UART_BUF_SIZE] = {0};
             char filename[MAX_NAME_SIZE] = {0};
             char c = 0;
             uint32_t i = 0;
-            /* 1. Receive deck name */
+
             while (c != UART_DELIM) {
                 c = uart_read_char();
                 if (c == UART_DELIM) {
@@ -54,35 +55,33 @@ void state_machine()
             }
 
             /* 2. Read in file contents until EOF or something so that we know its over */
-            char buf[UART_BUF_SIZE] = {0};
             i = 0;
-            c = 0xFF;
             UINT wlen;
             while (c != UART_EOF) {
                 c = uart_read_char();
                 if (c == UART_EOF) break;
-                buf[i++] = c;
+                contents[i++] = c;
             }
 
             /* 3. Create and open file on SD card with that name */
             FIL fil;
             FRESULT fr = f_open(&fil, filename, FA_WRITE | FA_OPEN_APPEND);
             if (fr) {
-                /* How should handle this? */
+                log_to_sd("CANT OPEN\n");
+                log_to_sd(filename);
+                log_to_sd("\n");
             }
 
-            fr = f_write(&fil, buf, strlen(buf), &wlen);
+            fr = f_write(&fil, contents, strlen(contents), &wlen);
             if (fr) {
-                /* How should handle this? */
+                log_to_sd("CANT WRITE\n");
+                log_to_sd(contents);
+                log_to_sd("\n");
             }
 
             f_sync(&fil);
             f_close(&fil);
 
-            // char buf2[10];
-            // snprintf(buf2, 10, "len: %d\n", wlen);
-            // log_to_sd(buf2);
-            // log_to_sd("DONE\n");
             // eink_clear(0xFF);
             // draw_header("WHAT WE GOT");
             // draw_string(0, 20, filename, BLACK);
@@ -90,6 +89,9 @@ void state_machine()
             // eink_render_framebuffer();
 
             __enable_irq();
+
+            state = STATE_MENU_NAVIGATION;
+            render = 1;
 
             break;
 
@@ -128,6 +130,6 @@ void state_machine()
 
             break;
         }
-        __WFI();
+        // __WFI();
     }
 }

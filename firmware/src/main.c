@@ -25,22 +25,8 @@ int main(void)
 
     mount();
 
-    #define STATE_MACHINE
-    #ifdef STATE_MACHINE
     render = 1;
     state_machine();
-    #endif /* STATE_MACHINE */
-
-    // #define SHIFT
-    #ifdef SHIFT
-    for (uint8_t i = 0; i < 6; ++i) {
-        eink_clear(0xFF);
-
-        draw_main_menu(i);
-
-        eink_render_framebuffer();
-    }
-    #endif /* STATE */
 
     eink_sleep();
 
