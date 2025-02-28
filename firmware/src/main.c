@@ -25,23 +25,6 @@ int main(void)
 
     mount();
 
-    // #define WRAP_TEST
-    #ifdef WRAP_TEST
-    eink_clear(0xFF);
-    char str[150] = "Hello, this is a test of the wrapping on the display :) lkasdflaskldfj kasdkjl asdflk jj mm fjfjjf fjjfjfjf jjfjf";
-    // char str[100] = "Hello :)";
-    draw_string_wrapped(0, 0, str, BLACK);
-    draw_string(0, 35, str, BLACK);
-    eink_render_framebuffer();
-    #endif /* WRAP_TEST */
-
-    // #define CLEAR
-    #ifdef CLEAR
-    eink_clear(0xFF);
-    // draw_centered_string_wrapped("Condensation", BLACK);
-    eink_render_framebuffer();
-    #endif /* CLEAR */
-
     #define STATE_MACHINE
     #ifdef STATE_MACHINE
     render = 1;

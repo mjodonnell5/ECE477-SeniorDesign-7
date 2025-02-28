@@ -146,7 +146,8 @@ void draw_string_wrapped(uint16_t s_x, uint16_t s_y, char* string, uint8_t col) 
          * of the display, but so that the text is centered. */
         /* FIXME: Should I have a mode for this center wrapping or have it
          * be default? */
-        if (word_length_pixels + c_x >= EINK_WIDTH - s_x) {
+        // if (word_length_pixels + c_x >= EINK_WIDTH - s_x) {
+        if (word_length_pixels + c_x >= EINK_WIDTH) {
             /* Write this word on next line */
             c_x = s_x;
             c_y += 10;

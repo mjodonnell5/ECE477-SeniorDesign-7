@@ -13,8 +13,8 @@
 #include "../include/uart.h"
 #include "../include/ff.h"
 
-// volatile enum STATES state = STATE_MENU_NAVIGATION;
-volatile enum STATES state = STATE_DOWNLOAD;
+volatile enum STATES state = STATE_MENU_NAVIGATION;
+// volatile enum STATES state = STATE_DOWNLOAD;
 volatile uint8_t render = 0;
 
 extern volatile uint8_t curr_deck_selection;
@@ -53,68 +53,41 @@ void state_machine()
                 filename[i++] = c;
             }
 
-            /* 3. Read in file contents until EOF or something so that we know its over */
+            /* 2. Read in file contents until EOF or something so that we know its over */
             char buf[UART_BUF_SIZE] = {0};
             i = 0;
             c = 0xFF;
             UINT wlen;
             while (c != UART_EOF) {
-                // log_to_sd("GETTING CHAR\n");
                 c = uart_read_char();
-                // if (c == UART_EOF) break;
+                if (c == UART_EOF) break;
                 buf[i++] = c;
-                // log_to_sd(buf2);
-                // log_to_sd("DONE GETTING CHAR\n");
-
-                // if (i >= UART_BUF_SIZE) {
-                //     fr = f_write(&fil, buf, UART_BUF_SIZE, &wlen);
-                //     if (fr) {
-                //         log_to_sd("CAN'T WRITE TO FILE");
-                //         /* uh oh */
-                //     }
-                // }
             }
 
-            /* Leftover */
-            // if (i > 0) {
-            //     fr = f_write(&fil, buf, UART_BUF_SIZE, &wlen);
-            //     if (fr) {
-            //         log_to_sd("CAN'T WRITE TO FILE");
-            //         /* uh oh */
-            //     }
-            // }
-                //
-
-            /* 2. Create and open file on SD card with that name */
-            log_to_sd("Filename: \n");
-            log_to_sd(filename);
+            /* 3. Create and open file on SD card with that name */
             FIL fil;
             FRESULT fr = f_open(&fil, filename, FA_WRITE | FA_OPEN_APPEND);
             if (fr) {
-                log_to_sd("CAN'T OPEN PLEASE SENT HELP!!!!!!!!!!!!!!!!!!!!!!!\n");
-                log_to_sd(filename);
+                /* How should handle this? */
             }
 
-            log_to_sd("TRYING TO WRITE TO FILE\n");
-            log_to_sd(buf);
             fr = f_write(&fil, buf, strlen(buf), &wlen);
             if (fr) {
-                log_to_sd("CAN'T WRITE TO FILE\n");
+                /* How should handle this? */
             }
 
             f_sync(&fil);
-
             f_close(&fil);
 
-            char buf2[10];
-            snprintf(buf2, 10, "len: %d\n", wlen);
-            log_to_sd(buf2);
-            log_to_sd("DONE\n");
-            eink_clear(0xFF);
-            draw_header("WHAT WE GOT");
-            draw_string(0, 20, filename, BLACK);
-            draw_centered_string_wrapped(buf, BLACK);
-            eink_render_framebuffer();
+            // char buf2[10];
+            // snprintf(buf2, 10, "len: %d\n", wlen);
+            // log_to_sd(buf2);
+            // log_to_sd("DONE\n");
+            // eink_clear(0xFF);
+            // draw_header("WHAT WE GOT");
+            // draw_string(0, 20, filename, BLACK);
+            // draw_centered_string_wrapped(buf, BLACK);
+            // eink_render_framebuffer();
 
             __enable_irq();
 
