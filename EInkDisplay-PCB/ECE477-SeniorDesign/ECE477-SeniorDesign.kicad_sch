@@ -844,6 +844,16 @@
 	)
 	(wire
 		(pts
+			(xy 158.75 69.85) (xy 158.75 86.36)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5dc6a552-b68a-4849-95a2-3cb2eb328624")
+	)
+	(wire
+		(pts
 			(xy 223.52 116.84) (xy 227.33 116.84)
 		)
 		(stroke
@@ -1032,7 +1042,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "1829eafc-4793-4f73-8147-3b054c1e2460")
-		(property "Reference" "TP13"
+		(property "Reference" "TP2"
 			(at 101.6 78.2319 0)
 			(effects
 				(font
@@ -1083,7 +1093,7 @@
 		(instances
 			(project "ECE477-SeniorDesign"
 				(path "/527ae649-08be-4368-9cf9-441ebba18eca"
-					(reference "TP13")
+					(reference "TP2")
 					(unit 1)
 				)
 			)
@@ -1099,7 +1109,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "314aaf05-85ef-4402-ae9a-d5d0062d8ca0")
-		(property "Reference" "TP12"
+		(property "Reference" "TP1"
 			(at 101.6 69.0879 0)
 			(effects
 				(font
@@ -1150,7 +1160,7 @@
 		(instances
 			(project "ECE477-SeniorDesign"
 				(path "/527ae649-08be-4368-9cf9-441ebba18eca"
-					(reference "TP12")
+					(reference "TP1")
 					(unit 1)
 				)
 			)
@@ -1166,7 +1176,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "453aa842-2e0b-4f77-b17d-def8c5dc9256")
-		(property "Reference" "H3"
+		(property "Reference" "H2"
 			(at 212.09 46.9899 0)
 			(effects
 				(font
@@ -1214,7 +1224,7 @@
 		(instances
 			(project "ECE477-SeniorDesign"
 				(path "/527ae649-08be-4368-9cf9-441ebba18eca"
-					(reference "H3")
+					(reference "H2")
 					(unit 1)
 				)
 			)
@@ -1293,7 +1303,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "6e73af66-db53-47c6-87f3-ab11de2d3bc2")
-		(property "Reference" "EinkDispCon2"
+		(property "Reference" "EinkDispCon1"
 			(at 237.236 136.398 0)
 			(effects
 				(font
@@ -1363,7 +1373,7 @@
 		(instances
 			(project "ECE477-SeniorDesign"
 				(path "/527ae649-08be-4368-9cf9-441ebba18eca"
-					(reference "EinkDispCon2")
+					(reference "EinkDispCon1")
 					(unit 1)
 				)
 			)
@@ -1379,7 +1389,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "754b43e5-cc77-4f6c-bba8-9f062f5dcd0a")
-		(property "Reference" "TP7"
+		(property "Reference" "TP6"
 			(at 204.47 117.3479 0)
 			(effects
 				(font
@@ -1430,7 +1440,7 @@
 		(instances
 			(project "ECE477-SeniorDesign"
 				(path "/527ae649-08be-4368-9cf9-441ebba18eca"
-					(reference "TP7")
+					(reference "TP6")
 					(unit 1)
 				)
 			)
@@ -1446,7 +1456,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "755c1051-181d-4291-bd0c-5093d19ea12f")
-		(property "Reference" "#PWR012"
+		(property "Reference" "#PWR01"
 			(at 223.52 113.03 0)
 			(effects
 				(font
@@ -1496,7 +1506,7 @@
 		(instances
 			(project ""
 				(path "/527ae649-08be-4368-9cf9-441ebba18eca"
-					(reference "#PWR012")
+					(reference "#PWR01")
 					(unit 1)
 				)
 			)
@@ -1512,7 +1522,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "7a5cf58a-1e4b-44db-aad0-5e79461b3caa")
-		(property "Reference" "TP9"
+		(property "Reference" "TP7"
 			(at 204.47 122.4279 0)
 			(effects
 				(font
@@ -1563,7 +1573,7 @@
 		(instances
 			(project "ECE477-SeniorDesign"
 				(path "/527ae649-08be-4368-9cf9-441ebba18eca"
-					(reference "TP9")
+					(reference "TP7")
 					(unit 1)
 				)
 			)
@@ -1643,7 +1653,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "841e4df2-9b3f-49a8-a730-f9128ecafac4")
-		(property "Reference" "#PWR013"
+		(property "Reference" "#PWR02"
 			(at 217.17 116.84 0)
 			(effects
 				(font
@@ -1694,7 +1704,7 @@
 		(instances
 			(project ""
 				(path "/527ae649-08be-4368-9cf9-441ebba18eca"
-					(reference "#PWR013")
+					(reference "#PWR02")
 					(unit 1)
 				)
 			)
@@ -1710,7 +1720,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "9adf626a-8949-457e-bf4b-920e24db9f4b")
-		(property "Reference" "TP10"
+		(property "Reference" "TP5"
 			(at 193.04 124.9679 0)
 			(effects
 				(font
@@ -1761,7 +1771,7 @@
 		(instances
 			(project "ECE477-SeniorDesign"
 				(path "/527ae649-08be-4368-9cf9-441ebba18eca"
-					(reference "TP10")
+					(reference "TP5")
 					(unit 1)
 				)
 			)
@@ -1777,7 +1787,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a69af539-94e6-4611-a82f-653c78b9a39b")
-		(property "Reference" "H2"
+		(property "Reference" "H3"
 			(at 233.68 38.0999 0)
 			(effects
 				(font
@@ -1825,7 +1835,7 @@
 		(instances
 			(project "ECE477-SeniorDesign"
 				(path "/527ae649-08be-4368-9cf9-441ebba18eca"
-					(reference "H2")
+					(reference "H3")
 					(unit 1)
 				)
 			)
@@ -1841,7 +1851,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ae8c993c-0e88-4dd4-8049-e6a084f9fb05")
-		(property "Reference" "TP11"
+		(property "Reference" "TP8"
 			(at 204.47 127.5079 0)
 			(effects
 				(font
@@ -1892,7 +1902,7 @@
 		(instances
 			(project "ECE477-SeniorDesign"
 				(path "/527ae649-08be-4368-9cf9-441ebba18eca"
-					(reference "TP11")
+					(reference "TP8")
 					(unit 1)
 				)
 			)
@@ -1908,7 +1918,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ca2d611c-f41e-46d8-ba22-ab841a1adb92")
-		(property "Reference" "TP8"
+		(property "Reference" "TP4"
 			(at 193.04 119.8879 0)
 			(effects
 				(font
@@ -1959,7 +1969,7 @@
 		(instances
 			(project "ECE477-SeniorDesign"
 				(path "/527ae649-08be-4368-9cf9-441ebba18eca"
-					(reference "TP8")
+					(reference "TP4")
 					(unit 1)
 				)
 			)
@@ -1975,7 +1985,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f8b75a5c-e457-4e34-9558-0f8433f77351")
-		(property "Reference" "TP6"
+		(property "Reference" "TP3"
 			(at 193.04 114.8079 0)
 			(effects
 				(font
@@ -2026,7 +2036,7 @@
 		(instances
 			(project ""
 				(path "/527ae649-08be-4368-9cf9-441ebba18eca"
-					(reference "TP6")
+					(reference "TP3")
 					(unit 1)
 				)
 			)
@@ -2133,6 +2143,16 @@
 				(justify left)
 			)
 			(uuid "66827521-ed6f-46b6-93e6-1d02e28f25fb")
+		)
+		(pin "switch" input
+			(at 158.75 69.85 270)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+			(uuid "c326f248-c747-48ff-aa37-165c660dfc07")
 		)
 		(instances
 			(project "ECE477-SeniorDesign"
@@ -2383,6 +2403,16 @@
 				(justify right)
 			)
 			(uuid "6955c30f-03ac-4e16-87a4-c847d6152b23")
+		)
+		(pin "switch" input
+			(at 158.75 86.36 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+			(uuid "107753ca-fb33-4324-ab98-97e559b0f825")
 		)
 		(instances
 			(project "ECE477-SeniorDesign"
