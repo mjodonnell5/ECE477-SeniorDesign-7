@@ -1,7 +1,7 @@
-#include <stdint.h>
 #include <stddef.h>
-#include <string.h>
+#include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 #include <stm32l432xx.h>
 
 #include "../include/state.h"
@@ -9,111 +9,126 @@
 #include "../include/eink.h"
 #include "../include/ui.h"
 #include "../include/buttons.h"
+#include "../include/commands.h"
+#include "../include/uart.h"
+#include "../include/ff.h"
 
-volatile enum STATES state = STATE_MENU_NAVIGATION;
+// volatile enum STATES state = STATE_MENU_NAVIGATION;
+volatile enum STATES state = STATE_DOWNLOAD;
 volatile uint8_t render = 0;
+uint8_t fetch_decks = 1;
 
-char* deck_names[MAX_DECKS];
+extern volatile uint8_t curr_deck_selection;
 struct deck main_deck;
 uint8_t num_decks = 0;
 
-/* TODO: Needs to get `ls` from SD card and fill array */
-void get_deck_names(char* deck_names[MAX_DECKS])
-{
-    num_decks = 8;
-    deck_names[0] = "BIO 10100";
-    deck_names[1] = "PHIL 32200";
-    deck_names[2] = "ECE 20002";
-    deck_names[3] = "ANTH 33700";
-    deck_names[4] = "ECE 47700";
-    deck_names[5] = "CS 15900";
-    deck_names[6] = "ECE 43700";
-    deck_names[7] = "ECE 36900";
-}
+#define UART_DELIM    ((char)0xBC)
+#define UART_EOF      ((char)0x01)
+#define UART_BUF_SIZE (16384)
 
-/* TODO: we will only have one deck based on (deck number or name?) */
-struct deck get_deck(uint8_t deck_number)
-{
-    struct deck d = {0};
-    /* BIO 10100 */
-    if (deck_number == 0) {
-        strcpy(d.cards[0].front, "What is the mitochrondria?");
-        strcpy(d.cards[0].back, "The powerhouse of the cell!");
-
-        strcpy(d.cards[1].front, "FRONT Testing BIO 1");
-        strcpy(d.cards[1].back, "BACK of testing 1");
-
-        strcpy(d.cards[2].front, "FRONT Testing BIO 2");
-        strcpy(d.cards[2].back, "BACK of testing 2");
-    } else if (deck_number == 1) {
-        strcpy(d.cards[0].front, "Who was Socrates?");
-        strcpy(d.cards[0].back, "An awesome guy :)");
-
-        strcpy(d.cards[1].front, "FRONT Testing PHIL 1");
-        strcpy(d.cards[1].back, "BACK of testing PHIL 1");
-
-        strcpy(d.cards[2].front, "FRONT Testing PHIL 2");
-        strcpy(d.cards[2].back, "BACK of testing PHIL 2");
-    }
-    return d;
-}
-
-/* This will always be running when there is no interrupt happening */
+/* NOTE: This will always be running when there is no interrupt happening */
 void state_machine()
 {
-    uint8_t curr_page = 0;
+    char deck_names[MAX_DECKS][MAX_NAME_SIZE] = {0};
+    char header[25];
+
     for (;;) {
         delay_ms(10);
         switch (state) {
         case STATE_DOWNLOAD:
             __disable_irq();
-            /* Download */
+
+            eink_clear(0xFF);
+            draw_header("DOWNLOADING DECK");
+            eink_render_framebuffer();
+
+            char contents[UART_BUF_SIZE] = {0};
+            char filename[MAX_NAME_SIZE] = {0};
+            char c = 0;
+            uint32_t i = 0;
+
+            while (c != UART_DELIM) {
+                c = uart_read_char();
+                if (c == UART_DELIM) {
+                    filename[i] = 0;
+                    break;
+                }
+                filename[i++] = c;
+            }
+
+            /* 2. Read in file contents until EOF or something so that we know its over */
+            i = 0;
+            UINT wlen;
+            while (c != UART_EOF) {
+                c = uart_read_char();
+                if (c == UART_EOF) break;
+                contents[i++] = c;
+            }
+
+            /* 3. Create and open file on SD card with that name */
+            FIL fil;
+            FRESULT fr = f_open(&fil, filename, FA_WRITE | FA_OPEN_APPEND);
+            if (fr) {
+                // log_to_sd("CANT OPEN\n");
+                // log_to_sd(filename);
+                // log_to_sd("\n");
+            }
+
+            fr = f_write(&fil, contents, strlen(contents), &wlen);
+            if (fr) {
+                // log_to_sd("CANT WRITE\n");
+                // log_to_sd(contents);
+                // log_to_sd("\n");
+            }
+
+            f_sync(&fil);
+            f_close(&fil);
+
             __enable_irq();
+
+            state = STATE_MENU_NAVIGATION;
+            render = 1;
+            fetch_decks = 1;
 
             break;
 
         case STATE_MENU_NAVIGATION:
-            /* Get deck names */
-            if (deck_names[0] == NULL) {
-                get_deck_names(deck_names);
+            /* Get deck names if we don't have them yet */
+            if (fetch_decks) {
+                curr_deck_selection = 0;
+                num_decks = get_decks(deck_names);
+                fetch_decks = 0;
             }
 
             if (!render) break;
 
-            curr_page = curr_deck_selection / MAX_DECKS_PER_PAGE;
-
             eink_clear(0xFF);
-            draw_main_menu(curr_deck_selection, deck_names, num_decks, curr_page);
+            /* +1 because it is 0 indexed */
+            snprintf(header, 25, "SELECT A DECK: %d/%d", curr_deck_selection + 1, num_decks);
+            draw_header(header);
+            draw_main_menu(curr_deck_selection, deck_names, num_decks);
             eink_render_framebuffer();
             render = 0;
 
             break;
 
-        case STATE_DECK_SELECTION:
-
         case STATE_FLASHCARD_NAVIGATION:
             if (get_deck_from_sd) {
-                /* TODO: Call function that returns deck */
-                main_deck = get_deck(curr_deck_selection);
+                parseJSON_file(deck_names[curr_deck_selection], &main_deck);
                 get_deck_from_sd = 0;
             }
             if (!render) break;
 
             eink_clear(0xFF);
-            draw_header(deck_names[curr_deck_selection]);
-            char buf[MAX_BACK_SIZE]; /* Back is larger than front */
-            if (f_b == FRONT) {
-                snprintf(buf, MAX_FRONT_SIZE, "%s", main_deck.cards[curr_card_selection].front);
-            }
-            else if (f_b == BACK) {
-                snprintf(buf, MAX_BACK_SIZE, "%s", main_deck.cards[curr_card_selection].back);
-            }
-            draw_string(20, 20, buf, BLACK);
+            /* +1 because it is 0 indexed */
+            snprintf(header, 25, "%s | %d/%d", main_deck.name, curr_card_selection + 1, main_deck.num_cards);
+            draw_header(header);
+            draw_flashcard(main_deck.cards[curr_card_selection], f_b, BLACK);
             eink_render_framebuffer();
             render = 0;
 
             break;
         }
-        __WFI();
+        // __WFI();
     }
 }

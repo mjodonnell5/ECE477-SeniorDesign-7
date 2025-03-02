@@ -1,7 +1,7 @@
-#include <stm32l432xx.h>
 #include <stdint.h>
-#include <string.h>
 #include <stdio.h>
+#include <string.h>
+#include <stm32l432xx.h>
 
 #include "../include/eink.h"
 #include "../include/clock.h"
@@ -10,6 +10,7 @@
 #define DIST_DECKS (45)
 
 extern uint8_t font8x8_basic[128][8];
+extern struct deck main_deck;
 
 void draw_header(char* title)
 {
@@ -23,11 +24,9 @@ void draw_header(char* title)
     draw_string(EINK_WIDTH - (8 * strlen(battery_perc_str)), 2, battery_perc_str, WHITE);
 }
 
-void draw_main_menu(uint8_t curr_selected_deck, char* deck_names[], uint16_t num_decks, uint8_t curr_page)
+void draw_main_menu(uint8_t curr_selected_deck, char deck_names[][MAX_NAME_SIZE], uint16_t num_decks)
 {
-    char header[50];
-    snprintf(header, 50, "SELECT A DECK: %d/%d", curr_selected_deck + 1, num_decks);
-    draw_header(header);
+    uint8_t curr_page = curr_selected_deck / MAX_DECKS_PER_PAGE;
     uint8_t decks_on_page = num_decks - (curr_page * MAX_DECKS_PER_PAGE);
 
     /* If curr_page == 0 */
@@ -35,6 +34,7 @@ void draw_main_menu(uint8_t curr_selected_deck, char* deck_names[], uint16_t num
         decks_on_page = MAX_DECKS_PER_PAGE;
     }
 
+    // char download[18] = "DOWNLOAD NEW DECK";
     for (uint8_t i = 0; i < decks_on_page; ++i) {
         uint8_t index = i + (curr_page * MAX_DECKS_PER_PAGE);
         if (index == curr_selected_deck) {
@@ -50,13 +50,13 @@ void draw_main_menu(uint8_t curr_selected_deck, char* deck_names[], uint16_t num
 void draw_flashcard(struct flashcard fc, uint8_t f_b, uint8_t col)
 {
     if (f_b) {
-        draw_header("FLASHCARD FRONT");
-        draw_string_wrapped(20, 20, fc.front, col);
-        // draw_centered_string_in_rect(20, 20, EINK_WIDTH - 20, EINK_HEIGHT - 20, fc.front, col);
+        // draw_header("FLASHCARD FRONT");
+        // draw_string_wrapped(20, 20, fc.front, col);
+        draw_centered_string_wrapped(fc.front, col);
     } else {
-        // draw_centered_string_in_rect(20, 20, EINK_WIDTH - 20, EINK_HEIGHT - 20, fc.back, col);
-        draw_header("FLASHCARD BACK");
-        draw_string_wrapped(20, 20, fc.back, col);
+        // draw_header("FLASHCARD BACK");
+        draw_centered_string_wrapped(fc.back, col);
+        // draw_string_wrapped(20, 20, fc.back, col);
     }
 }
 
@@ -147,7 +147,8 @@ void draw_string_wrapped(uint16_t s_x, uint16_t s_y, char* string, uint8_t col) 
          * of the display, but so that the text is centered. */
         /* FIXME: Should I have a mode for this center wrapping or have it
          * be default? */
-        if (word_length_pixels + c_x >= EINK_WIDTH - c_x) {
+        // if (word_length_pixels + c_x >= EINK_WIDTH - s_x) {
+        if (word_length_pixels + c_x >= EINK_WIDTH) {
             /* Write this word on next line */
             c_x = s_x;
             c_y += 10;
@@ -202,4 +203,16 @@ void draw_centered_string_in_rect(uint16_t s_x, uint16_t s_y, uint16_t e_x, uint
     draw_rect(min_x, min_y, max_x, max_y, col);
 
     draw_string(text_x, text_y, string, col);
+}
+
+void draw_centered_string_wrapped(char* string, uint8_t col)
+{
+    uint16_t text_width = strlen(string) * 8;
+    uint8_t num_wraps = text_width / (EINK_WIDTH - 20);
+    uint8_t height = (EINK_HEIGHT - (num_wraps * 10)) / 2;
+
+    uint8_t width = (EINK_WIDTH - text_width) / 2;
+    if (num_wraps > 0) width = 20;
+
+    draw_string_wrapped(width, height, string, col);
 }

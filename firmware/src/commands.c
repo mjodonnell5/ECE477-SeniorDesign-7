@@ -8,24 +8,8 @@
 #include <string.h>
 #include <stdio.h>
 
-// Data Structure for flashcards
-#define MAX_FRONT_SIZE     100
-#define MAX_BACK_SIZE      200
-#define MAX_CARDS_PER_DECK  250
+#include "../include/ui.h"
 
-// Flashcard structure
-struct flashcard {
-    char front[MAX_FRONT_SIZE];
-    char back[MAX_BACK_SIZE];
-};
-
-// Deck structure
-struct deck {
-    char name[64];  // Store flashcard set name
-    // char description[128]; // Store description
-    int num_cards;   // Number of flashcards in the deck
-    struct flashcard cards[MAX_CARDS_PER_DECK];
-};
 
 // Data structure for the mounted file system.
 FATFS fs_storage;
@@ -201,7 +185,7 @@ void cat(const char *filename)
 
         /* Read every line and display it */
         while(f_gets(line, sizeof line, &fil))
-            log_to_sd(line);
+            // log_to_sd(line);
             // printf(line);
         /* Close the file */
         f_close(&fil);
@@ -322,29 +306,29 @@ void input(int argc, char *argv[])
 //DEBUGGING FUNCTION
 void log_to_sd(const char *message)
 {
-    FIL fil;        /* File object */
-    FRESULT fr;     /* FatFs return code */
-    const char *filename = "log.txt";
-    // const char *message = "BANG DELETED!!.\n";
-
-    // Open the file in append mode (or create if it doesn't exist)
-    fr = f_open(&fil, filename, FA_WRITE | FA_OPEN_APPEND);
-    if (fr) {
-        printf("Error opening %s: %d\n", filename, fr);
-        return;
-    }
-
-    UINT wlen;
-    fr = f_write(&fil, message, strlen(message), &wlen);
-    if (fr) {
-        printf("Error writing to %s: %d\n", filename, fr);
-    }
-
-    // Flush the file to ensure data is written
-    f_sync(&fil);
-    
-    // Close the file
-    f_close(&fil);
+    // FIL fil;        /* File object */
+    // FRESULT fr;     /* FatFs return code */
+    // const char *filename = "log.txt";
+    // // const char *message = "BANG DELETED!!.\n";
+    //
+    // // Open the file in append mode (or create if it doesn't exist)
+    // fr = f_open(&fil, filename, FA_WRITE | FA_OPEN_APPEND);
+    // if (fr) {
+    //     printf("Error opening %s: %d\n", filename, fr);
+    //     return;
+    // }
+    //
+    // UINT wlen;
+    // fr = f_write(&fil, message, strlen(message), &wlen);
+    // if (fr) {
+    //     printf("Error writing to %s: %d\n", filename, fr);
+    // }
+    //
+    // // Flush the file to ensure data is written
+    // f_sync(&fil);
+    // 
+    // // Close the file
+    // f_close(&fil);
 }
 
 
@@ -355,11 +339,33 @@ void delete_file(const char *filename){
     fr = f_unlink(filename);
 
     if(fr == FR_OK){
-        log_to_sd("working!!!");
+        // log_to_sd("working!!!");
     }
     
 }
 
+int get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
+{
+    FRESULT res;
+    DIR dir;
+    static FILINFO fno;
+    const char *path = "";
+    int i = 0;
+        res = f_opendir(&dir, path);                       /* Open the directory */
+        if (res != FR_OK) {
+            return;
+        }
+        for (;;) {
+            res = f_readdir(&dir, &fno);                   /* Read a directory item */
+            if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+
+            if (i > MAX_DECKS) break;
+            strncpy(decks[i], fno.fname, strlen(fno.fname));
+            i++;
+        }
+        f_closedir(&dir);
+    return i;
+}
 
 //LISTS ALL OF FLASHCARD SETS
 void ls(int argc, char *argv[])
@@ -422,14 +428,14 @@ void mount()
 {
     FATFS *fs = &fs_storage;
     if (fs->id != 0) {
-        print_error(FR_DISK_ERR, "Already mounted.");
-        log_to_sd("Already mounted");
+        // print_error(FR_DISK_ERR, "Already mounted.");
+        // log_to_sd("Already mounted");
         return;
     }
     int res = f_mount(fs, "", 1);
     if (res != FR_OK){
-        print_error(res, "Error occurred while mounting");
-        log_to_sd("Error occured while mounting");
+        // print_error(res, "Error occurred while mounting");
+        // log_to_sd("Error occured while mounting");
     }
 }
 
@@ -464,7 +470,7 @@ void parseJson(const char *filename){
     //open file for reading
     fr = f_open(&fil, filename, FA_READ);
     if(fr) {
-        log_to_sd("Error opening file!");
+        // log_to_sd("Error opening file!");
         return;
     }
 
@@ -473,7 +479,7 @@ void parseJson(const char *filename){
     f_close(&fil);
 
     if (fr || bytesRead == 0){
-        log_to_sd("Error reading file!");
+        // log_to_sd("Error reading file!");
         return;
     }
 
@@ -482,7 +488,7 @@ void parseJson(const char *filename){
     //parse JSON
     cJSON *json = cJSON_Parse(jsonBuffer);
     if(!json){
-        log_to_sd("Error parsing JSON");
+        // log_to_sd("Error parsing JSON");
         return;
     }
 
@@ -492,7 +498,7 @@ void parseJson(const char *filename){
     if (cJSON_IsString(name) && cJSON_IsString(des)) {
         char logEntry[256];
         snprintf(logEntry, sizeof(logEntry), "Flashcard Set: %s\nDescription: %s\n", name->valuestring, des->valuestring);
-        log_to_sd(logEntry);
+        // log_to_sd(logEntry);
     }
 
     //extract flashcard array
@@ -505,7 +511,7 @@ void parseJson(const char *filename){
             if (cJSON_IsString(term) && cJSON_IsString(definition)){
                 char logEntry[512];
                 snprintf(logEntry, sizeof(logEntry), "Term: %s\nDefinition: %s\n", term->valuestring, definition->valuestring);
-                log_to_sd(logEntry);
+                // log_to_sd(logEntry);
             }
         }
     }
@@ -523,7 +529,7 @@ int parseJSON_file(const char* filename, struct deck* deck){
     //open file for reading
     fr = f_open(&fil, filename, FA_READ);
     if (fr){
-        log_to_sd("Error opening file!");
+        // log_to_sd("Error opening file!");
         return -1;
     }
 
@@ -533,7 +539,7 @@ int parseJSON_file(const char* filename, struct deck* deck){
 
     //ensure data actually read
     if(fr || bytesRead == 0){
-        log_to_sd("Error reading file!");
+        // log_to_sd("Error reading file!");
         return -1;
     }
 
@@ -542,7 +548,7 @@ int parseJSON_file(const char* filename, struct deck* deck){
     //start JSON parsing
     cJSON * json = cJSON_Parse(jsonBuffer);
     if (!json){
-        log_to_sd("Error parsing JSON!");
+        // log_to_sd("Error parsing JSON!");
         return -1;
     }
 
@@ -561,7 +567,7 @@ int parseJSON_file(const char* filename, struct deck* deck){
         int index = 0;
         cJSON_ArrayForEach(flashcard, flashcards){
             if (index >= MAX_CARDS_PER_DECK){
-                log_to_sd("warning mx flashcards reached!");
+                // log_to_sd("warning mx flashcards reached!");
                 break;
             }
 
