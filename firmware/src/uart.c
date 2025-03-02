@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-void UART_Init(void) {
+void uart_init(void) {
     RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN; /* Enable USART2 Clock */
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN; /* Enable GPIOA Clock */
     RCC->CCIPR |= RCC_CCIPR_USART2SEL_0; /* Use the System Clock for USART2 */
@@ -21,7 +21,7 @@ void UART_Init(void) {
     GPIOA->AFR[0] |= GPIO_AFRL_AFSEL2_2 | GPIO_AFRL_AFSEL2_1 | GPIO_AFRL_AFSEL2_0; /* Enable USART2_Tx for PA_2 */
 
     // SystemCoreClockUpdate();  // Update system clock
-    USART2->BRR = 4000000 / 9600;  /* 9600 baudrate */
+    USART2->BRR = 16000000 / 9600;  /* 9600 baudrate */
 
     USART2->CR1 |= USART_CR1_RE; /* Enable Receiver */
     USART2->CR1 |= USART_CR1_TE; /* Enable Transmitter */
@@ -31,13 +31,13 @@ void UART_Init(void) {
 
 
 // Function to transmit a character via UART
-char UART_ReadChar(void) {
+char uart_read_char(void) {
     while (!(USART2->ISR & USART_ISR_RXNE));  // Wait until data is received
     return USART2->RDR;  // Read the received character
     
 }
 
-void UART_WriteChar(char ch) {
+void uart_write_char(char ch) {
     USART2->TDR = ch;   // Load data into transmit data register
     while (!(USART2->ISR & USART_ISR_TXE));   // Wait until transmit data register is empty
 }
