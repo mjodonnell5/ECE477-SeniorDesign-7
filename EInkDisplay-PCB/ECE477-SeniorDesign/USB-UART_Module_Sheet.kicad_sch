@@ -114,25 +114,23 @@
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
-			(property "Reference" "J"
-				(at -5.08 11.43 0)
+			(property "Reference" "J4"
+				(at 0 12.7 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
-					(justify left)
 				)
 			)
 			(property "Value" "USB_A"
-				(at -5.08 8.89 0)
+				(at 0 10.16 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
-					(justify left)
 				)
 			)
-			(property "Footprint" ""
+			(property "Footprint" "Connector_USB:USB_A_Receptacle_GCT_USB1046"
 				(at 3.81 -1.27 0)
 				(effects
 					(font
@@ -338,7 +336,7 @@
 						(type none)
 					)
 				)
-				(pin power_in line
+				(pin power_out line
 					(at 7.62 5.08 180)
 					(length 2.54)
 					(name "VBUS"
@@ -2044,16 +2042,16 @@
 		(uuid "52b4f7a1-6979-404b-9e61-4dde2076eb1f")
 	)
 	(junction
+		(at 77.47 81.28)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "5b650cd0-b03b-4264-8838-a45777846adb")
+	)
+	(junction
 		(at 95.25 76.2)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "69a9cda2-b78b-407c-8807-b310d30da9cb")
-	)
-	(junction
-		(at 78.74 81.28)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "73c7821a-869b-49bb-9e99-8dada634e824")
 	)
 	(junction
 		(at 106.68 95.25)
@@ -2077,7 +2075,7 @@
 		(at 87.63 83.82)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "aa486f6a-1048-4972-a6a9-ee157f715b2c")
+		(uuid "a9d8a806-7485-451b-be4e-2a36e1446cec")
 	)
 	(junction
 		(at 111.76 88.9)
@@ -2195,16 +2193,6 @@
 	)
 	(wire
 		(pts
-			(xy 78.74 81.28) (xy 78.74 96.52)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0f3440cf-d856-439a-8537-6cb7bafbc39d")
-	)
-	(wire
-		(pts
 			(xy 139.7 55.88) (xy 143.51 55.88)
 		)
 		(stroke
@@ -2295,6 +2283,16 @@
 	)
 	(wire
 		(pts
+			(xy 77.47 81.28) (xy 77.47 96.52)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "45fab1da-fea2-4ec4-9869-75e7048cdf30")
+	)
+	(wire
+		(pts
 			(xy 137.16 60.96) (xy 137.16 53.34)
 		)
 		(stroke
@@ -2335,13 +2333,33 @@
 	)
 	(wire
 		(pts
-			(xy 76.2 83.82) (xy 87.63 83.82)
+			(xy 87.63 83.82) (xy 119.38 83.82)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "607b217b-6716-4232-b9e9-520f09cfbd79")
+		(uuid "66f49698-2edb-44d0-bf75-610cbb90d205")
+	)
+	(wire
+		(pts
+			(xy 76.2 81.28) (xy 77.47 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "68c22fda-0cb7-4438-8f59-51592c36d869")
+	)
+	(wire
+		(pts
+			(xy 77.47 81.28) (xy 119.38 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "74e9a149-9fe4-451b-adc9-20ae52a9f079")
 	)
 	(wire
 		(pts
@@ -2395,16 +2413,6 @@
 	)
 	(wire
 		(pts
-			(xy 76.2 81.28) (xy 78.74 81.28)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "948c3ead-315d-4f00-aace-43e9cf987980")
-	)
-	(wire
-		(pts
 			(xy 95.25 64.77) (xy 95.25 76.2)
 		)
 		(stroke
@@ -2435,26 +2443,6 @@
 	)
 	(wire
 		(pts
-			(xy 78.74 96.52) (xy 77.47 96.52)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b1c940a5-3eb7-4d3b-b517-39e606425d72")
-	)
-	(wire
-		(pts
-			(xy 78.74 81.28) (xy 119.38 81.28)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b4f5a6f2-e8b1-4b25-82c1-28d17761bc56")
-	)
-	(wire
-		(pts
 			(xy 106.68 95.25) (xy 106.68 97.79)
 		)
 		(stroke
@@ -2471,7 +2459,7 @@
 			(width 0)
 			(type default)
 		)
-		(uuid "d732195f-f531-40f4-ac78-5c04261528cb")
+		(uuid "da1326fc-f49c-452e-a97b-bbec7ef0d657")
 	)
 	(wire
 		(pts
@@ -2565,7 +2553,7 @@
 	)
 	(wire
 		(pts
-			(xy 87.63 83.82) (xy 119.38 83.82)
+			(xy 76.2 83.82) (xy 87.63 83.82)
 		)
 		(stroke
 			(width 0)
@@ -2613,25 +2601,25 @@
 		)
 		(uuid "fa501195-b28d-4621-bb4a-46cf36fc5c87")
 	)
-	(label "D_P"
-		(at 77.47 81.28 0)
+	(label "D-"
+		(at 91.44 83.82 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left bottom)
 		)
-		(uuid "4f0e4f1b-c0ad-436a-99d3-3387c02eee2d")
+		(uuid "5283059e-1d70-41a1-9bf7-63450b1ae7b7")
 	)
-	(label "D_N"
-		(at 77.47 83.82 0)
+	(label "D+"
+		(at 80.01 81.28 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left bottom)
 		)
-		(uuid "783971f8-f431-47af-bc7f-dfe2f64729d5")
+		(uuid "c48b6ccc-cc7c-49be-a721-41cb98a25c2b")
 	)
 	(hierarchical_label "USART1_RX"
 		(shape input)
@@ -2681,7 +2669,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "TestPoint:TestPoint_Pad_1.0x1.0mm"
 			(at 83.82 59.69 0)
 			(effects
 				(font
