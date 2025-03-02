@@ -34,6 +34,7 @@ void draw_main_menu(uint8_t curr_selected_deck, char deck_names[][MAX_NAME_SIZE]
         decks_on_page = MAX_DECKS_PER_PAGE;
     }
 
+    // char download[18] = "DOWNLOAD NEW DECK";
     for (uint8_t i = 0; i < decks_on_page; ++i) {
         uint8_t index = i + (curr_page * MAX_DECKS_PER_PAGE);
         if (index == curr_selected_deck) {

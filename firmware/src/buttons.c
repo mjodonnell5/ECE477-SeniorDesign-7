@@ -10,6 +10,7 @@ volatile uint8_t f_b = FRONT;
 
 extern uint8_t num_decks;
 extern uint8_t curr_page;
+extern struct deck main_deck;
 
 void button_init()
 {
@@ -67,9 +68,13 @@ void EXTI2_IRQHandler(void)
         return;
     }
     if (state == STATE_MENU_NAVIGATION) {
-        curr_deck_selection = (curr_deck_selection - 1);  
+        if (curr_deck_selection > 0) {
+            curr_deck_selection--;
+        }
     } else if (state == STATE_FLASHCARD_NAVIGATION) {
-        curr_card_selection = (curr_card_selection - 1);  
+        if (curr_card_selection > 0) {
+            curr_card_selection--;
+        }
         if (f_b == BACK) f_b = FRONT;
     }
     render = 1;
@@ -83,9 +88,13 @@ void EXTI9_5_IRQHandler(void)
             return;
         }
         if (state == STATE_MENU_NAVIGATION) {
-            curr_deck_selection = (curr_deck_selection + 1);  
+            if (curr_deck_selection + 1 < num_decks) {
+                curr_deck_selection++;
+            }
         } else if (state == STATE_FLASHCARD_NAVIGATION) {
-            curr_card_selection = (curr_card_selection + 1);  
+            if (curr_card_selection + 1 < main_deck.num_cards) {
+                curr_card_selection++;
+            }
             if (f_b == BACK) f_b = FRONT;
         }
         render = 1;

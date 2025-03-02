@@ -25,6 +25,9 @@ int main(void)
 
     mount();
 
+    // eink_clear(0xFF);
+    // eink_render_framebuffer();
+
     render = 1;
     state_machine();
 
