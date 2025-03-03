@@ -1598,6 +1598,12 @@
 		(uuid "9293a2a1-e1bf-4417-8201-fb5e564de00b")
 	)
 	(junction
+		(at 85.09 25.4)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "9a6a4a77-8895-482d-9046-0cde9320f4f3")
+	)
+	(junction
 		(at 77.47 144.78)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2011,7 +2017,7 @@
 	)
 	(wire
 		(pts
-			(xy 85.09 25.4) (xy 88.9 25.4)
+			(xy 85.09 25.4) (xy 99.06 25.4)
 		)
 		(stroke
 			(width 0)
@@ -2531,7 +2537,7 @@
 	)
 	(wire
 		(pts
-			(xy 88.9 25.4) (xy 88.9 22.86)
+			(xy 99.06 25.4) (xy 99.06 22.86)
 		)
 		(stroke
 			(width 0)
@@ -4377,6 +4383,72 @@
 		)
 	)
 	(symbol
+		(lib_id "power:GND")
+		(at 85.09 20.32 180)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "867983c0-5fac-4564-9730-4ea66b7e4384")
+		(property "Reference" "#PWR044"
+			(at 85.09 13.97 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 85.09 15.24 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 85.09 20.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 85.09 20.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 85.09 20.32 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "a124be3b-a26f-4f70-b2fe-2ef234675cdb")
+		)
+		(instances
+			(project ""
+				(path "/527ae649-08be-4368-9cf9-441ebba18eca/9aa04ce4-4558-41ab-8351-e46b80335092"
+					(reference "#PWR044")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "Device:R_Small")
 		(at 54.61 179.07 0)
 		(unit 1)
@@ -4870,7 +4942,7 @@
 	)
 	(symbol
 		(lib_id "power:+3.3V")
-		(at 88.9 22.86 0)
+		(at 99.06 22.86 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -4879,7 +4951,7 @@
 		(fields_autoplaced yes)
 		(uuid "ad2185fa-16c5-421c-9b2a-49cb8215200a")
 		(property "Reference" "#PWR039"
-			(at 88.9 26.67 0)
+			(at 99.06 26.67 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4888,7 +4960,7 @@
 			)
 		)
 		(property "Value" "+3.3V"
-			(at 88.9 17.78 0)
+			(at 99.06 17.78 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4896,7 +4968,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 88.9 22.86 0)
+			(at 99.06 22.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4905,7 +4977,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 88.9 22.86 0)
+			(at 99.06 22.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4914,7 +4986,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 88.9 22.86 0)
+			(at 99.06 22.86 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6033,6 +6105,76 @@
 			(project ""
 				(path "/527ae649-08be-4368-9cf9-441ebba18eca/9aa04ce4-4558-41ab-8351-e46b80335092"
 					(reference "D1")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C_Small")
+		(at 85.09 22.86 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "f3a40481-d798-47bc-b793-e8c3f47a857a")
+		(property "Reference" "C40"
+			(at 87.63 21.5962 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "C_Small"
+			(at 87.63 24.1362 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
+			(at 85.09 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 85.09 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 85.09 22.86 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "2"
+			(uuid "06281c7e-10c9-4f7d-bf3e-a35aef55abaa")
+		)
+		(pin "1"
+			(uuid "ec633b23-a595-4ac2-841d-5e7a0420d156")
+		)
+		(instances
+			(project ""
+				(path "/527ae649-08be-4368-9cf9-441ebba18eca/9aa04ce4-4558-41ab-8351-e46b80335092"
+					(reference "C40")
 					(unit 1)
 				)
 			)

@@ -1185,45 +1185,51 @@
 				)
 			)
 		)
-		(symbol "Power_Protection:NUP2202"
+		(symbol "Power_Protection:USBLC6-2SC6"
+			(pin_names hide)
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
 			(property "Reference" "U"
-				(at -5.334 -2.54 0)
+				(at 0.635 5.715 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
+					(justify left)
 				)
 			)
-			(property "Value" "NUP2202"
-				(at 6.35 1.27 90)
+			(property "Value" "USBLC6-2SC6"
+				(at 0.635 3.81 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
+					(justify left)
 				)
 			)
-			(property "Footprint" "Package_TO_SOT_SMD:SOT-363_SC-70-6"
-				(at 2.032 1.905 0)
+			(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6"
+				(at 1.27 -6.35 0)
 				(effects
 					(font
 						(size 1.27 1.27)
+						(italic yes)
 					)
+					(justify left)
 					(hide yes)
 				)
 			)
-			(property "Datasheet" "https://www.onsemi.com/pdf/datasheet/nup2202w1-d.pdf"
-				(at 2.032 1.905 0)
+			(property "Datasheet" "https://www.st.com/resource/en/datasheet/usblc6-2.pdf"
+				(at 1.27 -8.255 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
+					(justify left)
 					(hide yes)
 				)
 			)
-			(property "Description" "Transient voltage suppressor designed to protect high speed data lines from ESD, EFT, and lightning"
+			(property "Description" "Very low capacitance ESD protection diode, 2 data-line, SOT-23-6"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1232,7 +1238,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_keywords" "ESD Protection diodes  transient suppressor"
+			(property "ki_keywords" "usb ethernet video"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1241,7 +1247,7 @@
 					(hide yes)
 				)
 			)
-			(property "ki_fp_filters" "SOT?363*"
+			(property "ki_fp_filters" "SOT?23*"
 				(at 0 0 0)
 				(effects
 					(font
@@ -1250,10 +1256,237 @@
 					(hide yes)
 				)
 			)
-			(symbol "NUP2202_0_1"
+			(symbol "USBLC6-2SC6_0_0"
+				(circle
+					(center -1.524 0)
+					(radius 0.0001)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center -0.508 -4.572)
+					(radius 0.0001)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center -0.508 2.032)
+					(radius 0.0001)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 0.508 -4.572)
+					(radius 0.0001)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 0.508 2.032)
+					(radius 0.0001)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 1.524 -2.54)
+					(radius 0.0001)
+					(stroke
+						(width 0.508)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "USBLC6-2SC6_0_1"
+				(polyline
+					(pts
+						(xy -2.54 -2.54) (xy 2.54 -2.54)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.54 0) (xy 2.54 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.032 -3.048) (xy -1.016 -3.048)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.016 1.524) (xy -2.032 1.524)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.016 -3.048) (xy 2.032 -3.048)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.016 1.524) (xy 2.032 1.524)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -0.508 -1.143) (xy -0.508 -0.762) (xy 0.508 -0.762)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -2.032 0.508) (xy -1.016 0.508) (xy -1.524 1.524) (xy -2.032 0.508)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy -1.016 -4.064) (xy -2.032 -4.064) (xy -1.524 -3.048) (xy -1.016 -4.064)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.508 -1.778) (xy -0.508 -1.778) (xy 0 -0.762) (xy 0.508 -1.778)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.032 -4.064) (xy 1.016 -4.064) (xy 1.524 -3.048) (xy 2.032 -4.064)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.032 0.508) (xy 1.016 0.508) (xy 1.524 1.524) (xy 2.032 0.508)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0 2.54) (xy -0.508 2.032) (xy 0.508 2.032) (xy 0 1.524) (xy 0 -4.064) (xy -0.508 -4.572) (xy 0.508 -4.572)
+						(xy 0 -5.08)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "USBLC6-2SC6_1_1"
 				(rectangle
-					(start -3.048 3.048)
-					(end 3.048 -3.048)
+					(start -2.54 2.794)
+					(end 2.54 -5.334)
 					(stroke
 						(width 0.254)
 						(type default)
@@ -1262,42 +1495,9 @@
 						(type background)
 					)
 				)
-				(circle
-					(center -2.032 0)
-					(radius 0.127)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center -2.032 0)
-					(radius 0.127)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 0 -2.54)
-					(radius 0.127)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
 				(polyline
 					(pts
-						(xy -2.667 -1.27) (xy -1.397 -1.27)
+						(xy -0.508 2.032) (xy -1.524 2.032) (xy -1.524 -4.572) (xy -0.508 -4.572)
 					)
 					(stroke
 						(width 0)
@@ -1309,7 +1509,7 @@
 				)
 				(polyline
 					(pts
-						(xy -2.667 -1.27) (xy -1.397 -1.27)
+						(xy 0.508 -4.572) (xy 1.524 -4.572) (xy 1.524 2.032) (xy 0.508 2.032)
 					)
 					(stroke
 						(width 0)
@@ -1319,381 +1519,10 @@
 						(type none)
 					)
 				)
-				(polyline
-					(pts
-						(xy -2.667 1.905) (xy -1.397 1.905)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.54 0) (xy -2.032 0)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.032 -2.54) (xy -2.032 -0.635)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.032 -2.54) (xy -2.032 -0.635)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.032 0.635) (xy -2.032 -0.635)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.032 0.635) (xy -2.032 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.032 2.54) (xy 2.032 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -0.762 0.254) (xy 0.762 0.254)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 -0.889) (xy 0 -2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 -0.889) (xy 0 1.016)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 -0.889) (xy 0 1.016)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 1.016) (xy 0 3.81)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0.762 0) (xy 0.762 0.254)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.397 -1.27) (xy 2.667 -1.27)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.397 -1.27) (xy 2.667 -1.27)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.397 1.905) (xy 2.667 1.905)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.032 -2.54) (xy -2.032 -2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.032 -2.54) (xy 2.032 -0.635)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.032 -2.54) (xy 2.032 -0.635)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.032 0) (xy 2.54 0)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.032 0.635) (xy 2.032 -0.635)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.032 0.635) (xy 2.032 2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.667 -1.905) (xy -1.397 -1.905) (xy -2.032 -1.27) (xy -2.667 -1.905)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.667 1.27) (xy -1.397 1.27) (xy -2.032 1.905) (xy -2.667 1.27)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -0.762 -0.508) (xy 0.762 -0.508) (xy 0 0.254) (xy -0.762 -0.508)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -0.762 -0.508) (xy 0.762 -0.508) (xy 0 0.254) (xy -0.762 -0.508)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.397 -1.905) (xy 2.667 -1.905) (xy 2.032 -1.27) (xy 1.397 -1.905)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.397 1.27) (xy 2.667 1.27) (xy 2.032 1.905) (xy 1.397 1.27)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 0 2.54)
-					(radius 0.127)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 2.032 0)
-					(radius 0.127)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 2.032 0)
-					(radius 0.127)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "NUP2202_1_1"
 				(pin passive line
 					(at -5.08 0 0)
 					(length 2.54)
-					(name "~"
+					(name "I/O1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1709,9 +1538,9 @@
 					)
 				)
 				(pin passive line
-					(at 0 -5.08 90)
+					(at 0 -7.62 90)
 					(length 2.54)
-					(name "~"
+					(name "GND"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1726,10 +1555,10 @@
 						)
 					)
 				)
-				(pin no_connect line
-					(at 0 -2.54 90)
-					(length 2.54) hide
-					(name "~"
+				(pin passive line
+					(at -5.08 -2.54 0)
+					(length 2.54)
+					(name "I/O2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1744,10 +1573,10 @@
 						)
 					)
 				)
-				(pin no_connect line
-					(at 0 2.54 270)
-					(length 2.54) hide
-					(name "~"
+				(pin passive line
+					(at 5.08 -2.54 180)
+					(length 2.54)
+					(name "I/O2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1765,7 +1594,7 @@
 				(pin passive line
 					(at 0 5.08 270)
 					(length 2.54)
-					(name "~"
+					(name "VBUS"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -1783,7 +1612,7 @@
 				(pin passive line
 					(at 5.08 0 180)
 					(length 2.54)
-					(name "~"
+					(name "I/O1"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -2042,12 +1871,6 @@
 		(uuid "52b4f7a1-6979-404b-9e61-4dde2076eb1f")
 	)
 	(junction
-		(at 77.47 81.28)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "5b650cd0-b03b-4264-8838-a45777846adb")
-	)
-	(junction
 		(at 95.25 76.2)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2060,22 +1883,16 @@
 		(uuid "7d8edc0b-0c30-43a7-9aea-86a7c1dc910f")
 	)
 	(junction
-		(at 68.58 91.44)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "89d070c3-65f4-48df-aee8-c53095a586c8")
-	)
-	(junction
 		(at 109.22 73.66)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "8d74e8d7-ee5e-48e5-aded-5a29850d3b2d")
 	)
 	(junction
-		(at 87.63 83.82)
+		(at 85.09 76.2)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "a9d8a806-7485-451b-be4e-2a36e1446cec")
+		(uuid "ae0af27f-d8d2-4f8c-b1cd-57001d8619b4")
 	)
 	(junction
 		(at 111.76 88.9)
@@ -2118,10 +1935,6 @@
 	(no_connect
 		(at 132.08 60.96)
 		(uuid "5882f49d-296b-4a2b-9925-03938e62a3a8")
-	)
-	(no_connect
-		(at 82.55 91.44)
-		(uuid "607656b7-23d3-45c5-abdc-da60f97d8eec")
 	)
 	(no_connect
 		(at 119.38 73.66)
@@ -2173,6 +1986,16 @@
 	)
 	(wire
 		(pts
+			(xy 90.17 85.09) (xy 92.71 85.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "03261270-419f-4047-a7c6-104bebfb2bef")
+	)
+	(wire
+		(pts
 			(xy 100.33 74.93) (xy 100.33 73.66)
 		)
 		(stroke
@@ -2180,6 +2003,16 @@
 			(type default)
 		)
 		(uuid "081ec9c2-f404-47d8-9f43-79edf2a2b8c5")
+	)
+	(wire
+		(pts
+			(xy 77.47 85.09) (xy 77.47 83.82)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "084a1fb0-3c42-4254-ab4e-d96cbf1ca300")
 	)
 	(wire
 		(pts
@@ -2223,6 +2056,16 @@
 	)
 	(wire
 		(pts
+			(xy 90.17 81.28) (xy 119.38 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1fc050e8-199b-4c89-a8d9-a4023c9a8244")
+	)
+	(wire
+		(pts
 			(xy 101.6 88.9) (xy 111.76 88.9)
 		)
 		(stroke
@@ -2253,6 +2096,16 @@
 	)
 	(wire
 		(pts
+			(xy 80.01 85.09) (xy 77.47 85.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "317fbe38-237b-4d36-9de4-2ee2724be5c7")
+	)
+	(wire
+		(pts
 			(xy 132.08 105.41) (xy 95.25 105.41)
 		)
 		(stroke
@@ -2263,6 +2116,16 @@
 	)
 	(wire
 		(pts
+			(xy 85.09 76.2) (xy 85.09 77.47)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "39cdf761-5072-475e-a98c-7974eedf9234")
+	)
+	(wire
+		(pts
 			(xy 101.6 95.25) (xy 106.68 95.25)
 		)
 		(stroke
@@ -2270,26 +2133,6 @@
 			(type default)
 		)
 		(uuid "39e4da48-a081-40bd-a609-f0b577b22afe")
-	)
-	(wire
-		(pts
-			(xy 68.58 91.44) (xy 72.39 91.44)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "44a06794-a809-4db7-9627-6903f3f38e5e")
-	)
-	(wire
-		(pts
-			(xy 77.47 81.28) (xy 77.47 96.52)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "45fab1da-fea2-4ec4-9869-75e7048cdf30")
 	)
 	(wire
 		(pts
@@ -2313,6 +2156,16 @@
 	)
 	(wire
 		(pts
+			(xy 92.71 85.09) (xy 92.71 83.82)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "47e8c82b-7fc8-42c0-81bf-eeae6d98f186")
+	)
+	(wire
+		(pts
 			(xy 95.25 64.77) (xy 83.82 64.77)
 		)
 		(stroke
@@ -2333,27 +2186,27 @@
 	)
 	(wire
 		(pts
-			(xy 87.63 83.82) (xy 119.38 83.82)
+			(xy 85.09 76.2) (xy 95.25 76.2)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "66f49698-2edb-44d0-bf75-610cbb90d205")
+		(uuid "69f69cd9-b5c6-441a-9ef8-a5c9dde15b74")
 	)
 	(wire
 		(pts
-			(xy 76.2 81.28) (xy 77.47 81.28)
+			(xy 90.17 82.55) (xy 90.17 81.28)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "68c22fda-0cb7-4438-8f59-51592c36d869")
+		(uuid "70f48252-fa79-4b1d-9aa9-44e931258f6f")
 	)
 	(wire
 		(pts
-			(xy 77.47 81.28) (xy 119.38 81.28)
+			(xy 76.2 81.28) (xy 78.74 81.28)
 		)
 		(stroke
 			(width 0)
@@ -2363,13 +2216,13 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 101.6) (xy 72.39 91.44)
+			(xy 92.71 83.82) (xy 119.38 83.82)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "7c0b390f-1d92-418d-bd6f-c57592244ad1")
+		(uuid "7f929c2f-a485-4f27-9784-b2d765e0c545")
 	)
 	(wire
 		(pts
@@ -2453,16 +2306,6 @@
 	)
 	(wire
 		(pts
-			(xy 87.63 83.82) (xy 87.63 96.52)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "da1326fc-f49c-452e-a97b-bbec7ef0d657")
-	)
-	(wire
-		(pts
 			(xy 109.22 73.66) (xy 109.22 74.93)
 		)
 		(stroke
@@ -2480,6 +2323,16 @@
 			(type default)
 		)
 		(uuid "db714381-09ff-4b90-aec7-cf87165dccf2")
+	)
+	(wire
+		(pts
+			(xy 78.74 82.55) (xy 80.01 82.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dc2d84f4-0e34-450c-9671-9830e46f3101")
 	)
 	(wire
 		(pts
@@ -2503,6 +2356,16 @@
 	)
 	(wire
 		(pts
+			(xy 78.74 81.28) (xy 78.74 82.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e627ed12-7a0c-493e-9831-6b1b4b323b54")
+	)
+	(wire
+		(pts
 			(xy 100.33 86.36) (xy 109.22 86.36)
 		)
 		(stroke
@@ -2523,16 +2386,6 @@
 	)
 	(wire
 		(pts
-			(xy 82.55 101.6) (xy 72.39 101.6)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f0019008-08ba-45c2-bfd4-c9d6d759cce1")
-	)
-	(wire
-		(pts
 			(xy 111.76 88.9) (xy 119.38 88.9)
 		)
 		(stroke
@@ -2543,7 +2396,7 @@
 	)
 	(wire
 		(pts
-			(xy 76.2 76.2) (xy 95.25 76.2)
+			(xy 76.2 76.2) (xy 85.09 76.2)
 		)
 		(stroke
 			(width 0)
@@ -2553,7 +2406,7 @@
 	)
 	(wire
 		(pts
-			(xy 76.2 83.82) (xy 87.63 83.82)
+			(xy 76.2 83.82) (xy 77.47 83.82)
 		)
 		(stroke
 			(width 0)
@@ -2601,25 +2454,45 @@
 		)
 		(uuid "fa501195-b28d-4621-bb4a-46cf36fc5c87")
 	)
-	(label "D-"
-		(at 91.44 83.82 0)
+	(label "USB_D-"
+		(at 92.71 85.09 270)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left bottom)
+			(justify right bottom)
 		)
-		(uuid "5283059e-1d70-41a1-9bf7-63450b1ae7b7")
+		(uuid "7e590dc2-71b5-4ea6-b96e-938dfc79f561")
 	)
-	(label "D+"
-		(at 80.01 81.28 0)
+	(label "USB_D+"
+		(at 76.2 81.28 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left bottom)
 		)
-		(uuid "c48b6ccc-cc7c-49be-a721-41cb98a25c2b")
+		(uuid "b473d1f1-5e58-4b70-9d88-eab25ef48db9")
+	)
+	(label "USB_D-"
+		(at 77.47 83.82 270)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right bottom)
+		)
+		(uuid "d1d96992-b64e-4e2a-8ad1-4c29e42903f3")
+	)
+	(label "USB_D+"
+		(at 92.71 81.28 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "fb24476b-530c-43d5-b222-0aac1f4eab57")
 	)
 	(hierarchical_label "USART1_RX"
 		(shape input)
@@ -3217,6 +3090,72 @@
 	)
 	(symbol
 		(lib_id "power:GND")
+		(at 85.09 90.17 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "89d7a43f-7bbb-4839-95ae-d36dde6405b9")
+		(property "Reference" "#PWR045"
+			(at 85.09 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 85.09 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 85.09 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 85.09 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 85.09 90.17 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "fd2a4272-2272-4fe0-9991-50b3b7fd3ee9")
+		)
+		(instances
+			(project ""
+				(path "/527ae649-08be-4368-9cf9-441ebba18eca/b5fe9c37-5cbb-4476-b922-2ef94ca58b1e"
+					(reference "#PWR045")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
 		(at 109.22 71.12 180)
 		(unit 1)
 		(exclude_from_sim no)
@@ -3552,79 +3491,85 @@
 		)
 	)
 	(symbol
-		(lib_id "Power_Protection:NUP2202")
-		(at 82.55 96.52 0)
+		(lib_id "Power_Protection:USBLC6-2SC6")
+		(at 85.09 82.55 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(uuid "ea4c6968-ce03-4a01-a9f5-8ea6c763e2af")
-		(property "Reference" "U6"
-			(at 82.296 87.63 0)
+		(fields_autoplaced yes)
+		(uuid "d70ae6f7-95dd-4f7c-8007-0c721c48d908")
+		(property "Reference" "U9"
+			(at 86.7411 74.93 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
-		(property "Value" "NUP2202"
-			(at 82.296 89.916 0)
+		(property "Value" "USBLC6-2SC6"
+			(at 86.7411 77.47 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
-		(property "Footprint" "Package_TO_SOT_SMD:SOT-363_SC-70-6"
-			(at 84.582 94.615 0)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23-6"
+			(at 86.36 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "https://www.st.com/resource/en/datasheet/usblc6-2.pdf"
+			(at 86.36 90.805 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+		(property "Description" "Very low capacitance ESD protection diode, 2 data-line, SOT-23-6"
+			(at 85.09 82.55 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 				(hide yes)
 			)
-		)
-		(property "Datasheet" "https://www.onsemi.com/pdf/datasheet/nup2202w1-d.pdf"
-			(at 84.582 94.615 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Transient voltage suppressor designed to protect high speed data lines from ESD, EFT, and lightning"
-			(at 82.55 96.52 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "6"
-			(uuid "34414e1b-12d1-44f6-96c3-e9750382ef67")
-		)
-		(pin "4"
-			(uuid "ff125d14-7888-4e29-9880-8b0fa29e73b5")
-		)
-		(pin "1"
-			(uuid "764c9292-aa59-4df0-88e1-c383ffa90b6d")
-		)
-		(pin "5"
-			(uuid "46a9ffbe-602a-482e-b617-4bc9865e2cbe")
 		)
 		(pin "3"
-			(uuid "4df43909-ed28-4e03-92e6-77e867a0375e")
+			(uuid "f54872ad-77d6-4cc9-ad71-090b4eff80f9")
+		)
+		(pin "4"
+			(uuid "9bc18b2e-1192-4410-b23d-2e02c3226715")
+		)
+		(pin "5"
+			(uuid "7efa2576-c556-4ca1-87db-2957602f5055")
 		)
 		(pin "2"
-			(uuid "a0b2b2ea-5869-487f-9c95-dcf1406b62fe")
+			(uuid "2cb6fb1a-a771-49c6-b5b0-d263dd1b6dbe")
+		)
+		(pin "6"
+			(uuid "8686a25f-82d0-41bd-a88b-9e53bf31ca32")
+		)
+		(pin "1"
+			(uuid "76fc21ee-1ef5-4faf-a7ed-71fb089ed7e8")
 		)
 		(instances
 			(project ""
 				(path "/527ae649-08be-4368-9cf9-441ebba18eca/b5fe9c37-5cbb-4476-b922-2ef94ca58b1e"
-					(reference "U6")
+					(reference "U9")
 					(unit 1)
 				)
 			)
