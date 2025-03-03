@@ -1,8 +1,6 @@
 
 #include <stm32l432xx.h>
 #include "ff.h"
-// #include "lcd.h"
-// #include "tty.h"
 #include "commands.h"
 #include "cJSON.h"
 #include <string.h>
@@ -139,76 +137,6 @@ void print_error(FRESULT fr, const char *msg)
         printf("%s: %s\n", msg, errs[fr]);
 }
 
-void append(int argc, char *argv[])
-{
-    if (argc != 2) {
-        printf("Specify only one file name to append to.");
-        return;
-    }
-    FIL fil;        /* File object */
-    char line[100]; /* Line buffer */
-    FRESULT fr;     /* FatFs return code */
-    fr = f_open(&fil, argv[1], FA_WRITE|FA_OPEN_EXISTING|FA_OPEN_APPEND);
-    if (fr) {
-        print_error(fr, argv[1]);
-        return;
-    }
-    printf("To end append, enter a line with a single '.'\n");
-    for(;;) {
-        fgets(line, sizeof(line)-1, stdin);
-        if (line[0] == '.' && line[1] == '\n')
-            break;
-        int len = strlen(line);
-        if (line[len-1] == '\004')
-            len -= 1;
-        UINT wlen;
-        fr = f_write(&fil, (BYTE*)line, len, &wlen);
-        if (fr)
-            print_error(fr, argv[1]);
-    }
-    f_close(&fil);
-}
-
-void cat(const char *filename)
-{
-    // for(int i=1; i<argc; i++) {
-        FIL fil;        /* File object */
-        char line[100]; /* Line buffer */
-        FRESULT fr;     /* FatFs return code */
-
-        /* Open a text file */
-        fr = f_open(&fil, filename, FA_READ);
-        if (fr) {
-            print_error(fr, filename);
-            return;
-        }
-
-        /* Read every line and display it */
-        while(f_gets(line, sizeof line, &fil))
-            // log_to_sd(line);
-            // printf(line);
-        /* Close the file */
-        f_close(&fil);
-    // }
-}
-
-void cd(int argc, char *argv[])
-{
-    if (argc > 2) {
-        printf("Too many arguments.");
-        return;
-    }
-    FRESULT res;
-    if (argc == 1) {
-        res = f_chdir("/");
-        if (res)
-            print_error(res, "(default path)");
-        return;
-    }
-    res = f_chdir(argv[1]);
-    if (res)
-        print_error(res, argv[1]);
-}
 
 int to_int(char *start, char *end, int base)
 {
@@ -272,63 +200,32 @@ void date(int argc, char *argv[])
 }
 
 
-
-void input(int argc, char *argv[])
-{
-    if (argc != 2) {
-        printf("Specify only one file name to create.");
-        return;
-    }
-    FIL fil;        /* File object */
-    char line[100]; /* Line buffer */
-    FRESULT fr;     /* FatFs return code */
-    fr = f_open(&fil, argv[1], FA_WRITE|FA_CREATE_NEW);
-    if (fr) {
-        print_error(fr, argv[1]);
-        return;
-    }
-    printf("To end input, enter a line with a single '.'\n");
-    for(;;) {
-        fgets(line, sizeof(line)-1, stdin);
-        if (line[0] == '.' && line[1] == '\n')
-            break;
-        int len = strlen(line);
-        if (line[len-1] == '\004')
-            len -= 1;
-        UINT wlen;
-        fr = f_write(&fil, (BYTE*)line, len, &wlen);
-        if (fr)
-            print_error(fr, argv[1]);
-    }
-    f_close(&fil);
-}
-
 //DEBUGGING FUNCTION
 void log_to_sd(const char *message)
 {
-    // FIL fil;        /* File object */
-    // FRESULT fr;     /* FatFs return code */
-    // const char *filename = "log.txt";
-    // // const char *message = "BANG DELETED!!.\n";
-    //
-    // // Open the file in append mode (or create if it doesn't exist)
-    // fr = f_open(&fil, filename, FA_WRITE | FA_OPEN_APPEND);
-    // if (fr) {
-    //     printf("Error opening %s: %d\n", filename, fr);
-    //     return;
-    // }
-    //
-    // UINT wlen;
-    // fr = f_write(&fil, message, strlen(message), &wlen);
-    // if (fr) {
-    //     printf("Error writing to %s: %d\n", filename, fr);
-    // }
-    //
-    // // Flush the file to ensure data is written
-    // f_sync(&fil);
-    // 
-    // // Close the file
-    // f_close(&fil);
+    FIL fil;        /* File object */
+    FRESULT fr;     /* FatFs return code */
+    const char *filename = "log";
+    // const char *message = "BANG DELETED!!.\n";
+    
+    // Open the file in append mode (or create if it doesn't exist)
+    fr = f_open(&fil, filename, FA_WRITE | FA_OPEN_APPEND);
+    if (fr) {
+        printf("Error opening %s: %d\n", filename, fr);
+        return;
+    }
+    
+    UINT wlen;
+    fr = f_write(&fil, message, strlen(message), &wlen);
+    if (fr) {
+        printf("Error writing to %s: %d\n", filename, fr);
+    }
+    
+    // Flush the file to ensure data is written
+    f_sync(&fil);
+    
+    // Close the file
+    f_close(&fil);
 }
 
 
@@ -344,6 +241,7 @@ void delete_file(const char *filename){
     
 }
 
+//listing all the decks in the directory
 int get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
 {
     FRESULT res;
@@ -353,173 +251,37 @@ int get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
     int i = 0;
         res = f_opendir(&dir, path);                       /* Open the directory */
         if (res != FR_OK) {
-            return;
+            return 0;
         }
         for (;;) {
             res = f_readdir(&dir, &fno);                   /* Read a directory item */
             if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
 
-            if (i > MAX_DECKS) break;
-            strncpy(decks[i], fno.fname, strlen(fno.fname));
-            i++;
+            // check if the file has a .txt extension
+            char *ext = strrchr(fno.fname, '.'); //last .
+            if (ext == NULL || ext == fno.fname) { //no extension or starts with .
+                if (i > MAX_DECKS) break; //not exceeding array
+                strncpy(decks[i], fno.fname, strlen(fno.fname));
+                i++;
+            }
         }
         f_closedir(&dir);
     return i;
 }
 
-//LISTS ALL OF FLASHCARD SETS
-void ls(int argc, char *argv[])
-{
-    FRESULT res;
-    DIR dir;
-    static FILINFO fno;
-    const char *path = "";
-    int info = 0;
-    int i=1;
-    do {
-        if (argv[i][0] == '-') {
-            for(char *c=&argv[i][1]; *c; c++)
-                if (*c == 'l')
-                    info=1;
-            if (i+1 < argc) {
-                i += 1;
-                continue;
-            }
-        } else {
-            path = argv[i];
-        }
-
-        res = f_opendir(&dir, path);                       /* Open the directory */
-        if (res != FR_OK) {
-            print_error(res, argv[1]);
-            return;
-        }
-        for (;;) {
-            res = f_readdir(&dir, &fno);                   /* Read a directory item */
-            if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
-            if (info) {
-                printf("%04d-%s-%02d %02d:%02d:%02d %6ld %c%c%c%c%c ",
-                        (fno.fdate >> 9) + 1980,
-                        month_name[fno.fdate >> 5 & 15],
-                        fno.fdate & 31,
-                        fno.ftime >> 11,
-                        fno.ftime >> 5 & 63,
-                        (fno.ftime & 31) * 2,
-                        fno.fsize,
-                        (fno.fattrib & AM_DIR) ? 'D' : '-',
-                        (fno.fattrib & AM_RDO) ? 'R' : '-',
-                        (fno.fattrib & AM_HID) ? 'H' : '-',
-                        (fno.fattrib & AM_SYS) ? 'S' : '-',
-                        (fno.fattrib & AM_ARC) ? 'A' : '-');
-            }
-            if (path[0] != '\0')
-                printf("%s/%s\n", path, fno.fname);
-            else
-                printf("%s\n", fno.fname);
-        }
-        f_closedir(&dir);
-        i += 1;
-    } while(i<argc);
-}
-
-
-//NECESSARY FOR USING SD
+//NECESSARY FOR USING SD, WE NEED THIS!!!
 void mount()
 {
     FATFS *fs = &fs_storage;
     if (fs->id != 0) {
-        // print_error(FR_DISK_ERR, "Already mounted.");
-        // log_to_sd("Already mounted");
         return;
     }
     int res = f_mount(fs, "", 1);
     if (res != FR_OK){
-        // print_error(res, "Error occurred while mounting");
-        // log_to_sd("Error occured while mounting");
     }
 }
 
-void pwd(int argc, char *argv[])
-{
-    char line[100];
-    FRESULT res = f_getcwd(line, sizeof line);
-    if (res != FR_OK)
-        print_error(res, "pwd");
-    else
-        printf("%s\n", line);
-}
-
-//for removing a file from the directory 
-void rm(int argc, char *argv[])
-{
-    FRESULT res;
-    for(int i=1; i<argc; i++) {
-        res = f_unlink(argv[i]);
-        if (res != FR_OK)
-            print_error(res, argv[i]);
-    }
-}
-
-//parsing the json file
-void parseJson(const char *filename){
-    FIL fil;
-    FRESULT fr;
-    char jsonBuffer[4096]; //this is changeable
-    UINT bytesRead;
-
-    //open file for reading
-    fr = f_open(&fil, filename, FA_READ);
-    if(fr) {
-        // log_to_sd("Error opening file!");
-        return;
-    }
-
-    //read content into buffer
-    fr = f_read(&fil, jsonBuffer, sizeof(jsonBuffer) - 1, &bytesRead);
-    f_close(&fil);
-
-    if (fr || bytesRead == 0){
-        // log_to_sd("Error reading file!");
-        return;
-    }
-
-    jsonBuffer[bytesRead] = '\0'; //null terminate
-
-    //parse JSON
-    cJSON *json = cJSON_Parse(jsonBuffer);
-    if(!json){
-        // log_to_sd("Error parsing JSON");
-        return;
-    }
-
-    cJSON *name = cJSON_GetObjectItem(json, "flashcardSetName");
-    cJSON *des =  cJSON_GetObjectItem(json, "description");
-
-    if (cJSON_IsString(name) && cJSON_IsString(des)) {
-        char logEntry[256];
-        snprintf(logEntry, sizeof(logEntry), "Flashcard Set: %s\nDescription: %s\n", name->valuestring, des->valuestring);
-        // log_to_sd(logEntry);
-    }
-
-    //extract flashcard array
-    cJSON *flashcards = cJSON_GetObjectItem(json, "flashcards");
-    if (cJSON_IsArray(flashcards)){
-        cJSON *flashcard;
-        cJSON_ArrayForEach(flashcard, flashcards){
-            cJSON *term = cJSON_GetObjectItem(flashcard, "term");
-            cJSON *definition = cJSON_GetObjectItem(flashcard, "definition");
-            if (cJSON_IsString(term) && cJSON_IsString(definition)){
-                char logEntry[512];
-                snprintf(logEntry, sizeof(logEntry), "Term: %s\nDefinition: %s\n", term->valuestring, definition->valuestring);
-                // log_to_sd(logEntry);
-            }
-        }
-    }
-
-
-}
-
-//parse Json to structures
+//parse Json to structures NEED THIS!!!
 int parseJSON_file(const char* filename, struct deck* deck){
     FIL fil;
     FRESULT fr;
@@ -600,148 +362,10 @@ int parseJSON_file(const char* filename, struct deck* deck){
     
 }
 
-
-
-//yeah ignore dis shi
-
-
-void upload(int argc, char *argv[]){
-    //check # arguments
-    if (argc !=2){
-        printf("Usage: upload <filename>\n");
-    }
-
-    const char *filename = argv[1];
-
-    //open file for reading
-    FILE *local_file = fopen(filename, "rb");
-    if(!local_file){
-        printf("Error, could not open file\n");
-        return;
-    }
-
-    //open corresponding file on sd card for writing
-    FIL sd_file;
-    FRESULT fr = f_open(&sd_file, filename, FA_WRITE | FA_CREATE_ALWAYS);
-    if (fr) {
-        print_error(fr, argv[1]);
-        return;
-    }
-    char buffer[512];
-    size_t bytes_read;
-    UINT bytes_written;
-
-    while((bytes_read = fread(buffer, 1, sizeof(buffer), local_file)) > 0){
-        fr = f_write(&sd_file, buffer, bytes_read, &bytes_written);
-        if(fr != FR_OK || bytes_written != bytes_read){
-            printf("Error: fail to write to SD card");
-            break;
-        }
-    }
-    fclose(local_file);
-    f_close(&sd_file);
-
-    printf("Uploaded to the SD card successfully");
-}
-
 struct commands_t cmds[] = {
-        { "append", append },
-        // { "cat", cat },
-        { "cd", cd },
         { "date", date },
-        { "input", input },
-        { "ls", ls },
-        // { "mkdir", mkdir },
+        // { "ls", ls },
         { "mount", mount },
-        { "pwd", pwd },
-        { "rm", rm },
-        { "upload", upload},
+
 };
-
-// A weak definition that can be overridden by a better one.
-// Replace this with your own usercmds entirely.
-__attribute((weak)) struct commands_t usercmds[] = {
-        { 0, 0 }
-};
-
-void exec(int argc, char *argv[])
-{
-    //for(int i=0; i<argc; i++)
-    //    printf("%d: %s\n", i, argv[i]);
-    for(int i=0; usercmds[i].cmd != 0; i++)
-        if (strcmp(usercmds[i].cmd, argv[0]) == 0) {
-            usercmds[i].fn(argc, argv);
-            return;
-        }
-    for(int i=0; i<sizeof cmds/sizeof cmds[0]; i++)
-        if (strcmp(cmds[i].cmd, argv[0]) == 0) {
-            cmds[i].fn(argc, argv);
-            return;
-        }
-    printf("%s: No such command.\n", argv[0]);
-}
-
-void parse_command(char *c)
-{
-    char *argv[20];
-    int argc=0;
-    int skipspace=1;
-    for(; *c; c++) {
-        if (skipspace) {
-            if (*c != ' ' && *c != '\t') {
-                argv[argc++] = c;
-                skipspace = 0;
-            }
-        } else {
-            if (*c == ' ' || *c == '\t') {
-                *c = '\0';
-                skipspace=1;
-            }
-        }
-    }
-    if (argc > 0) {
-        argv[argc] = "";
-        exec(argc, argv);
-    }
-}
-
-
-void mkdir(int argc, char *argv[])
-{
-    for(int i=1; i<argc; i++) {
-        FRESULT res = f_mkdir(argv[i]);
-        if (res != FR_OK) {
-            print_error(res, argv[i]);
-            return;
-        }
-    }
-}
-
-
-void command_shell(void)
-{
-    printf("\nEnter current "); fflush(stdout);
-    // insert_echo_string("date 20240213000000");
-    
-    char line[100];
-    fgets(line, 99, stdin);
-    line[99] = '\0';
-    int len = strlen(line);
-    if (line[len-1] == '\n')
-        line[len-1] = '\0';
-    parse_command(line);
-
-    puts("This is the STM32 command shell.");
-    puts("Type 'mount' before trying any file system commands.");
-    puts("Type 'lcd_init' before trying any draw commands.");
-    for(;;) {
-        printf("> ");
-        fgets(line, 99, stdin);
-        line[99] = '\0';
-        len = strlen(line);
-        if (line[len-1] == '\n')
-            line[len-1] = '\0';
-        parse_command(line);
-    }
-}
 
