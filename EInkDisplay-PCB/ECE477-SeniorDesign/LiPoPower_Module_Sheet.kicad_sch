@@ -4079,7 +4079,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Package_SON:Texas_S-PWSON-N10_ThermalVias"
+		(property "Footprint" "PCB_Lib:DSC0010E"
 			(at 71.12 64.77 0)
 			(effects
 				(font
