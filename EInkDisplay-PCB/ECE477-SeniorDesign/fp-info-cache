@@ -1,11 +1,4 @@
-24663416912150909
-ABS04W-32.768KHZ-4-D2-T5
-XTAL_ABS04W-32.768KHZ-4-D2-T5
-
-
-0
-4
-4
+24675308013123316
 Audio_Module
 Reverb_BTDR-1H
 Digital Reverberation Unit, http://www.belton.co.kr/inc/downfile.php?seq=17&file=pdf (footprint from http://www.uk-electronic.de/PDF/BTDR-1.pdf)
@@ -20,13 +13,6 @@ audio belton reverb
 0
 7
 7
-BSS138
-SOT95P240X111-3N
-
-
-0
-3
-3
 Battery
 BatteryClip_Keystone_54_D16-19mm
 Battery clip for batteries with a diameter between 16-19 mm: https://www.keyelco.com/product.cfm/product_id/826
@@ -69832,6 +69818,20 @@ SD_reader_comp
 13
 13
 PCB_Lib
+TPS63802DLR
+
+
+0
+0
+0
+PCB_Lib
+XFL4015-471MEB
+
+
+0
+0
+0
+PCB_Lib
 XTAL_ABS04W-32.768KHZ-4-D2-T5
 
 
@@ -87590,6 +87590,20 @@ Potentiometer vertical vishay
 0
 3
 3
+Project_PCB_Library
+IND_XFL4015_COC-L
+
+XFL4015-471MEB 
+0
+2
+2
+Project_PCB_Library
+TPS63802DLR
+
+TPS63802DLAR 
+0
+10
+10
 Project_PCB_Library
 XTAL_ABS04W-32.768KHZ-4-D2-T5
 
