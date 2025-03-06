@@ -104,11 +104,12 @@ void draw_filled_rect(uint16_t s_x, uint16_t s_y, uint16_t e_x, uint16_t e_y, ui
 
 void draw_char(struct font f, uint16_t s_x, uint16_t s_y, uint16_t c, uint8_t col)
 { 
-    const uint8_t* bitmap = &f.font[c * f.height];
+    uint8_t bytes_per_row = (f.width + 7) / 8;
+    const uint8_t* bitmap = &f.font[c * f.height * bytes_per_row];
 
-    for (uint8_t y = 0; y < f.height; ++y) {
+    for (uint8_t y = 0; y < f.height * bytes_per_row; ++y) {
         for (uint8_t x = 0; x < f.width; ++x) {
-            uint8_t is_set = bitmap[y] & (1 << x);
+            uint8_t is_set = bitmap[y] & (1 << (7 - x));
             if (is_set) {
                 eink_draw_pixel(s_x + x, s_y + y, col);
             }
@@ -122,7 +123,7 @@ void draw_string(struct font f, uint16_t s_x, uint16_t s_y, char* string, uint8_
         draw_char(f, s_x, s_y, *string, col);
 
         string++;
-        s_x += f.width;
+        s_x += 8;
     }
 }
 
@@ -137,7 +138,7 @@ void draw_string_wrapped(struct font f, uint16_t s_x, uint16_t s_y, char* string
     char* word = strtok(buffer, " ");
 
     while (word != NULL) {
-        uint16_t word_length_pixels = strlen(word) * 8;
+        uint16_t word_length_pixels = strlen(word) * f.width;
 
         /* subtracting c_x will "center" it so that it wraps not at the end
          * of the display, but so that the text is centered. */
@@ -147,13 +148,13 @@ void draw_string_wrapped(struct font f, uint16_t s_x, uint16_t s_y, char* string
             /* Write this word on next line */
             c_x = s_x;
             // c_y += 10;
-            c_y += f.height + 2; /* FIXME: Determine what offset to do here */
+            c_y += f.height;
         }
 
         draw_string(f, c_x, c_y, word, col);
 
         /* +8 is to add a space after the word*/
-        c_x += word_length_pixels + f.width;
+        c_x += word_length_pixels + 8;
 
         word = strtok(NULL, " ");
     }
