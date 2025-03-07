@@ -1,4 +1,0 @@
-{
-    "flashcardSetName": "qqqqq",
-    "flashcards": []
-}
