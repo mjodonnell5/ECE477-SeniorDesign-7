@@ -1996,12 +1996,6 @@
 		)
 	)
 	(junction
-		(at 77.47 40.64)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "072ca56f-7574-4171-9da4-2880fe9dfd72")
-	)
-	(junction
 		(at 162.56 39.37)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2277,7 +2271,7 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 45.72) (xy 77.47 45.72)
+			(xy 72.39 45.72) (xy 78.74 45.72)
 		)
 		(stroke
 			(width 0)
@@ -2407,6 +2401,16 @@
 	)
 	(wire
 		(pts
+			(xy 72.39 39.37) (xy 72.39 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "21c641bb-07a5-47cf-b224-792bbf45e1b6")
+	)
+	(wire
+		(pts
 			(xy 179.07 50.8) (xy 186.69 50.8)
 		)
 		(stroke
@@ -2434,6 +2438,16 @@
 			(type default)
 		)
 		(uuid "33616c53-75d5-48ea-97f1-847ab1dc007c")
+	)
+	(wire
+		(pts
+			(xy 78.74 34.29) (xy 78.74 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "352b0497-da66-43ce-92e9-24d0ca30833d")
 	)
 	(wire
 		(pts
@@ -2634,6 +2648,16 @@
 			(type default)
 		)
 		(uuid "5d6a95d1-70aa-45a0-9f6d-0e0f158b8308")
+	)
+	(wire
+		(pts
+			(xy 87.63 39.37) (xy 87.63 40.64)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "619aa0b7-e372-4f69-a5bb-ee2a7dc2ef90")
 	)
 	(wire
 		(pts
@@ -2967,16 +2991,6 @@
 	)
 	(wire
 		(pts
-			(xy 77.47 40.64) (xy 87.63 40.64)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a6eef4c1-33a4-48f4-928e-bf33eaa0dd12")
-	)
-	(wire
-		(pts
 			(xy 67.31 120.65) (xy 63.5 120.65)
 		)
 		(stroke
@@ -3127,7 +3141,7 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 40.64) (xy 77.47 40.64)
+			(xy 72.39 39.37) (xy 87.63 39.37)
 		)
 		(stroke
 			(width 0)
@@ -3461,6 +3475,28 @@
 		(uuid "934c279d-7cac-488c-9c6f-616df34c2caf")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
 			(at 164.8195 88.9 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+				(hide yes)
+			)
+		)
+	)
+	(global_label "V_5V"
+		(shape input)
+		(at 78.74 34.29 0)
+		(fields_autoplaced yes)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "bbd72941-9571-4975-a16c-4dd0dfb6dca8")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 86.0795 34.29 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5799,7 +5835,7 @@
 	)
 	(symbol
 		(lib_id "Device:R_Small_US")
-		(at 77.47 43.18 0)
+		(at 78.74 43.18 180)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -5808,25 +5844,25 @@
 		(fields_autoplaced yes)
 		(uuid "bcb740c8-2e53-42f8-b9e3-66aae8d7215c")
 		(property "Reference" "R6"
-			(at 80.01 41.9099 0)
+			(at 81.28 41.9099 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify right)
 			)
 		)
 		(property "Value" "100k"
-			(at 80.01 44.4499 0)
+			(at 81.28 44.4499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify right)
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
-			(at 77.47 43.18 0)
+			(at 78.74 43.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5835,7 +5871,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 77.47 43.18 0)
+			(at 78.74 43.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -5844,7 +5880,7 @@
 			)
 		)
 		(property "Description" "Resistor, small US symbol"
-			(at 77.47 43.18 0)
+			(at 78.74 43.18 0)
 			(effects
 				(font
 					(size 1.27 1.27)
