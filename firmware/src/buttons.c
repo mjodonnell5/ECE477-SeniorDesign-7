@@ -20,50 +20,39 @@ void button_init()
 
     /* Input */
     GPIOB->MODER &= ~(GPIO_MODER_MODE6 | GPIO_MODER_MODE0);
-    GPIOA->MODER &= ~(GPIO_MODER_MODE2);
+    GPIOA->MODER &= ~(GPIO_MODER_MODE1);
 
     GPIOB->PUPDR &= ~(GPIO_PUPDR_PUPD6 |  GPIO_PUPDR_PUPD0);
     GPIOB->PUPDR |= (GPIO_PUPDR_PUPD6_1 | GPIO_PUPDR_PUPD0_1);
 
-    GPIOA->PUPDR &= ~(GPIO_PUPDR_PUPD2);
-    GPIOA->PUPDR |= (GPIO_PUPDR_PUPD2_1);
+    GPIOA->PUPDR &= ~(GPIO_PUPDR_PUPD1);
+    GPIOA->PUPDR |= (GPIO_PUPDR_PUPD1_1);
 
     RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
     SYSCFG->EXTICR[0] |= SYSCFG_EXTICR1_EXTI0_PB;
-    SYSCFG->EXTICR[0] |= SYSCFG_EXTICR1_EXTI2_PA;
+    SYSCFG->EXTICR[0] |= SYSCFG_EXTICR1_EXTI1_PA;
     SYSCFG->EXTICR[1] |= SYSCFG_EXTICR2_EXTI6_PB;
 
     EXTI->RTSR1 |= EXTI_RTSR1_RT6
-                | EXTI_RTSR1_RT2 | EXTI_RTSR1_RT0;
+                | EXTI_RTSR1_RT1 | EXTI_RTSR1_RT0;
 
     /* FIXME: Cannot do long press until we do debouncing */
     /* Also set falling edge */
     /* FIXME: We only want long press on the back button */
     // EXTI->FTSR1 |= EXTI_FTSR1_FT6
     //             | EXTI_FTSR1_FT2 | EXTI_FTSR1_FT0;
+    EXTI->FTSR1 |= EXTI_FTSR1_FT1;
 
     EXTI->IMR1 |= EXTI_IMR1_IM0
-               | EXTI_IMR1_IM6 | EXTI_IMR1_IM2;
+               | EXTI_IMR1_IM6 | EXTI_IMR1_IM1;
 
-    NVIC->ISER[0] |= (1 << EXTI9_5_IRQn) | (1 << EXTI0_IRQn) | (1 << EXTI2_IRQn);
+    NVIC->ISER[0] |= (1 << EXTI9_5_IRQn) | (1 << EXTI0_IRQn) | (1 << EXTI1_IRQn);
 }
 
 volatile uint32_t start_press_time = 0;
 void EXTI0_IRQHandler(void)
 {
-    if (GPIOB->IDR & GPIO_IDR_ID0) {
-        /* Rising edge */
-        /* Start long press count */
-        start_press_time = TIM2->CNT;
-    } else {
-        /* Falling edge */
-        if ((uint32_t)(TIM2->CNT - start_press_time) < LONG_PRESS_TIME_MS) {
-            /* Short press */
-        } else {
-            /* Long press */
-        }
-
-    }
+    EXTI->PR1 = EXTI_PR1_PIF0;
 
     /* FIXME: Maybe name this mutex something better? */
     if (render_pending) {
@@ -77,18 +66,24 @@ void EXTI0_IRQHandler(void)
         get_deck_from_sd = 1;
     }
     render_pending = 1;
-    EXTI->PR1 = EXTI_PR1_PIF0;
 }
 
-void EXTI2_IRQHandler(void)
+void EXTI1_IRQHandler(void)
 {
-    if (GPIOA->IDR & GPIO_IDR_ID2) {
+    EXTI->PR1 = EXTI_PR1_PIF1;
+    if (GPIOA->IDR & GPIO_IDR_ID1) {
         /* Rising edge */
-
+        start_press_time = TIM2->CNT;
+        return;
     } else {
         /* Falling edge */
-
+        if ((uint32_t)(TIM2->CNT - start_press_time) < LONG_PRESS_TIME_MS) {
+            /* Short press */
+        } else {
+            /* Long press */
+        }
     }
+
     if (render_pending) {
         return;
     }
@@ -103,19 +98,12 @@ void EXTI2_IRQHandler(void)
         if (f_b == BACK) f_b = FRONT;
     }
     render_pending = 1;
-    EXTI->PR1 = EXTI_PR1_PIF2;
 }
 
 void EXTI9_5_IRQHandler(void)
 {
-    if (GPIOB->IDR & GPIO_IDR_ID6) {
-        /* Rising edge */
-
-    } else {
-        /* Falling edge */
-
-    }
     if (EXTI->PR1 & EXTI_PR1_PIF6) {
+        EXTI->PR1 = EXTI_PR1_PIF6;
         if (render_pending) {
             return;
         }
@@ -130,7 +118,5 @@ void EXTI9_5_IRQHandler(void)
             if (f_b == BACK) f_b = FRONT;
         }
         render_pending = 1;
-        EXTI->PR1 = EXTI_PR1_PIF6;
     }
 }
-
