@@ -28,7 +28,7 @@ int main(void)
     // eink_clear(0xFF);
     // eink_render_framebuffer();
 
-    render = 1;
+    render_pending = 1;
     state_machine();
 
     eink_sleep();

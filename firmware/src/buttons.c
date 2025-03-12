@@ -2,6 +2,7 @@
 
 #include "../include/ui.h" /* FIXME: REMOVE THIS AFTER MOVING FRONT AND BACK MACROS */
 #include "../include/state.h"
+#include "../include/buttons.h"
 
 volatile uint8_t curr_deck_selection = 0;
 volatile uint8_t curr_card_selection = 0;
@@ -37,7 +38,9 @@ void button_init()
 
     /* FIXME: Cannot do long press until we do debouncing */
     /* Also set falling edge */
-    // EXTI->FTSR1 |= EXTI_FTSR1_FT5;
+    /* FIXME: We only want long press on the back button */
+    // EXTI->FTSR1 |= EXTI_FTSR1_FT6
+    //             | EXTI_FTSR1_FT2 | EXTI_FTSR1_FT0;
 
     EXTI->IMR1 |= EXTI_IMR1_IM0
                | EXTI_IMR1_IM6 | EXTI_IMR1_IM2;
@@ -45,10 +48,25 @@ void button_init()
     NVIC->ISER[0] |= (1 << EXTI9_5_IRQn) | (1 << EXTI0_IRQn) | (1 << EXTI2_IRQn);
 }
 
+volatile uint32_t start_press_time = 0;
 void EXTI0_IRQHandler(void)
 {
-    EXTI->PR1 = EXTI_PR1_PIF0;
-    if (render) {
+    if (GPIOB->IDR & GPIO_IDR_ID0) {
+        /* Rising edge */
+        /* Start long press count */
+        start_press_time = TIM2->CNT;
+    } else {
+        /* Falling edge */
+        if ((uint32_t)(TIM2->CNT - start_press_time) < LONG_PRESS_TIME_MS) {
+            /* Short press */
+        } else {
+            /* Long press */
+        }
+
+    }
+
+    /* FIXME: Maybe name this mutex something better? */
+    if (render_pending) {
         return;
     }
     if (state == STATE_FLASHCARD_NAVIGATION) {
@@ -58,13 +76,20 @@ void EXTI0_IRQHandler(void)
         state = STATE_FLASHCARD_NAVIGATION;
         get_deck_from_sd = 1;
     }
-    render = 1;
+    render_pending = 1;
+    EXTI->PR1 = EXTI_PR1_PIF0;
 }
 
 void EXTI2_IRQHandler(void)
 {
-    EXTI->PR1 = EXTI_PR1_PIF2;
-    if (render) {
+    if (GPIOA->IDR & GPIO_IDR_ID2) {
+        /* Rising edge */
+
+    } else {
+        /* Falling edge */
+
+    }
+    if (render_pending) {
         return;
     }
     if (state == STATE_MENU_NAVIGATION) {
@@ -77,14 +102,21 @@ void EXTI2_IRQHandler(void)
         }
         if (f_b == BACK) f_b = FRONT;
     }
-    render = 1;
+    render_pending = 1;
+    EXTI->PR1 = EXTI_PR1_PIF2;
 }
 
 void EXTI9_5_IRQHandler(void)
 {
+    if (GPIOB->IDR & GPIO_IDR_ID6) {
+        /* Rising edge */
+
+    } else {
+        /* Falling edge */
+
+    }
     if (EXTI->PR1 & EXTI_PR1_PIF6) {
-        EXTI->PR1 = EXTI_PR1_PIF6;
-        if (render) {
+        if (render_pending) {
             return;
         }
         if (state == STATE_MENU_NAVIGATION) {
@@ -97,7 +129,8 @@ void EXTI9_5_IRQHandler(void)
             }
             if (f_b == BACK) f_b = FRONT;
         }
-        render = 1;
+        render_pending = 1;
+        EXTI->PR1 = EXTI_PR1_PIF6;
     }
 }
 
