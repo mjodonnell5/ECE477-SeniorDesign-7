@@ -13,8 +13,8 @@
 #include "../include/uart.h"
 #include "../include/ff.h"
 
-// volatile enum STATES state = STATE_MENU_NAVIGATION;
-volatile enum STATES state = STATE_DOWNLOAD;
+volatile enum STATES state = STATE_MENU_NAVIGATION;
+// volatile enum STATES state = STATE_DOWNLOAD;
 volatile uint8_t render_pending = 0;
 uint8_t fetch_decks = 1;
 
