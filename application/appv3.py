@@ -14,14 +14,20 @@ if not os.path.exists(FLASHCARD_DIR):
 
 # Set theme
 ctk.set_appearance_mode("Dark")  # "Light", "Dark", or "System"
-ctk.set_default_color_theme("blue")  # Options: "blue", "green", "dark-blue"
+ctk.set_default_color_theme("green")  # Options: "blue", "green", "dark-blue"
 
 class FlashcardApp(ctk.CTk):
     def __init__(self):
         super().__init__()
 
         self.title("Flashcard Manager")
-        self.geometry("700x500")
+        # self.geometry("700x500")
+        # self.attributes("-fullscreen", True)
+
+        width = self.winfo_screenwidth()
+        height = self.winfo_screenheight()
+        self.geometry("%dx%d" % (width, height))
+
 
         self.container = ctk.CTkFrame(self)
         self.container.pack(fill="both", expand=True)
@@ -44,7 +50,7 @@ class FlashcardApp(ctk.CTk):
         # reset EditPage and show blank page
         edit_page = self.pages[EditPage]
         edit_page.set_name_entry.delete(0, "end")
-        edit_page.flashcards = [{"term": "", "definition": ""}, {"term": "", "definition": ""}]
+        edit_page.flashcards = [{"term": "", "definition": ""}, {"term": "", "definition": ""},{"term": "", "definition": ""}]
         edit_page.refresh_flashcards()
         self.show_page(EditPage)
 
@@ -165,8 +171,8 @@ class EditPage(ctk.CTkFrame):
         self.flashcards = data.get("flashcards", [])
         
         # adding 2 empty flashcards to get user started
-        for i in range (2):
-            self.flashcards.append({"term": "", "definition": ""})  # Add an empty flashcard entry
+        # for i in range (3):
+        #     self.flashcards.append({"term": "", "definition": ""})  # Add an empty flashcard entry
 
         self.refresh_flashcards()
 
@@ -239,4 +245,7 @@ class EditPage(ctk.CTkFrame):
 
 if __name__ == "__main__":
     app = FlashcardApp()
+    
     app.mainloop()
+    
+    

@@ -61,13 +61,17 @@ class MainPage(tk.Frame):
         for widget in self.flashcard_list_frame.winfo_children():
             widget.destroy()
 
-        files = [f for f in os.listdir(FLASHCARD_DIR) if f.endswith(".txt")]
+        # files = [f for f in os.listdir(FLASHCARD_DIR) if f.endswith(".txt")]
+        files = [f for f in os.listdir(FLASHCARD_DIR) if not f.endswith(".txt")]
 
         for filename in files:
             row = tk.Frame(self.flashcard_list_frame, bg="lightgrey")
             row.pack(fill="x", pady=2)
 
-            word = filename.split(".") # getting ride of .txt extension
+            # word = filename.split(".") # getting ride of .txt extension
+            print(filename)
+            word = filename
+
 
             tk.Label(row, text=word[0].capitalize(), font=(FONT, 12), width=20, anchor="w", bg="lightgrey").pack(side="left")
 
@@ -229,7 +233,7 @@ class EditPage(tk.Frame):
             messagebox.showerror("Error", "Flashcard set name cannot be empty.")
             return
         
-        filename = os.path.join(FLASHCARD_DIR, f"{set_name}.txt")
+        filename = os.path.join(FLASHCARD_DIR, f"{set_name}")
 
         flashcard_data = []
         for flashcard in self.flashcards:
@@ -259,7 +263,7 @@ class EditPage(tk.Frame):
             messagebox.showerror("Error", "Flashcard set name cannot be empty.")
             return
         
-        filename = os.path.join(FLASHCARD_DIR, f"{set_name}.txt")
+        filename = os.path.join(FLASHCARD_DIR, f"{set_name}")
 
         flashcard_data = []
         for flashcard in self.flashcards:
