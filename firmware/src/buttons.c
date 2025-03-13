@@ -71,6 +71,9 @@ void EXTI0_IRQHandler(void)
 void EXTI1_IRQHandler(void)
 {
     EXTI->PR1 = EXTI_PR1_PIF1;
+    if (render_pending) {
+        return;
+    }
     if (GPIOA->IDR & GPIO_IDR_ID1) {
         /* Rising edge */
         start_press_time = TIM2->CNT;
@@ -79,9 +82,6 @@ void EXTI1_IRQHandler(void)
         /* Falling edge */
         if ((uint32_t)(TIM2->CNT - start_press_time) < LONG_PRESS_TIME_MS) {
             /* Short press */
-            if (render_pending) {
-                return;
-            }
             if (state == STATE_MENU_NAVIGATION) {
                 if (curr_deck_selection > 0) {
                     curr_deck_selection--;
@@ -94,7 +94,6 @@ void EXTI1_IRQHandler(void)
                 /* Always start on the front */
                 if (f_b == BACK) f_b = FRONT;
             }
-            render_pending = 1;
         } else {
             /* Long press */
             if (state == STATE_MENU_NAVIGATION) {
@@ -104,7 +103,7 @@ void EXTI1_IRQHandler(void)
             }
         }
     }
-
+    render_pending = 1;
 }
 
 void EXTI9_5_IRQHandler(void)

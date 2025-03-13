@@ -33,7 +33,7 @@ void state_machine()
     char header[25];
 
     for (;;) {
-        // delay_ms(10);
+        delay_ms(10);
         switch (state) {
         case STATE_DOWNLOAD:
             __disable_irq();
