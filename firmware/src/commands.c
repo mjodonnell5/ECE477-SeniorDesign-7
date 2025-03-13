@@ -344,6 +344,29 @@ void delete_file(const char *filename){
     
 }
 
+// int get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
+// {
+//     FRESULT res;
+//     DIR dir;
+//     static FILINFO fno;
+//     const char *path = "";
+//     int i = 0;
+//         res = f_opendir(&dir, path);                       /* Open the directory */
+//         if (res != FR_OK) {
+//             return;
+//         }
+//         for (;;) {
+//             res = f_readdir(&dir, &fno);                   /* Read a directory item */
+//             if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+
+//             if (i > MAX_DECKS) break;
+//             strncpy(decks[i], fno.fname, strlen(fno.fname));
+//             i++;
+//         }
+//         f_closedir(&dir);
+//     return i;
+// }
+
 int get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
 {
     FRESULT res;
@@ -353,15 +376,19 @@ int get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
     int i = 0;
         res = f_opendir(&dir, path);                       /* Open the directory */
         if (res != FR_OK) {
-            return;
+            return 0;
         }
         for (;;) {
             res = f_readdir(&dir, &fno);                   /* Read a directory item */
             if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
 
-            if (i > MAX_DECKS) break;
-            strncpy(decks[i], fno.fname, strlen(fno.fname));
-            i++;
+            // check if the file has a .txt extension
+            char *ext = strrchr(fno.fname, '.'); //last .
+            if (ext == NULL || ext == fno.fname) { //no extension or starts with .
+                if (i > MAX_DECKS) break; //not exceeding array
+                strncpy(decks[i], fno.fname, strlen(fno.fname));
+                i++;
+            }
         }
         f_closedir(&dir);
     return i;
