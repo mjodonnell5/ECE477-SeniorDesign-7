@@ -230,9 +230,10 @@ class EditPage(ctk.CTkFrame):
             if fc["term_entry"].get().strip() and fc["definition_entry"].get().strip()
         ]
 
+        data = {"flashcardSetName": set_name, "flashcards": flashcard_data} # fix to add set name to json so it can be parsed
 
         with open(filename, "w", encoding="utf-8") as file:
-            json.dump({"flashcards": flashcard_data}, file, indent=4)
+            json.dump(data, file, indent=4)
 
         self.controller.pages[MainPage].refresh_list()
         self.controller.show_page(MainPage)
