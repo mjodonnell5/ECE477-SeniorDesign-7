@@ -79,25 +79,32 @@ void EXTI1_IRQHandler(void)
         /* Falling edge */
         if ((uint32_t)(TIM2->CNT - start_press_time) < LONG_PRESS_TIME_MS) {
             /* Short press */
+            if (render_pending) {
+                return;
+            }
+            if (state == STATE_MENU_NAVIGATION) {
+                if (curr_deck_selection > 0) {
+                    curr_deck_selection--;
+                }
+            } else if (state == STATE_FLASHCARD_NAVIGATION) {
+                if (curr_card_selection > 0) {
+                    curr_card_selection--;
+                }
+
+                /* Always start on the front */
+                if (f_b == BACK) f_b = FRONT;
+            }
+            render_pending = 1;
         } else {
             /* Long press */
+            if (state == STATE_MENU_NAVIGATION) {
+                state = STATE_DOWNLOAD;
+            } else if (state == STATE_FLASHCARD_NAVIGATION) {
+                state = STATE_MENU_NAVIGATION;
+            }
         }
     }
 
-    if (render_pending) {
-        return;
-    }
-    if (state == STATE_MENU_NAVIGATION) {
-        if (curr_deck_selection > 0) {
-            curr_deck_selection--;
-        }
-    } else if (state == STATE_FLASHCARD_NAVIGATION) {
-        if (curr_card_selection > 0) {
-            curr_card_selection--;
-        }
-        if (f_b == BACK) f_b = FRONT;
-    }
-    render_pending = 1;
 }
 
 void EXTI9_5_IRQHandler(void)
@@ -115,6 +122,8 @@ void EXTI9_5_IRQHandler(void)
             if (curr_card_selection + 1 < main_deck.num_cards) {
                 curr_card_selection++;
             }
+
+            /* Always start on the front */
             if (f_b == BACK) f_b = FRONT;
         }
         render_pending = 1;
