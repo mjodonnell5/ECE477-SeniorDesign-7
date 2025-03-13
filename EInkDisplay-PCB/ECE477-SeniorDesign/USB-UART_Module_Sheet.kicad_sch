@@ -2035,10 +2035,6 @@
 		(uuid "ef7e386d-69b2-421d-ad8e-853a981b6894")
 	)
 	(no_connect
-		(at 66.04 91.44)
-		(uuid "1066edc1-20c6-42c8-b3dd-e8f89b77b234")
-	)
-	(no_connect
 		(at 160.02 83.82)
 		(uuid "19b4adfc-b1a8-490c-beab-167075961257")
 	)
@@ -2053,6 +2049,10 @@
 	(no_connect
 		(at 119.38 76.2)
 		(uuid "35cc8ce9-fafd-4497-9b54-60c1a12d4947")
+	)
+	(no_connect
+		(at 66.04 91.44)
+		(uuid "380dbf82-5d99-451e-94b4-d9e1a49b2730")
 	)
 	(no_connect
 		(at 137.16 101.6)
@@ -2786,6 +2786,15 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C6568"
+			(at 139.7 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
 				(hide yes)
 			)
 		)
