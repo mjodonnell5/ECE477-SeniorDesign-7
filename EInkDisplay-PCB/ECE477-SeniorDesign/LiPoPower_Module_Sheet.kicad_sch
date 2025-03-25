@@ -4006,7 +4006,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "PCB_Lib:JST Conn"
+		(property "Footprint" "Connector_JST:JST_PH_S2B-PH-SM4-TB_1x02-1MP_P2.00mm_Horizontal"
 			(at 248.92 64.77 0)
 			(effects
 				(font
@@ -4297,6 +4297,15 @@
 		)
 		(property "Description" "Buck-Boost Converter, 2.5-12V Input Voltage, 2-A Switch Current, Adjustable 2.5-8V Output Voltage, S-PWSON-N10"
 			(at 65.024 71.882 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C2845237"
+			(at 62.23 48.26 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -4724,6 +4733,15 @@
 			)
 		)
 		(property "Description" ""
+			(at 67.31 115.57 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C5121473"
 			(at 67.31 115.57 0)
 			(effects
 				(font
