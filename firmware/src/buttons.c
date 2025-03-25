@@ -2,6 +2,7 @@
 
 #include "../include/ui.h" /* FIXME: REMOVE THIS AFTER MOVING FRONT AND BACK MACROS */
 #include "../include/state.h"
+#include "../include/buttons.h"
 
 volatile uint8_t curr_deck_selection = 0;
 volatile uint8_t curr_card_selection = 0;
@@ -19,36 +20,42 @@ void button_init()
 
     /* Input */
     GPIOB->MODER &= ~(GPIO_MODER_MODE6 | GPIO_MODER_MODE0);
-    GPIOA->MODER &= ~(GPIO_MODER_MODE2);
+    GPIOA->MODER &= ~(GPIO_MODER_MODE1);
 
     GPIOB->PUPDR &= ~(GPIO_PUPDR_PUPD6 |  GPIO_PUPDR_PUPD0);
     GPIOB->PUPDR |= (GPIO_PUPDR_PUPD6_1 | GPIO_PUPDR_PUPD0_1);
 
-    GPIOA->PUPDR &= ~(GPIO_PUPDR_PUPD2);
-    GPIOA->PUPDR |= (GPIO_PUPDR_PUPD2_1);
+    GPIOA->PUPDR &= ~(GPIO_PUPDR_PUPD1);
+    GPIOA->PUPDR |= (GPIO_PUPDR_PUPD1_1);
 
     RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
     SYSCFG->EXTICR[0] |= SYSCFG_EXTICR1_EXTI0_PB;
-    SYSCFG->EXTICR[0] |= SYSCFG_EXTICR1_EXTI2_PA;
+    SYSCFG->EXTICR[0] |= SYSCFG_EXTICR1_EXTI1_PA;
     SYSCFG->EXTICR[1] |= SYSCFG_EXTICR2_EXTI6_PB;
 
     EXTI->RTSR1 |= EXTI_RTSR1_RT6
-                | EXTI_RTSR1_RT2 | EXTI_RTSR1_RT0;
+                | EXTI_RTSR1_RT1 | EXTI_RTSR1_RT0;
 
     /* FIXME: Cannot do long press until we do debouncing */
     /* Also set falling edge */
-    // EXTI->FTSR1 |= EXTI_FTSR1_FT5;
+    /* FIXME: We only want long press on the back button */
+    // EXTI->FTSR1 |= EXTI_FTSR1_FT6
+    //             | EXTI_FTSR1_FT2 | EXTI_FTSR1_FT0;
+    EXTI->FTSR1 |= EXTI_FTSR1_FT1;
 
     EXTI->IMR1 |= EXTI_IMR1_IM0
-               | EXTI_IMR1_IM6 | EXTI_IMR1_IM2;
+               | EXTI_IMR1_IM6 | EXTI_IMR1_IM1;
 
-    NVIC->ISER[0] |= (1 << EXTI9_5_IRQn) | (1 << EXTI0_IRQn) | (1 << EXTI2_IRQn);
+    NVIC->ISER[0] |= (1 << EXTI9_5_IRQn) | (1 << EXTI0_IRQn) | (1 << EXTI1_IRQn);
 }
 
+volatile uint32_t start_press_time = 0;
 void EXTI0_IRQHandler(void)
 {
     EXTI->PR1 = EXTI_PR1_PIF0;
-    if (render) {
+
+    /* FIXME: Maybe name this mutex something better? */
+    if (render_pending) {
         return;
     }
     if (state == STATE_FLASHCARD_NAVIGATION) {
@@ -58,33 +65,52 @@ void EXTI0_IRQHandler(void)
         state = STATE_FLASHCARD_NAVIGATION;
         get_deck_from_sd = 1;
     }
-    render = 1;
+    render_pending = 1;
 }
 
-void EXTI2_IRQHandler(void)
+void EXTI1_IRQHandler(void)
 {
-    EXTI->PR1 = EXTI_PR1_PIF2;
-    if (render) {
+    EXTI->PR1 = EXTI_PR1_PIF1;
+    if (render_pending) {
         return;
     }
-    if (state == STATE_MENU_NAVIGATION) {
-        if (curr_deck_selection > 0) {
-            curr_deck_selection--;
+    if (GPIOA->IDR & GPIO_IDR_ID1) {
+        /* Rising edge */
+        start_press_time = TIM2->CNT;
+        return;
+    } else {
+        /* Falling edge */
+        if ((uint32_t)(TIM2->CNT - start_press_time) < LONG_PRESS_TIME_MS) {
+            /* Short press */
+            if (state == STATE_MENU_NAVIGATION) {
+                if (curr_deck_selection > 0) {
+                    curr_deck_selection--;
+                }
+            } else if (state == STATE_FLASHCARD_NAVIGATION) {
+                if (curr_card_selection > 0) {
+                    curr_card_selection--;
+                }
+
+                /* Always start on the front */
+                if (f_b == BACK) f_b = FRONT;
+            }
+        } else {
+            /* Long press */
+            if (state == STATE_MENU_NAVIGATION) {
+                state = STATE_DOWNLOAD;
+            } else if (state == STATE_FLASHCARD_NAVIGATION) {
+                state = STATE_MENU_NAVIGATION;
+            }
         }
-    } else if (state == STATE_FLASHCARD_NAVIGATION) {
-        if (curr_card_selection > 0) {
-            curr_card_selection--;
-        }
-        if (f_b == BACK) f_b = FRONT;
     }
-    render = 1;
+    render_pending = 1;
 }
 
 void EXTI9_5_IRQHandler(void)
 {
     if (EXTI->PR1 & EXTI_PR1_PIF6) {
         EXTI->PR1 = EXTI_PR1_PIF6;
-        if (render) {
+        if (render_pending) {
             return;
         }
         if (state == STATE_MENU_NAVIGATION) {
@@ -95,9 +121,10 @@ void EXTI9_5_IRQHandler(void)
             if (curr_card_selection + 1 < main_deck.num_cards) {
                 curr_card_selection++;
             }
+
+            /* Always start on the front */
             if (f_b == BACK) f_b = FRONT;
         }
-        render = 1;
+        render_pending = 1;
     }
 }
-

@@ -10,7 +10,7 @@ enum STATES {
 };
 
 extern volatile enum STATES state;
-extern volatile uint8_t render;
+extern volatile uint8_t render_pending;
 
 void state_machine();
 

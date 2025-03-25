@@ -15,7 +15,7 @@
 
 volatile enum STATES state = STATE_MENU_NAVIGATION;
 // volatile enum STATES state = STATE_DOWNLOAD;
-volatile uint8_t render = 0;
+volatile uint8_t render_pending = 0;
 uint8_t fetch_decks = 1;
 
 extern volatile uint8_t curr_deck_selection;
@@ -23,7 +23,7 @@ struct deck main_deck;
 uint8_t num_decks = 0;
 
 #define UART_DELIM    ((char)0xBC)
-#define UART_EOF      ((char)0x01)
+#define UART_EOF      ((char)0x00)
 #define UART_BUF_SIZE (16384)
 
 /* NOTE: This will always be running when there is no interrupt happening */
@@ -87,7 +87,7 @@ void state_machine()
             __enable_irq();
 
             state = STATE_MENU_NAVIGATION;
-            render = 1;
+            render_pending = 1;
             fetch_decks = 1;
 
             break;
@@ -100,7 +100,7 @@ void state_machine()
                 fetch_decks = 0;
             }
 
-            if (!render) break;
+            if (!render_pending) break;
 
             eink_clear(0xFF);
             /* +1 because it is 0 indexed */
@@ -108,7 +108,7 @@ void state_machine()
             draw_header(header);
             draw_main_menu(curr_deck_selection, deck_names, num_decks);
             eink_render_framebuffer();
-            render = 0;
+            render_pending = 0;
 
             break;
 
@@ -117,7 +117,7 @@ void state_machine()
                 parseJSON_file(deck_names[curr_deck_selection], &main_deck);
                 get_deck_from_sd = 0;
             }
-            if (!render) break;
+            if (!render_pending) break;
 
             eink_clear(0xFF);
             /* +1 because it is 0 indexed */
@@ -125,7 +125,7 @@ void state_machine()
             draw_header(header);
             draw_flashcard(main_deck.cards[curr_card_selection], f_b, BLACK);
             eink_render_framebuffer();
-            render = 0;
+            render_pending = 0;
 
             break;
         }

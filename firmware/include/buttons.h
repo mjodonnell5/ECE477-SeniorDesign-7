@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#define LONG_PRESS_TIME_MS (250)
+
 void button_init();
 
 extern volatile uint8_t curr_deck_selection;
