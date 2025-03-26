@@ -8,7 +8,7 @@ from tkinter import simpledialog, messagebox, filedialog
 FLASHCARD_DIR = "flashcards"
 FONT = ("Verdana", 14)
 MAX_FILE_NAME_LENGTH = 13
-MAX_DEF_LENGTH = 100
+MAX_DEF_LENGTH = 250
 
 # Ensure flashcard directory exists
 if not os.path.exists(FLASHCARD_DIR):
