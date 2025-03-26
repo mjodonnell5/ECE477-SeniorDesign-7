@@ -50,6 +50,7 @@ void button_init()
 }
 
 volatile uint32_t start_press_time = 0;
+/* SELECT/FLIP */
 void EXTI0_IRQHandler(void)
 {
     EXTI->PR1 = EXTI_PR1_PIF0;
@@ -61,6 +62,12 @@ void EXTI0_IRQHandler(void)
     if (state == STATE_FLASHCARD_NAVIGATION) {
         /* Flip */
         f_b = !f_b;
+    // } else if (state == STATE_MENU_NAVIGATION) {
+    //     state = STATE_DECK_HOME_PAGE;
+    // } else if (state == STATE_DECK_HOME_PAGE){
+    //     state = STATE_FLASHCARD_NAVIGATION;
+    //     get_deck_from_sd = 1;
+    // }
     } else {
         state = STATE_FLASHCARD_NAVIGATION;
         get_deck_from_sd = 1;
@@ -68,6 +75,7 @@ void EXTI0_IRQHandler(void)
     render_pending = 1;
 }
 
+/* DOWN/BACKWARDS */
 void EXTI1_IRQHandler(void)
 {
     EXTI->PR1 = EXTI_PR1_PIF1;
@@ -96,6 +104,10 @@ void EXTI1_IRQHandler(void)
             }
         } else {
             /* Long press */
+            /* Don't save previous state when going back in the menu */
+            curr_deck_selection = 0;
+            curr_card_selection = 0;
+            f_b = FRONT;
             if (state == STATE_MENU_NAVIGATION) {
                 state = STATE_DOWNLOAD;
             } else if (state == STATE_FLASHCARD_NAVIGATION) {
@@ -106,6 +118,7 @@ void EXTI1_IRQHandler(void)
     render_pending = 1;
 }
 
+/* UP/FORWARDS */
 void EXTI9_5_IRQHandler(void)
 {
     if (EXTI->PR1 & EXTI_PR1_PIF6) {
