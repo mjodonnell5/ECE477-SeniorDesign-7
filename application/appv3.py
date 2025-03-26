@@ -7,6 +7,8 @@ from tkinter import simpledialog, messagebox, filedialog
 
 FLASHCARD_DIR = "flashcards"
 FONT = ("Verdana", 14)
+MAX_FILE_NAME_LENGTH = 13
+MAX_DEF_LENGTH = 100
 
 # Ensure flashcard directory exists
 if not os.path.exists(FLASHCARD_DIR):
@@ -24,9 +26,9 @@ class FlashcardApp(ctk.CTk):
         # self.geometry("700x500")
         # self.attributes("-fullscreen", True)
 
-        width = self.winfo_screenwidth()
-        height = self.winfo_screenheight()
-        self.geometry("%dx%d" % (width, height))
+        # width = self.winfo_screenwidth()
+        # height = self.winfo_screenheight()
+        # self.geometry("%dx%d" % (width, height))
 
 
         self.container = ctk.CTkFrame(self)
@@ -184,6 +186,30 @@ class EditPage(ctk.CTkFrame):
         self.flashcards.append({"term": "", "definition": ""})
         self.refresh_flashcards()
 
+    def limit_definition_length(self, entry):
+        """Limit the length of the definition to MAX_DEF_LENGTH."""
+        if len(entry.get()) > MAX_DEF_LENGTH:
+            entry.delete(MAX_DEF_LENGTH, "end")
+
+    def adjust_textbox_height(self, entry):
+        # Get the total number of lines in the Text widget
+        num_lines = int(entry.index('end-1c').split('.')[0])
+
+        # Set the height dynamically (minimum 1 line)
+        entry.config(height=max(1, num_lines))
+
+    def on_text_change(self, entry):
+        # Get current text
+        text = entry.get("1.0", "end-1c")  # Get all text (excluding the trailing newline)
+
+        # Enforce 100-character limit
+        if len(text) > 100:
+            entry.delete("1.0", "end")  # Clear text
+            entry.insert("1.0", text[:100])  # Insert only the first 100 chars
+
+        # Adjust the textbox height dynamically
+        self.adjust_textbox_height(entry)
+
     def refresh_flashcards(self):
         """Update flashcard list in the editor."""
         for widget in self.flashcard_frame.winfo_children():
@@ -198,8 +224,12 @@ class EditPage(ctk.CTkFrame):
             term_entry.pack(side="left", padx=5)
 
             definition_entry = ctk.CTkEntry(row, font=FONT, width=250)
+            
             definition_entry.insert(0, flashcard["definition"])
             definition_entry.pack(side="left", padx=5)
+            definition_entry.bind("<KeyRelease>", lambda e, entry=definition_entry: self.limit_definition_length(entry))
+            # definition_entry.bind("<KeyRelease>", lambda e: self.on_text_change(definition_entry))
+
 
             ctk.CTkButton(row, text="X", fg_color="red", command=lambda idx=i: self.delete_flashcard(idx)).pack(side="left", padx=5)
 
@@ -219,6 +249,11 @@ class EditPage(ctk.CTkFrame):
             self.controller.pages[MainPage].refresh_list()
             self.controller.show_page(MainPage)
             return
+        
+        if len(set_name) > MAX_FILE_NAME_LENGTH:
+            messagebox.showerror("Error", f"Set name must be at most {MAX_FILE_NAME_LENGTH} characters long.")
+            return
+
         filename = os.path.join(FLASHCARD_DIR, f"{set_name}")
 
         # flashcard_data = [{"term": fc["term_entry"].get(), "definition": fc["definition_entry"].get()} for fc in self.flashcards]
@@ -246,7 +281,9 @@ class EditPage(ctk.CTkFrame):
 
 if __name__ == "__main__":
     app = FlashcardApp()
-    
+    # app.state("zoomed")
+    app.geometry(f"{app.winfo_screenwidth()}x{app.winfo_screenheight()}+0+0")
+
     app.mainloop()
     
     
