@@ -23,6 +23,9 @@ extern volatile uint8_t curr_deck_selection;
 struct deck main_deck;
 uint8_t num_decks = 0;
 
+extern volatile uint8_t press;
+extern volatile uint8_t btn;
+
 #define UART_DELIM    ((char)0xBC)
 #define UART_EOF      ((char)0x00)
 #define UART_BUF_SIZE (16384)
@@ -84,7 +87,7 @@ void state_machine()
 
             /* 3. Create and open file on SD card with that name */
             FIL fil;
-            FRESULT fr = f_open(&fil, filename, FA_WRITE | FA_OPEN_APPEND);
+            FRESULT fr = f_open(&fil, filename, FA_WRITE | FA_CREATE_NEW);
             if (fr) {
                 // log_to_sd("CANT OPEN\n");
                 // log_to_sd(filename);
@@ -119,6 +122,38 @@ void state_machine()
 
             if (!render_pending) break;
 
+            if (btn == SELECT) {
+                if (press == SHORT_PRESS) {
+                    state = STATE_FLASHCARD_NAVIGATION;
+                    get_deck_from_sd = 1;
+                    press = NO_PRESS;
+                    break;
+                } else if (press == LONG_PRESS) {
+                    /* Delete highlighted deck */
+                    delete_file(deck_names[curr_deck_selection]);
+                }
+                press = NO_PRESS;
+            } else if (btn == BACKWARD) {
+                if (press == SHORT_PRESS) {
+                    if (curr_deck_selection > 0) {
+                        curr_deck_selection--;
+                    }
+                } else if (press == LONG_PRESS) {
+                    state = STATE_DOWNLOAD;
+                    break;
+                }
+                press = NO_PRESS;
+            } else if (btn == FORWARD) {
+                if (press == SHORT_PRESS) {
+                    if (curr_deck_selection + 1 < num_decks) {
+                        curr_deck_selection++;
+                    }
+                } else if (press == LONG_PRESS) {
+                }
+                press = NO_PRESS;
+            }
+
+
             eink_clear(0xFF);
             /* +1 because it is 0 indexed */
             snprintf(header, 25, "SELECT A DECK: %d/%d", curr_deck_selection + 1, num_decks);
@@ -145,6 +180,46 @@ void state_machine()
                 // shuffle_deck(&main_deck);
             }
             if (!render_pending) break;
+
+            if (btn == SELECT) {
+                if (press == SHORT_PRESS) {
+                    /* Flip */
+                    f_b = !f_b;
+                } else if (press == LONG_PRESS) {
+                }
+                press = NO_PRESS;
+            } else if (btn == BACKWARD) {
+                if (press == SHORT_PRESS) {
+                    if (curr_card_selection > 0) {
+                        curr_card_selection--;
+                    }
+
+                    /* Always start on the front */
+                    if (f_b == BACK) f_b = FRONT;
+                } else if (press == LONG_PRESS) {
+                    state = STATE_MENU_NAVIGATION;
+
+                    /* Don't save previous state when going back in the menu */
+                    curr_deck_selection = 0;
+                    curr_card_selection = 0;
+                    f_b = FRONT;
+
+                    press = NO_PRESS;
+                    break;
+                }
+                press = NO_PRESS;
+            } else if (btn == FORWARD) {
+                if (press == SHORT_PRESS) {
+                    if (curr_card_selection + 1 < main_deck.num_cards) {
+                        curr_card_selection++;
+                    }
+
+                    /* Always start on the front */
+                    if (f_b == BACK) f_b = FRONT;
+                } else if (press == LONG_PRESS) {
+                }
+                press = NO_PRESS;
+            }
 
             eink_clear(0xFF);
             /* +1 because it is 0 indexed */
