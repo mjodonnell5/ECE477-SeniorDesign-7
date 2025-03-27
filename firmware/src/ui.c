@@ -206,7 +206,7 @@ void draw_centered_string_wrapped(struct font f, char* string, uint8_t col)
 {
     uint16_t text_width = strlen(string) * f.width;
     uint8_t num_wraps = text_width / (EINK_WIDTH - 20);
-    uint8_t height = (EINK_HEIGHT - (num_wraps * 10)) / 2;
+    uint8_t height = (EINK_HEIGHT - (num_wraps * f.height)) / 2;
 
     uint8_t width = (EINK_WIDTH - text_width) / 2;
     if (num_wraps > 0) width = 20;

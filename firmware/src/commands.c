@@ -455,14 +455,14 @@ void mount()
 {
     FATFS *fs = &fs_storage;
     if (fs->id != 0) {
-        // print_error(FR_DISK_ERR, "Already mounted.");
-        // log_to_sd("Already mounted");
+        print_error(FR_DISK_ERR, "Already mounted.");
+        log_to_sd("Already mounted");
         return;
     }
     int res = f_mount(fs, "", 1);
     if (res != FR_OK){
-        // print_error(res, "Error occurred while mounting");
-        // log_to_sd("Error occured while mounting");
+        print_error(res, "Error occurred while mounting");
+        log_to_sd("Error occured while mounting");
     }
 }
 

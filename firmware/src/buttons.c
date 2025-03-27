@@ -50,30 +50,33 @@ void button_init()
 }
 
 volatile uint32_t start_press_time = 0;
+
+volatile uint8_t press = NO_PRESS;
+volatile uint8_t btn = SELECT;
+
+/* SELECT/FLIP */
 void EXTI0_IRQHandler(void)
 {
     EXTI->PR1 = EXTI_PR1_PIF0;
 
-    /* FIXME: Maybe name this mutex something better? */
     if (render_pending) {
         return;
     }
-    if (state == STATE_FLASHCARD_NAVIGATION) {
-        /* Flip */
-        f_b = !f_b;
-    } else {
-        state = STATE_FLASHCARD_NAVIGATION;
-        get_deck_from_sd = 1;
-    }
+
+    btn = SELECT;
+    press = SHORT_PRESS;
+
     render_pending = 1;
 }
 
+/* DOWN/BACKWARDS */
 void EXTI1_IRQHandler(void)
 {
     EXTI->PR1 = EXTI_PR1_PIF1;
     if (render_pending) {
         return;
     }
+    btn = BACKWARD;
     if (GPIOA->IDR & GPIO_IDR_ID1) {
         /* Rising edge */
         start_press_time = TIM2->CNT;
@@ -82,30 +85,16 @@ void EXTI1_IRQHandler(void)
         /* Falling edge */
         if ((uint32_t)(TIM2->CNT - start_press_time) < LONG_PRESS_TIME_MS) {
             /* Short press */
-            if (state == STATE_MENU_NAVIGATION) {
-                if (curr_deck_selection > 0) {
-                    curr_deck_selection--;
-                }
-            } else if (state == STATE_FLASHCARD_NAVIGATION) {
-                if (curr_card_selection > 0) {
-                    curr_card_selection--;
-                }
-
-                /* Always start on the front */
-                if (f_b == BACK) f_b = FRONT;
-            }
+            press = SHORT_PRESS;
         } else {
             /* Long press */
-            if (state == STATE_MENU_NAVIGATION) {
-                state = STATE_DOWNLOAD;
-            } else if (state == STATE_FLASHCARD_NAVIGATION) {
-                state = STATE_MENU_NAVIGATION;
-            }
+            press = LONG_PRESS;
         }
     }
     render_pending = 1;
 }
 
+/* UP/FORWARDS */
 void EXTI9_5_IRQHandler(void)
 {
     if (EXTI->PR1 & EXTI_PR1_PIF6) {
@@ -113,18 +102,9 @@ void EXTI9_5_IRQHandler(void)
         if (render_pending) {
             return;
         }
-        if (state == STATE_MENU_NAVIGATION) {
-            if (curr_deck_selection + 1 < num_decks) {
-                curr_deck_selection++;
-            }
-        } else if (state == STATE_FLASHCARD_NAVIGATION) {
-            if (curr_card_selection + 1 < main_deck.num_cards) {
-                curr_card_selection++;
-            }
+        btn = FORWARD;
+        press = SHORT_PRESS;
 
-            /* Always start on the front */
-            if (f_b == BACK) f_b = FRONT;
-        }
         render_pending = 1;
     }
 }

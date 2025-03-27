@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <stm32l432xx.h>
 
 #include "../include/state.h"
@@ -22,9 +23,28 @@ extern volatile uint8_t curr_deck_selection;
 struct deck main_deck;
 uint8_t num_decks = 0;
 
+extern volatile uint8_t press;
+extern volatile uint8_t btn;
+
 #define UART_DELIM    ((char)0xBC)
 #define UART_EOF      ((char)0x00)
 #define UART_BUF_SIZE (16384)
+
+/* https://stackoverflow.com/questions/6127503/shuffle-array-in-c */
+void shuffle_deck(struct deck* deck)
+{
+    srand(TIM2->CNT);
+
+    if (deck->num_cards > 1) {
+        size_t i;
+        for (i = 0; i < deck->num_cards - 1; i++) {
+          size_t j = i + rand() / (RAND_MAX / (deck->num_cards - i) + 1);
+          struct flashcard t = deck->cards[j];
+          deck->cards[j] = deck->cards[i];
+          deck->cards[i] = t;
+        }
+    }
+}
 
 /* NOTE: This will always be running when there is no interrupt happening */
 void state_machine()
@@ -67,7 +87,7 @@ void state_machine()
 
             /* 3. Create and open file on SD card with that name */
             FIL fil;
-            FRESULT fr = f_open(&fil, filename, FA_WRITE | FA_OPEN_APPEND);
+            FRESULT fr = f_open(&fil, filename, FA_WRITE | FA_CREATE_NEW);
             if (fr) {
                 // log_to_sd("CANT OPEN\n");
                 // log_to_sd(filename);
@@ -102,6 +122,38 @@ void state_machine()
 
             if (!render_pending) break;
 
+            if (btn == SELECT) {
+                if (press == SHORT_PRESS) {
+                    state = STATE_FLASHCARD_NAVIGATION;
+                    get_deck_from_sd = 1;
+                    press = NO_PRESS;
+                    break;
+                } else if (press == LONG_PRESS) {
+                    /* Delete highlighted deck */
+                    delete_file(deck_names[curr_deck_selection]);
+                }
+                press = NO_PRESS;
+            } else if (btn == BACKWARD) {
+                if (press == SHORT_PRESS) {
+                    if (curr_deck_selection > 0) {
+                        curr_deck_selection--;
+                    }
+                } else if (press == LONG_PRESS) {
+                    state = STATE_DOWNLOAD;
+                    break;
+                }
+                press = NO_PRESS;
+            } else if (btn == FORWARD) {
+                if (press == SHORT_PRESS) {
+                    if (curr_deck_selection + 1 < num_decks) {
+                        curr_deck_selection++;
+                    }
+                } else if (press == LONG_PRESS) {
+                }
+                press = NO_PRESS;
+            }
+
+
             eink_clear(0xFF);
             /* +1 because it is 0 indexed */
             snprintf(header, 25, "SELECT A DECK: %d/%d", curr_deck_selection + 1, num_decks);
@@ -112,16 +164,66 @@ void state_machine()
 
             break;
 
+        case STATE_DECK_HOME_PAGE:
+        //     if (!render_pending) break;
+        //     eink_clear(0xFF);
+        //     snprintf(header, 25, "%s home", deck_names[curr_deck_selection]);
+        //     draw_header(header);
+        //     eink_render_framebuffer();
+        //     render_pending = 0;
+            break;
+
         case STATE_FLASHCARD_NAVIGATION:
             if (get_deck_from_sd) {
                 parseJSON_file(deck_names[curr_deck_selection], &main_deck);
                 get_deck_from_sd = 0;
+                // shuffle_deck(&main_deck);
             }
             if (!render_pending) break;
 
+            if (btn == SELECT) {
+                if (press == SHORT_PRESS) {
+                    /* Flip */
+                    f_b = !f_b;
+                } else if (press == LONG_PRESS) {
+                }
+                press = NO_PRESS;
+            } else if (btn == BACKWARD) {
+                if (press == SHORT_PRESS) {
+                    if (curr_card_selection > 0) {
+                        curr_card_selection--;
+                    }
+
+                    /* Always start on the front */
+                    if (f_b == BACK) f_b = FRONT;
+                } else if (press == LONG_PRESS) {
+                    state = STATE_MENU_NAVIGATION;
+
+                    /* Don't save previous state when going back in the menu */
+                    curr_deck_selection = 0;
+                    curr_card_selection = 0;
+                    f_b = FRONT;
+
+                    press = NO_PRESS;
+                    break;
+                }
+                press = NO_PRESS;
+            } else if (btn == FORWARD) {
+                if (press == SHORT_PRESS) {
+                    if (curr_card_selection + 1 < main_deck.num_cards) {
+                        curr_card_selection++;
+                    }
+
+                    /* Always start on the front */
+                    if (f_b == BACK) f_b = FRONT;
+                } else if (press == LONG_PRESS) {
+                }
+                press = NO_PRESS;
+            }
+
             eink_clear(0xFF);
             /* +1 because it is 0 indexed */
-            snprintf(header, 25, "%s | %d/%d", main_deck.name, curr_card_selection + 1, main_deck.num_cards);
+            snprintf(header, 25, "%s | %d/%d", deck_names[curr_deck_selection], curr_card_selection + 1, main_deck.num_cards);
             draw_header(header);
             draw_flashcard(main_deck.cards[curr_card_selection], f_b, BLACK);
             eink_render_framebuffer();
