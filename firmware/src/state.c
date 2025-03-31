@@ -14,7 +14,8 @@
 #include "../include/uart.h"
 #include "../include/ff.h"
 
-volatile enum STATES state = STATE_MENU_NAVIGATION;
+// volatile enum STATES state = STATE_MENU_NAVIGATION;
+volatile enum STATES state = STATE_SETTINGS;
 // volatile enum STATES state = STATE_DOWNLOAD;
 volatile uint8_t render_pending = 0;
 uint8_t fetch_decks = 1;
@@ -25,6 +26,9 @@ uint8_t num_decks = 0;
 
 extern volatile uint8_t press;
 extern volatile uint8_t btn;
+
+volatile uint8_t shuffle = 0;
+volatile uint8_t learning_algo = 0;
 
 #define UART_DELIM    ((char)0xBC)
 #define UART_EOF      ((char)0x00)
@@ -52,6 +56,7 @@ void state_machine()
     char deck_names[MAX_DECKS][MAX_NAME_SIZE] = {0};
     char header[25];
 
+    char buf[100];
     for (;;) {
         delay_ms(10);
         switch (state) {
@@ -130,7 +135,11 @@ void state_machine()
                     break;
                 } else if (press == LONG_PRESS) {
                     /* Delete highlighted deck */
-                    delete_file(deck_names[curr_deck_selection]);
+                    /* TODO: Add confirmation */
+                    state = STATE_DELETE_DECK_CONFIRM;
+                    // render_pending = 1;
+                    press = NO_PRESS;
+                    break;
                 }
                 press = NO_PRESS;
             } else if (btn == BACKWARD) {
@@ -149,10 +158,12 @@ void state_machine()
                         curr_deck_selection++;
                     }
                 } else if (press == LONG_PRESS) {
+                    state = STATE_SETTINGS;
+                    press = NO_PRESS;
+                    break;
                 }
                 press = NO_PRESS;
             }
-
 
             eink_clear(0xFF);
             /* +1 because it is 0 indexed */
@@ -162,6 +173,95 @@ void state_machine()
             eink_render_framebuffer();
             render_pending = 0;
 
+            break;
+
+        case STATE_DELETE_DECK_CONFIRM:
+            if (!render_pending) break;
+
+            if (btn == SELECT) {
+                if (press == SHORT_PRESS) {
+                    break;
+                } else if (press == LONG_PRESS) {
+                    /* Delete highlighted deck */
+                    // delete_file(deck_names[curr_deck_selection]);
+                    fetch_decks = 1;
+                    // render_pending = 1;
+                    state = STATE_MENU_NAVIGATION;
+                    press = NO_PRESS;
+                    break;
+                }
+                press = NO_PRESS;
+            } else if (btn == BACKWARD) {
+                if (press == SHORT_PRESS) {
+                    press = NO_PRESS;
+                    break;
+                } else if (press == LONG_PRESS) {
+                    // render_pending = 1;
+                    state = STATE_MENU_NAVIGATION;
+                    press = NO_PRESS;
+                    break;
+                }
+                press = NO_PRESS;
+            } else if (btn == FORWARD) {
+                if (press == SHORT_PRESS) {
+                } else if (press == LONG_PRESS) {
+                }
+                press = NO_PRESS;
+            }
+
+            eink_clear(0xFF);
+            snprintf(header, 25, "CONFIRM DELETION");
+            draw_header(header);
+
+            snprintf(buf, 100, "Long press SELECT to delete %s", deck_names[curr_deck_selection]);
+            draw_string(large_font, 15, 50, buf, BLACK);
+            snprintf(buf, 100, "Long press BACK to return to main menu");
+            draw_string(large_font, 15, 70, buf, BLACK);
+            eink_render_framebuffer();
+            render_pending = 0;
+
+            break;
+
+        case STATE_SETTINGS:
+            if (!render_pending) break;
+
+            if (btn == SELECT) {
+                if (press == SHORT_PRESS) {
+                    shuffle = !shuffle;
+                } else if (press == LONG_PRESS) {
+                }
+                press = NO_PRESS;
+            } else if (btn == BACKWARD) {
+                if (press == SHORT_PRESS) {
+                    press = NO_PRESS;
+                    break;
+                } else if (press == LONG_PRESS) {
+                    state = STATE_MENU_NAVIGATION;
+                    press = NO_PRESS;
+                    break;
+                }
+                press = NO_PRESS;
+            } else if (btn == FORWARD) {
+                if (press == SHORT_PRESS) {
+                    learning_algo = !learning_algo;
+                } else if (press == LONG_PRESS) {
+                }
+                press = NO_PRESS;
+            }
+            eink_clear(0xFF);
+            snprintf(header, 25, "SETTINGS");
+            draw_header(header);
+
+            snprintf(buf, 100, "Press SELECT to toggle shuffling");
+            draw_string(large_font, 15, 50, buf, BLACK);
+            snprintf(buf, 100, "SHUFFLE: %s", shuffle ? "YES" : "NO");
+            draw_string(large_font, 15, 70, buf, BLACK);
+            snprintf(buf, 100, "Press FORWARD to toggle learning algo");
+            draw_string(large_font, 15, 90, buf, BLACK);
+            snprintf(buf, 100, "LEARNING ALGORITHM: %s", learning_algo ? "YES" : "NO");
+            draw_string(large_font, 15, 110, buf, BLACK);
+            eink_render_framebuffer();
+            render_pending = 0;
             break;
 
         case STATE_DECK_HOME_PAGE:

@@ -41,7 +41,7 @@ void button_init()
     /* FIXME: We only want long press on the back button */
     // EXTI->FTSR1 |= EXTI_FTSR1_FT6
     //             | EXTI_FTSR1_FT2 | EXTI_FTSR1_FT0;
-    EXTI->FTSR1 |= EXTI_FTSR1_FT1;
+    EXTI->FTSR1 |= EXTI_FTSR1_FT0 | EXTI_FTSR1_FT1;
 
     EXTI->IMR1 |= EXTI_IMR1_IM0
                | EXTI_IMR1_IM6 | EXTI_IMR1_IM1;
@@ -64,7 +64,20 @@ void EXTI0_IRQHandler(void)
     }
 
     btn = SELECT;
-    press = SHORT_PRESS;
+    if (GPIOB->IDR & GPIO_IDR_ID0) {
+        /* Rising edge */
+        start_press_time = TIM2->CNT;
+        return;
+    } else {
+        /* Falling edge */
+        if ((uint32_t)(TIM2->CNT - start_press_time) < LONG_PRESS_TIME_MS) {
+            /* Short press */
+            press = SHORT_PRESS;
+        } else {
+            /* Long press */
+            press = LONG_PRESS;
+        }
+    }
 
     render_pending = 1;
 }
