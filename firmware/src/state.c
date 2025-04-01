@@ -14,8 +14,8 @@
 #include "../include/uart.h"
 #include "../include/ff.h"
 
-// volatile enum STATES state = STATE_MENU_NAVIGATION;
-volatile enum STATES state = STATE_SETTINGS;
+volatile enum STATES state = STATE_MENU_NAVIGATION;
+// volatile enum STATES state = STATE_SETTINGS;
 // volatile enum STATES state = STATE_DOWNLOAD;
 volatile uint8_t render_pending = 0;
 uint8_t fetch_decks = 1;
@@ -149,6 +149,7 @@ void state_machine()
                     }
                 } else if (press == LONG_PRESS) {
                     state = STATE_DOWNLOAD;
+                    press = NO_PRESS;
                     break;
                 }
                 press = NO_PRESS;
@@ -277,7 +278,9 @@ void state_machine()
             if (get_deck_from_sd) {
                 parseJSON_file(deck_names[curr_deck_selection], &main_deck);
                 get_deck_from_sd = 0;
-                // shuffle_deck(&main_deck);
+                if (shuffle) {
+                    shuffle_deck(&main_deck);
+                }
             }
             if (!render_pending) break;
 
