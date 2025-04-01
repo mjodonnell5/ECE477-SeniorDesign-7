@@ -126,6 +126,9 @@ class MainPage(ctk.CTkFrame):
 
         selected_port = ports[0] if len(ports) == 1 else simpledialog.askstring("Select COM Port", f"Available ports: {', '.join(ports)}")
 
+        print(filename.encode() + b'\xBC' + data_payload.encode() + b'\x00')
+
+
         if selected_port:
             try:
                 with serial.Serial(selected_port, baudrate=9600, timeout=2) as ser:
