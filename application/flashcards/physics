@@ -1,0 +1,25 @@
+{
+    "flashcardSetName": "physics",
+    "flashcards": [
+        {
+            "term": "Newton's First Law",
+            "definition": "An object in motion stays in motion unless acted upon by an external force."
+        },
+        {
+            "term": "Acceleration",
+            "definition": "The rate of change of velocity over time."
+        },
+        {
+            "term": "test",
+            "definition": "1"
+        },
+        {
+            "term": "2",
+            "definition": "2"
+        },
+        {
+            "term": "3a",
+            "definition": "3b"
+        }
+    ]
+}

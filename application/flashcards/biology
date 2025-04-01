@@ -1,0 +1,21 @@
+{
+    "flashcardSetName": "biology",
+    "flashcards": [
+        {
+            "term": "Atom",
+            "definition": "The smallest unit of a chemical element, consisting of a nucleus and electrons."
+        },
+        {
+            "term": "Condensation",
+            "definition": "The process by which water vapor in the air is changed into liquid water."
+        },
+        {
+            "term": "Ecosystem",
+            "definition": "A community of interacting organisms and their physical environment."
+        },
+        {
+            "term": "Energy",
+            "definition": "The ability to do work or cause change, existing in various forms such as kinetic, potential, thermal, and chemical energy."
+        }
+    ]
+}
