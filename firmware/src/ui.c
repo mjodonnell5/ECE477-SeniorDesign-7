@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include <stm32l432xx.h>
+#include <stm32l496xx.h>
 
 #include "../include/eink.h"
 #include "../include/clock.h"

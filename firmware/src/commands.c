@@ -1,5 +1,5 @@
 
-#include <stm32l432xx.h>
+#include <stm32l496xx.h>
 #include "ff.h"
 // #include "lcd.h"
 // #include "tty.h"
