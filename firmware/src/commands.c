@@ -306,29 +306,29 @@ void input(int argc, char *argv[])
 //DEBUGGING FUNCTION
 void log_to_sd(const char *message)
 {
-    // FIL fil;        /* File object */
-    // FRESULT fr;     /* FatFs return code */
-    // const char *filename = "log.txt";
-    // // const char *message = "BANG DELETED!!.\n";
-    //
-    // // Open the file in append mode (or create if it doesn't exist)
-    // fr = f_open(&fil, filename, FA_WRITE | FA_OPEN_APPEND);
-    // if (fr) {
-    //     printf("Error opening %s: %d\n", filename, fr);
-    //     return;
-    // }
-    //
-    // UINT wlen;
-    // fr = f_write(&fil, message, strlen(message), &wlen);
-    // if (fr) {
-    //     printf("Error writing to %s: %d\n", filename, fr);
-    // }
-    //
-    // // Flush the file to ensure data is written
-    // f_sync(&fil);
-    // 
-    // // Close the file
-    // f_close(&fil);
+    FIL fil;        /* File object */
+    FRESULT fr;     /* FatFs return code */
+    const char *filename = "log.txt";
+    // const char *message = "BANG DELETED!!.\n";
+    
+    // Open the file in append mode (or create if it doesn't exist)
+    fr = f_open(&fil, filename, FA_WRITE | FA_OPEN_APPEND);
+    if (fr) {
+        printf("Error opening %s: %d\n", filename, fr);
+        return;
+    }
+    
+    UINT wlen;
+    fr = f_write(&fil, message, strlen(message), &wlen);
+    if (fr) {
+        printf("Error writing to %s: %d\n", filename, fr);
+    }
+    
+    // Flush the file to ensure data is written
+    f_sync(&fil);
+    
+    // Close the file
+    f_close(&fil);
 }
 
 
