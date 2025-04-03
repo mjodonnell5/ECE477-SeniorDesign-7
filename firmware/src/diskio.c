@@ -1,6 +1,6 @@
 
 // #include "stm32f0xx.h"
-#include <stm32l432xx.h>
+#include <stm32l496xx.h>
 #include "ff.h"			/* Obtains integer types */
 #include "diskio.h"		/* Declarations of disk functions */
 #include <stdio.h>
