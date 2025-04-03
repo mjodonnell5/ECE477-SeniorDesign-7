@@ -30,7 +30,19 @@ void power_off()
 
     eink_sleep();
 
-    /* FIXME: Turn off clocks to everything? */
+    /* Buttons */
+    /* Set to analog */
+    /* Disable pull up/down */
+    RCC->AHB2ENR &= ~RCC_AHB2ENR_GPIOBEN;
+    RCC->AHB2ENR &= ~RCC_AHB2ENR_GPIOAEN;
+
+    /* E-ink */
+    RCC->APB2ENR &= ~RCC_APB2ENR_SPI1EN;
+
+    /* SD card */
+    RCC->APB1ENR1 &= ~RCC_APB1ENR1_SPI3EN;
+
+    /* Battery monitor */
 
     enter_stop_2();
 }
