@@ -23,16 +23,28 @@ class FlashcardApp(ctk.CTk):
         super().__init__()
 
         self.title("Flashcard Manager")
-        # self.geometry("700x500")
+        self.geometry(f"{self.winfo_screenwidth()}x{self.winfo_screenheight()}+0+0")
         # self.attributes("-fullscreen", True)
+        # self.bind("<Escape>", lambda e: self.attributes("-fullscreen", False))
 
-        # width = self.winfo_screenwidth()
-        # height = self.winfo_screenheight()
-        # self.geometry("%dx%d" % (width, height))
 
+        # self.container = ctk.CTkFrame(self)
+        # self.container.pack(fill="both", expand=True)
 
         self.container = ctk.CTkFrame(self)
-        self.container.pack(fill="both", expand=True)
+        self.container.grid(row=0, column=0, sticky="nsew")
+
+        # self.center_frame = tk.Frame(self)
+        # self.center_frame.grid(row=0, column=0, sticky="nsew")
+        # self.center_frame.grid_rowconfigure(0, weight=1)
+        # self.center_frame.grid_columnconfigure(0, weight=1)
+
+
+        # Ensure the parent widget resizes properly
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
+        self.container.grid_rowconfigure(2, weight=1)
+        self.container.grid_columnconfigure(0, weight=1)
 
         self.pages = {}
 
@@ -81,7 +93,7 @@ class MainPage(ctk.CTkFrame):
 
         for filename in files:
             row = ctk.CTkFrame(self.flashcard_list_frame)
-            row.pack(fill="x", pady=2)
+            row.pack(fill="y", pady=2)
 
             label = ctk.CTkLabel(row, text=filename.capitalize(), font=FONT, width=100, anchor="w")
             label.grid(row=0, column=0, padx=20, sticky="w")  # Left-align label
@@ -153,7 +165,7 @@ class EditPage(ctk.CTkFrame):
         self.set_name_label.pack(side="left", padx=5)
 
         self.set_name_entry = ctk.CTkEntry(name_frame, font=FONT)
-        self.set_name_entry.pack(side="left")
+        self.set_name_entry.pack(side="left",  expand=True, fill="x")
 
         self.flashcard_frame = ctk.CTkFrame(self)
         self.flashcard_frame.pack(fill="both", expand=True)
@@ -220,7 +232,7 @@ class EditPage(ctk.CTkFrame):
 
         for i, flashcard in enumerate(self.flashcards):
             row = ctk.CTkFrame(self.flashcard_frame)
-            row.pack(fill="x", pady=2)
+            row.pack(fill="y", pady=2)
 
             term_entry = ctk.CTkEntry(row, font=FONT, width=150)
             term_entry.insert(0, flashcard["term"])
@@ -232,6 +244,7 @@ class EditPage(ctk.CTkFrame):
             definition_entry.pack(side="left", padx=5)
             definition_entry.bind("<KeyRelease>", lambda e, entry=definition_entry: self.limit_definition_length(entry))
             # definition_entry.bind("<KeyRelease>", lambda e: self.on_text_change(definition_entry))
+            
 
 
             ctk.CTkButton(row, text="X", fg_color="red", command=lambda idx=i: self.delete_flashcard(idx)).pack(side="left", padx=5)
