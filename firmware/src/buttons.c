@@ -13,6 +13,18 @@ extern uint8_t num_decks;
 extern uint8_t curr_page;
 extern struct deck main_deck;
 
+void disable_buttons()
+{
+    EXTI->IMR1 &= ~(EXTI_IMR1_IM0
+               | EXTI_IMR1_IM6 | EXTI_IMR1_IM1);
+}
+
+void enable_buttons()
+{
+    EXTI->IMR1 |= EXTI_IMR1_IM0
+               | EXTI_IMR1_IM6 | EXTI_IMR1_IM1;
+}
+
 void button_init()
 {
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
