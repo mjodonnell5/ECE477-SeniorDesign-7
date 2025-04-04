@@ -4,6 +4,7 @@ import json
 import serial
 import serial.tools.list_ports
 from tkinter import simpledialog, messagebox, filedialog
+import tkinter as tk
 
 FLASHCARD_DIR = "flashcards"
 FONT = ("Verdana", 14)
@@ -164,16 +165,23 @@ class EditPage(ctk.CTkFrame):
         self.set_name_label = ctk.CTkLabel(name_frame, text="Set Name:", font=FONT)
         self.set_name_label.pack(side="left", padx=5)
 
-        self.set_name_entry = ctk.CTkEntry(name_frame, font=FONT)
+        self.set_name_entry = ctk.CTkEntry(name_frame, font=FONT, width=200)
         self.set_name_entry.pack(side="left",  expand=True, fill="x")
 
-        self.flashcard_frame = ctk.CTkFrame(self)
-        self.flashcard_frame.pack(fill="both", expand=True)
+        # self.flashcard_frame = ctk.CTkFrame(self)
+        # self.flashcard_frame.pack(fill="both", expand=True)
+
+        # Create a scrollable frame for flashcards
+        self.flashcard_scrollable_frame = ctk.CTkScrollableFrame(self, width=800, height=450)
+        self.flashcard_scrollable_frame.pack(fill="both", expand=True, padx=10, pady=10)
+
 
         ctk.CTkButton(self, text="Add Flashcard", fg_color="gray", command=self.add_flashcard).pack(pady=5)
         ctk.CTkButton(self, text="Save & Back", fg_color="green", command=self.save_and_back).pack(pady=5)
 
         self.flashcards = []
+
+
 
     def load_flashcard_set(self, filename):
         """Load existing flashcard set into the editor."""
@@ -227,22 +235,33 @@ class EditPage(ctk.CTkFrame):
 
     def refresh_flashcards(self):
         """Update flashcard list in the editor."""
-        for widget in self.flashcard_frame.winfo_children():
+        for widget in self.flashcard_scrollable_frame.winfo_children():
             widget.destroy()
 
         for i, flashcard in enumerate(self.flashcards):
-            row = ctk.CTkFrame(self.flashcard_frame)
+            # row = ctk.CTkFrame(self.flashcard_frame)
+            row = ctk.CTkFrame(self.flashcard_scrollable_frame)
+
             row.pack(fill="y", pady=2)
 
-            term_entry = ctk.CTkEntry(row, font=FONT, width=150)
+            # Add row number label
+            row_number_label = ctk.CTkLabel(row, text=f"{i + 1}.", font=FONT, width=30, anchor="w")
+            row_number_label.pack(side="left", padx=5)
+
+            term_entry = ctk.CTkEntry(row, font=FONT, width= 200)
             term_entry.insert(0, flashcard["term"])
             term_entry.pack(side="left", padx=5)
 
-            definition_entry = ctk.CTkEntry(row, font=FONT, width=250)
-            
-            definition_entry.insert(0, flashcard["definition"])
+            # definition_entry = ctk.CTkEntry(row, font=FONT, width=500)
+
+            definition_entry = ctk.CTkTextbox(row, font=FONT, width=500, height=50, wrap ="word")
+            definition_entry.insert("1.0", flashcard["definition"])  # Insert the existing definition text
             definition_entry.pack(side="left", padx=5)
             definition_entry.bind("<KeyRelease>", lambda e, entry=definition_entry: self.limit_definition_length(entry))
+            
+            # definition_entry.insert(0, flashcard["definition"])
+            # definition_entry.pack(side="left", padx=5)
+            # definition_entry.bind("<KeyRelease>", lambda e, entry=definition_entry: self.limit_definition_length(entry))
             # definition_entry.bind("<KeyRelease>", lambda e: self.on_text_change(definition_entry))
             
 
@@ -255,6 +274,12 @@ class EditPage(ctk.CTkFrame):
     def delete_flashcard(self, index):
         self.save_current_flashcards() # fist save the current flashcards
         """Delete a flashcard."""
+        # for widget in self.flashcard_frame.winfo_children():
+        #     if widget.winfo_y() == self.flashcards[index]["term_entry"].winfo_y():
+        #         print("Here")
+        #         widget.destroy()
+        #         break
+            # widget.destroy()
         del self.flashcards[index]
         self.refresh_flashcards()
 
@@ -275,11 +300,19 @@ class EditPage(ctk.CTkFrame):
         # flashcard_data = [{"term": fc["term_entry"].get(), "definition": fc["definition_entry"].get()} for fc in self.flashcards]
         
         # only save flashcards with actual data
+        # flashcard_data = [
+        #     {"term": fc["term_entry"].get(), "definition": fc["definition_entry"].get()}
+        #     for fc in self.flashcards
+        #     if fc["term_entry"].get().strip() and fc["definition_entry"].get().strip()
+        # ]
         flashcard_data = [
-            {"term": fc["term_entry"].get(), "definition": fc["definition_entry"].get()}
-            for fc in self.flashcards
-            if fc["term_entry"].get().strip() and fc["definition_entry"].get().strip()
-        ]
+        {
+            "term": fc["term_entry"].get().strip(),
+            "definition": fc["definition_entry"].get("1.0", "end-1c").strip()  # Use "1.0" and "end-1c" for CTkTextbox
+        }
+        for fc in self.flashcards
+        if fc["term_entry"].get().strip() and fc["definition_entry"].get("1.0", "end-1c").strip()
+    ]
 
         data = {"flashcardSetName": set_name, "flashcards": flashcard_data} # fix to add set name to json so it can be parsed
 
@@ -293,7 +326,7 @@ class EditPage(ctk.CTkFrame):
         """Save the current text in all term/definition boxes before any modification."""
         for flashcard in self.flashcards:
             flashcard["term"] = flashcard["term_entry"].get().strip()
-            flashcard["definition"] = flashcard["definition_entry"].get().strip()
+            flashcard["definition"] = flashcard["definition_entry"].get("1.0", "end-1c").strip()
 
 if __name__ == "__main__":
     app = FlashcardApp()
