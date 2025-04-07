@@ -2,8 +2,9 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <stm32l496xx.h>
 #include <stdlib.h>
-#include <stm32l432xx.h>
+
 
 #include "../include/state.h"
 #include "../include/clock.h"

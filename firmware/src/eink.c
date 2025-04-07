@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <string.h>
-#include <stm32l432xx.h>
+#include <stm32l496xx.h>
 
 #include "../include/spi.h"
 #include "../include/eink.h"
@@ -12,7 +12,7 @@ uint8_t framebuffer[EINK_FRAMEBUFFER_SIZE] = {0xFF};
 static void eink_send_cmd(uint8_t cmd)
 {
     /* D/C low */
-    GPIOA->BSRR = GPIO_BSRR_BR8;
+    GPIOC->BSRR = GPIO_BSRR_BR4;
 
     /* CS low */
     GPIOA->BSRR = GPIO_BSRR_BR4;
@@ -26,7 +26,7 @@ static void eink_send_cmd(uint8_t cmd)
 static void eink_send_data(uint8_t data)
 {
     /* D/C high */
-    GPIOA->BSRR = GPIO_BSRR_BS8;
+    GPIOC->BSRR = GPIO_BSRR_BS4;
 
     /* CS low */
     GPIOA->BSRR = GPIO_BSRR_BR4;
@@ -39,15 +39,20 @@ static void eink_send_data(uint8_t data)
 
 static void eink_pin_init()
 {
-    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN; //turn on A
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN; //turn on C
 
     /* BUSY - PA6 (INPUT) ; RESET - PA9 ; D/C - PA8 */
-    GPIOA->MODER &= ~(GPIO_MODER_MODER6 | GPIO_MODER_MODER8 | GPIO_MODER_MODER9);
-    GPIOA->MODER |= (GPIO_MODER_MODER8_0 | GPIO_MODER_MODER9_0);
+    GPIOA->MODER &= ~(GPIO_MODER_MODER6 );
+    // GPIOA->MODER |= (GPIO_MODER_MODER8_0 | GPIO_MODER_MODER9_0);
 
-    /* High speed */
-    GPIOA->OSPEEDR &= ~(GPIO_OSPEEDR_OSPEED6 | GPIO_OSPEEDR_OSPEED8 | GPIO_OSPEEDR_OSPEED9);
-    GPIOA->OSPEEDR |= GPIO_OSPEEDR_OSPEED6_1 | GPIO_OSPEEDR_OSPEED8_1 | GPIO_OSPEEDR_OSPEED9_1;
+    /*; RESET - PC5 ; D/C - PC4 */
+    GPIOC->MODER &= ~(GPIO_MODER_MODER4 | GPIO_MODER_MODER5);
+    GPIOC->MODER |= (GPIO_MODER_MODER4_0 | GPIO_MODER_MODER5_0);
+
+    /* High speed ...might need these?*/
+    // GPIOA->OSPEEDR &= ~(GPIO_OSPEEDR_OSPEED6 | GPIO_OSPEEDR_OSPEED8 | GPIO_OSPEEDR_OSPEED9);
+    // GPIOA->OSPEEDR |= GPIO_OSPEEDR_OSPEED6_1 | GPIO_OSPEEDR_OSPEED8_1 | GPIO_OSPEEDR_OSPEED9_1;
 
 }
 
@@ -66,16 +71,16 @@ void eink_wait_until_idle()
 static void eink_reset()
 {
     /* Set RESET high */
-    GPIOA->BSRR = GPIO_BSRR_BS9;
+    GPIOC->BSRR = GPIO_BSRR_BS5;
     delay_ms(100);
 
     /* RESET is active low */
-    GPIOA->BSRR = GPIO_BSRR_BR9;
+    GPIOC->BSRR = GPIO_BSRR_BR5;
 
     delay_ms(2);
 
     /* Set RESET high */
-    GPIOA->BSRR = GPIO_BSRR_BS9;
+    GPIOC->BSRR = GPIO_BSRR_BS5;
 
     delay_ms(100);
 }
