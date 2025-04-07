@@ -206,8 +206,35 @@ class EditPage(ctk.CTkFrame):
     def add_flashcard(self):
         self.save_current_flashcards()
         """Add an empty flashcard entry."""
-        self.flashcards.append({"term": "", "definition": ""})
-        self.refresh_flashcards()
+
+        #don't refresh the entire screen, just add new row
+        new_flashcard = {"term": "", "definition": ""}
+        self.flashcards.append(new_flashcard)
+
+        # Create a new row for the flashcard
+        row = ctk.CTkFrame(self.flashcard_scrollable_frame)
+        row.pack(fill="y", pady=2)
+
+        # Add row number label
+        row_number_label = ctk.CTkLabel(row, text=f"{len(self.flashcards)}.", font=FONT, width=30, anchor="w")
+        row_number_label.pack(side="left", padx=5)
+
+        # Add term entry
+        term_entry = ctk.CTkEntry(row, font=FONT, width=200)
+        term_entry.pack(side="left", padx=5)
+
+        # Add definition entry
+        definition_entry = ctk.CTkTextbox(row, font=FONT, width=500, height=50, wrap="word")
+        definition_entry.pack(side="left", padx=5)
+
+        # Add delete button
+        ctk.CTkButton(row, text="X", fg_color="red", command=lambda idx=len(self.flashcards) - 1: self.delete_flashcard(idx)).pack(side="left", padx=5)
+
+        # Store references to the term and definition entries
+        new_flashcard["term_entry"] = term_entry
+        new_flashcard["definition_entry"] = definition_entry
+
+        # self.refresh_flashcards() #refreshed the entire screen, glitchy
 
     def limit_definition_length(self, entry):
         """Limit the length of the definition to MAX_DEF_LENGTH."""
@@ -252,18 +279,11 @@ class EditPage(ctk.CTkFrame):
             term_entry.insert(0, flashcard["term"])
             term_entry.pack(side="left", padx=5)
 
-            # definition_entry = ctk.CTkEntry(row, font=FONT, width=500)
-
+            #adding limit to definition length
             definition_entry = ctk.CTkTextbox(row, font=FONT, width=500, height=50, wrap ="word")
             definition_entry.insert("1.0", flashcard["definition"])  # Insert the existing definition text
             definition_entry.pack(side="left", padx=5)
             definition_entry.bind("<KeyRelease>", lambda e, entry=definition_entry: self.limit_definition_length(entry))
-            
-            # definition_entry.insert(0, flashcard["definition"])
-            # definition_entry.pack(side="left", padx=5)
-            # definition_entry.bind("<KeyRelease>", lambda e, entry=definition_entry: self.limit_definition_length(entry))
-            # definition_entry.bind("<KeyRelease>", lambda e: self.on_text_change(definition_entry))
-            
 
 
             ctk.CTkButton(row, text="X", fg_color="red", command=lambda idx=i: self.delete_flashcard(idx)).pack(side="left", padx=5)
@@ -274,14 +294,16 @@ class EditPage(ctk.CTkFrame):
     def delete_flashcard(self, index):
         self.save_current_flashcards() # fist save the current flashcards
         """Delete a flashcard."""
-        # for widget in self.flashcard_frame.winfo_children():
-        #     if widget.winfo_y() == self.flashcards[index]["term_entry"].winfo_y():
-        #         print("Here")
-        #         widget.destroy()
-        #         break
-            # widget.destroy()
+      
         del self.flashcards[index]
-        self.refresh_flashcards()
+        # If the index is the last one, remove the last widget directly
+        if index == len(self.flashcards):  # Check if the index is the last one
+            last_widget = self.flashcard_scrollable_frame.winfo_children()[-1]
+            last_widget.destroy()
+        else:
+            # Otherwise, refresh the entire flashcard list
+            self.refresh_flashcards()
+        # self.refresh_flashcards()
 
     def save_and_back(self):
         """Save flashcard set and return to main menu."""
