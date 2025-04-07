@@ -3,43 +3,37 @@
 #include <stddef.h>
 
 void uart_init(void) {
-    RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN; /* Enable USART2 Clock */
-    RCC->AHB2ENR |= RCC_AHB2ENR_GPIODEN; /* Enable GPIOA Clock */
-    RCC->CCIPR |= RCC_CCIPR_USART2SEL_0; /* Use the System Clock for USART2 */
-
-    //rx pin setup pa3 ... DONT NEED
-    // GPIOD->MODER &= ~GPIO_MODER_MODE15_Msk;
-    // GPIOD->MODER |= GPIO_MODER_MODE15_1; /* Enable Alt Function for PA_3 */
-    // // GPIOA->AFR[0] |= GPIO_AFRL_AFSEL3_2 | GPIO_AFRL_AFSEL3_1 | GPIO_AFRL_AFSEL3_0; //af7 for pa3
-    // // GPIOA->PUPDR |= (1 << GPIO_PUPDR_PUPD3_Pos); // Enable pull-up for PA3
-    // GPIOA->AFR[1]  |=  (3 << ((15 - 8) * 4));  // Set AF3 for PA15 (USART2_RX)
-
+    // RCC->APB1ENR1 |= RCC_APB1ENR1_USART1EN; /* Enable USART2 Clock */
+    RCC->APB2ENR |= RCC_APB2ENR_USART1EN; /* Enable USART1 Clock */
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN; /* Enable GPIOA Clock */
+    RCC->CCIPR |= RCC_CCIPR_USART1SEL_0; /* Use the System Clock for USART2 */
 
     //tx pin setup pa2 -- do not need this
-    GPIOD->MODER &= ~GPIO_MODER_MODE5_Msk;
-    GPIOD->MODER |= GPIO_MODER_MODE5_1; /* Enable Alt Function for PA_2 */
-    GPIOD->AFR[0] |= GPIO_AFRL_AFSEL5_2 | GPIO_AFRL_AFSEL5_1 | GPIO_AFRL_AFSEL5_0; /* Enable USART2_Tx for PA_2 */
+    GPIOA->MODER &= ~GPIO_MODER_MODE10_Msk;
+    GPIOA->MODER |= GPIO_MODER_MODE10_1; /* Enable Alt Function for PA_2 */
+    // GPIOA->AFR[1] |= GPIO_AFRL_AFSEL10_2 | GPIO_AFRL_AFSEL10_1 | GPIO_AFRL_AFSEL10_0; /* Enable USART2_Tx for PA_2 */
+    GPIOA->AFR[1] |= (7 << GPIO_AFRH_AFSEL10_Pos);
 
     // SystemCoreClockUpdate();  // Update system clock
-    USART2->BRR = 16000000 / 9600;  /* 9600 baudrate */
+    USART1->BRR = 16000000 / 9600;  /* 9600 baudrate */
 
-    USART2->CR1 |= USART_CR1_RE; /* Enable Receiver */
-    USART2->CR1 |= USART_CR1_TE; /* Enable Transmitter */
-    USART2->CR1 |= USART_CR1_UE; /* Enable USART2 */
+    USART1->CR1 |= USART_CR1_RE; /* Enable Receiver */
+    USART1->CR1 |= USART_CR1_TE; /* Enable Transmitter */
+    USART1->CR1 |= USART_CR1_UE; /* Enable USART2 */
 
 }
 
 
 // Function to transmit a character via UART
 char uart_read_char(void) {
-    while (!(USART2->ISR & USART_ISR_RXNE));  // Wait until data is received
-    return USART2->RDR;  // Read the received character
+    while (!(USART1->ISR & USART_ISR_RXNE));  // Wait until data is received
+    return USART1->RDR;  // Read the received character
     
 }
 
 
 // do not need this
 void uart_write_char(char ch) {
-    USART2->TDR = ch;   // Load data into transmit data register
-    while (!(USART2->ISR & USART_ISR_TXE));   // Wait until transmit data register is empty
+    USART1->TDR = ch;   // Load data into transmit data register
+    while (!(USART1->ISR & USART_ISR_TXE));   // Wait until transmit data register is empty
 }
