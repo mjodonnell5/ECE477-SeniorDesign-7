@@ -13,6 +13,18 @@ extern uint8_t num_decks;
 extern uint8_t curr_page;
 extern struct deck main_deck;
 
+void disable_buttons()
+{
+    EXTI->IMR1 &= ~(EXTI_IMR1_IM0
+               | EXTI_IMR1_IM6 | EXTI_IMR1_IM1);
+}
+
+void enable_buttons()
+{
+    EXTI->IMR1 |= EXTI_IMR1_IM0
+               | EXTI_IMR1_IM6 | EXTI_IMR1_IM1;
+}
+
 void button_init()
 {
     RCC->AHB2ENR |= RCC_AHB2ENR_GPIOEEN;
@@ -35,7 +47,8 @@ void button_init()
     /* FIXME: We only want long press on the back button */
     // EXTI->FTSR1 |= EXTI_FTSR1_FT6
     //             | EXTI_FTSR1_FT2 | EXTI_FTSR1_FT0;
-    EXTI->FTSR1 |= EXTI_FTSR1_FT1; // is there a reason you put this on falling edge cole?
+
+    EXTI->FTSR1 |= EXTI_FTSR1_FT0 | EXTI_FTSR1_FT1;
 
     EXTI->IMR1 |= EXTI_IMR1_IM2 | EXTI_IMR1_IM3 | EXTI_IMR1_IM4;
 
@@ -43,30 +56,48 @@ void button_init()
 }
 
 volatile uint32_t start_press_time = 0;
+
+volatile uint8_t press = NO_PRESS;
+volatile uint8_t btn = SELECT;
+
+/* SELECT/FLIP */
 void EXTI2_IRQHandler(void)
 {
     EXTI->PR1 = EXTI_PR1_PIF2;
 
-    /* FIXME: Maybe name this mutex something better? */
     if (render_pending) {
         return;
     }
-    if (state == STATE_FLASHCARD_NAVIGATION) {
-        /* Flip */
-        f_b = !f_b;
+
+    btn = SELECT;
+    if (GPIOB->IDR & GPIO_IDR_ID0) {
+        /* Rising edge */
+        start_press_time = TIM2->CNT;
+        return;
     } else {
-        state = STATE_FLASHCARD_NAVIGATION;
-        get_deck_from_sd = 1;
+        /* Falling edge */
+        if ((uint32_t)(TIM2->CNT - start_press_time) < LONG_PRESS_TIME_MS) {
+            /* Short press */
+            press = SHORT_PRESS;
+        } else {
+            /* Long press */
+            press = LONG_PRESS;
+        }
     }
+
     render_pending = 1;
 }
 
+
+/* DOWN/BACKWARDS */
 void EXTI3_IRQHandler(void)
 {
     EXTI->PR1 = EXTI_PR1_PIF3;
     if (render_pending) {
         return;
     }
+
+    btn = BACKWARD;
     if (GPIOE->IDR & GPIO_IDR_ID1) {
         /* Rising edge */
         start_press_time = TIM2->CNT;
@@ -75,30 +106,16 @@ void EXTI3_IRQHandler(void)
         /* Falling edge */
         if ((uint32_t)(TIM2->CNT - start_press_time) < LONG_PRESS_TIME_MS) {
             /* Short press */
-            if (state == STATE_MENU_NAVIGATION) {
-                if (curr_deck_selection > 0) {
-                    curr_deck_selection--;
-                }
-            } else if (state == STATE_FLASHCARD_NAVIGATION) {
-                if (curr_card_selection > 0) {
-                    curr_card_selection--;
-                }
-
-                /* Always start on the front */
-                if (f_b == BACK) f_b = FRONT;
-            }
+            press = SHORT_PRESS;
         } else {
             /* Long press */
-            if (state == STATE_MENU_NAVIGATION) {
-                state = STATE_DOWNLOAD;
-            } else if (state == STATE_FLASHCARD_NAVIGATION) {
-                state = STATE_MENU_NAVIGATION;
-            }
+            press = LONG_PRESS;
         }
     }
     render_pending = 1;
 }
 
+/* UP/FORWARDS */
 void EXTI4_IRQHandler(void)
 {
     if (EXTI->PR1 & EXTI_PR1_PIF4) {
@@ -106,18 +123,9 @@ void EXTI4_IRQHandler(void)
         if (render_pending) {
             return;
         }
-        if (state == STATE_MENU_NAVIGATION) {
-            if (curr_deck_selection + 1 < num_decks) {
-                curr_deck_selection++;
-            }
-        } else if (state == STATE_FLASHCARD_NAVIGATION) {
-            if (curr_card_selection + 1 < main_deck.num_cards) {
-                curr_card_selection++;
-            }
+        btn = FORWARD;
+        press = SHORT_PRESS;
 
-            /* Always start on the front */
-            if (f_b == BACK) f_b = FRONT;
-        }
         render_pending = 1;
     }
 }
