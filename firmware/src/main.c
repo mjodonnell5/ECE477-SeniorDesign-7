@@ -60,23 +60,24 @@ int main(void)
 {
     clock_init();
 
-    // spi1_init();
+    spi1_init();
 
-    // eink_init();
+    eink_init();
 
-    // button_init();
+    button_init();
 
-    // uart_init();
+    uart_init();
 
-    mount();
-    log_to_sd("mounted");
+    // mount();
+    // log_to_sd("mounted");
 
 
     // eink_clear(0xFF);
+    // draw_sleep_image(35, 35);
+    // eink_render_framebuffer();
+    // draw_centered_string_wrapped(large_font, "HI :))))", BLACK);
     // eink_render_framebuffer();
 
-    // render_pending = 1;
-    // state_machine();
     render_pending = 1;
     state_machine();
 
