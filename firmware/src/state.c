@@ -15,8 +15,8 @@
 #include "../include/uart.h"
 #include "../include/ff.h"
 
-// volatile enum STATES state = STATE_HOME_NAVIGATION;
-volatile enum STATES state = STATE_SLEEPING;
+volatile enum STATES state = STATE_HOME_NAVIGATION;
+// volatile enum STATES state = STATE_SLEEPING;
 volatile uint8_t render_pending = 0;
 uint8_t fetch_decks = 1;
 
@@ -62,10 +62,16 @@ char settings_names[2][MAX_NAME_SIZE] = {
     "LEARNING ALGO",
 };
 
+char deck_names[MAX_DECKS][MAX_NAME_SIZE] = {
+    "ECE 20002",
+    "ECE 404",
+    "PHIL 322"
+};
+
 /* NOTE: This will always be running when there is no interrupt happening */
 void state_machine()
 {
-    char deck_names[MAX_DECKS][MAX_NAME_SIZE] = {0};
+    // char deck_names[MAX_DECKS][MAX_NAME_SIZE] = {0};
     char header[25];
 
     char buf[100];
@@ -197,7 +203,7 @@ void state_machine()
             /* Get deck names if we don't have them yet */
             if (fetch_decks) {
                 curr_deck_selection = 0;
-                num_decks = get_decks(deck_names);
+                // num_decks = get_decks(deck_names);
                 fetch_decks = 0;
             }
 

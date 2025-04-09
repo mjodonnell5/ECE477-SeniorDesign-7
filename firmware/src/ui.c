@@ -10,7 +10,7 @@
 #include "../include/battery.h"
 
 #define MENU_ITEM_DIST (50)
-#define MENU_ITEM_HEIGHT (45)
+#define MENU_ITEM_HEIGHT (40)
 
 extern uint8_t font8x8_basic[128][8];
 extern struct deck main_deck;
@@ -68,9 +68,11 @@ void draw_menu(uint8_t curr_selected, char names[][MAX_NAME_SIZE], uint16_t num)
         if (index == curr_selected) {
             /* Draw filled & inverted rectangle */
             draw_centered_string_in_filled_rect(large_font, 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 50, (20 + MENU_ITEM_HEIGHT) + MENU_ITEM_DIST * i, names[index],  BLACK);
+            // draw_filled_deck_menu_item(large_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, names[index], "Cards: 100 | Last Studied: 03/19", BLACK);
         } else {
             /* Normal */
             draw_centered_string_in_rect(large_font, 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 50, (20 + MENU_ITEM_HEIGHT) + MENU_ITEM_DIST * i, names[index], BLACK);
+            // draw_deck_menu_item(large_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, names[index], "Cards: 100 | Last Studied: 03/19", BLACK);
         }
     }
 }
@@ -89,10 +91,10 @@ void draw_main_menu(uint8_t curr_selected_deck, char deck_names[][MAX_NAME_SIZE]
         uint8_t index = i + (curr_page * MAX_ITEMS_PER_PAGE);
         if (index == curr_selected_deck) {
             /* Draw filled & inverted rectangle */
-            draw_centered_string_in_filled_rect(small_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, deck_names[index], BLACK);
+            draw_filled_deck_menu_item(large_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, deck_names[index], "Cards: 100 | Last Studied: 03/19", BLACK);
         } else {
             /* Normal */
-            draw_centered_string_in_rect(small_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, deck_names[index], BLACK);
+            draw_deck_menu_item(large_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, deck_names[index], "Cards: 100 | Last Studied: 03/19", BLACK);
         }
     }
 }
@@ -251,7 +253,7 @@ void draw_filled_deck_menu_item(struct font f, uint16_t s_x, uint16_t s_y, uint1
 
     draw_string(f, 75, text_y + f.height / 2, "> ", !col);
     draw_string(f, 100, text_y, string, !col);
-    draw_string(f, 100, text_y + f.height, string2, !col);
+    draw_string(small_font, 100, text_y + f.height, string2, !col);
 }
 
 void draw_centered_string_in_rect(struct font f, uint16_t s_x, uint16_t s_y, uint16_t e_x, uint16_t e_y, char* string, uint8_t col)
@@ -294,7 +296,7 @@ void draw_deck_menu_item(struct font f, uint16_t s_x, uint16_t s_y, uint16_t e_x
     draw_rect(min_x, min_y, max_x, max_y, col);
 
     draw_string(f, 100, text_y, string, col);
-    draw_string(f, 100, text_y + f.height, string2, col);
+    draw_string(small_font, 100, text_y + f.height, string2, col);
 }
 
 void draw_centered_string_wrapped(struct font f, char* string, uint8_t col)

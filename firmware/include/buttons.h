@@ -14,8 +14,8 @@
 #define FORWARD  (2)
 
 void button_init();
-// void disable_buttons();
-// void enable_buttons();
+void disable_buttons();
+void enable_buttons();
 
 extern volatile uint8_t curr_deck_selection;
 extern volatile uint8_t curr_card_selection;
