@@ -128,8 +128,19 @@ class MainPage(ctk.CTkFrame):
         """Upload a flashcard set to the device."""
         filename_path = os.path.join(FLASHCARD_DIR, filename)
 
-        with open(filename_path, "r", encoding="utf-8") as file:
-            data_payload = file.read()
+        #old version
+        # with open(filename_path, "r", encoding="utf-8") as file:
+        #     data_payload = file.read()
+
+        # new version: loading the data and also getting number of cards in the set
+        with open (filename_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+            num_cards = len(data.get("flashcards",[]))
+            data_payload = json.dumps(data)
+
+        formatted_filename = f"{filename}${num_cards}"
+
+        print(formatted_filename.encode() + b'\xBC' + data_payload.encode() + b'\x00')
 
         ports = [port.device for port in serial.tools.list_ports.comports()]
 
@@ -139,13 +150,13 @@ class MainPage(ctk.CTkFrame):
 
         selected_port = ports[0] if len(ports) == 1 else simpledialog.askstring("Select COM Port", f"Available ports: {', '.join(ports)}")
 
-        print(filename.encode() + b'\xBC' + data_payload.encode() + b'\x00')
+        
 
 
         if selected_port:
             try:
                 with serial.Serial(selected_port, baudrate=9600, timeout=2) as ser:
-                    ser.write(filename.encode() + b'\xBC' + data_payload.encode() + b'\x00')
+                    ser.write(formatted_filename.encode() + b'\xBC' + data_payload.encode() + b'\x00')
                     messagebox.showinfo("Success", f"Flashcard set uploaded to {selected_port}!")
             except serial.SerialException:
                 messagebox.showerror("Error", "Failed to connect to device. Check your COM port.")
