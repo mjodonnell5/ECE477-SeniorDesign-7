@@ -386,7 +386,21 @@ int get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
             char *ext = strrchr(fno.fname, '.'); //last .
             if (ext == NULL || ext == fno.fname) { //no extension or starts with .
                 if (i > MAX_DECKS) break; //not exceeding array
-                strncpy(decks[i], fno.fname, strlen(fno.fname));
+
+                //split filename into setname and number
+                char *delim = strchr(fno.fname, '$');
+                if (delim != NULL){
+                    size_t len = delim - fno.fname;
+                    char set_name[MAX_NAME_SIZE];
+                    strncpy(set_name, fno.fname, len); //extract setname
+                    set_name[len] = '\0'; //null terminate
+
+                    int num_per_deck = atoi(delim + 1); // convert num after $ to int
+
+                    snprintf(decks[i], MAX_NAME_SIZE, "%s$%d", set_name, num_per_deck); //save in decks array
+                }
+
+                // strncpy(decks[i], fno.fname, strlen(fno.fname));
                 i++;
             }
         }

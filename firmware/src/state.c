@@ -171,6 +171,14 @@ void state_machine()
             /* +1 because it is 0 indexed */
             snprintf(header, 25, "SELECT A DECK: %d/%d", curr_deck_selection + 1, num_decks);
             draw_header(header);
+            //getting cole the set name and number of cards in set
+            char *delim = strchr(deck_names[curr_deck_selection], '$'); //first occurance of $
+            if(delim != NULL){
+                *delim = '\0'; //replace $ with terminator
+                const char *set_name = deck_names[curr_deck_selection]; 
+                int num_per_deck = atoi(delim + 1); // convert num after $ to int
+            }
+
             draw_main_menu(curr_deck_selection, deck_names, num_decks);
             eink_render_framebuffer();
             render_pending = 0;
