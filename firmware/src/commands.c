@@ -7,6 +7,7 @@
 #include "cJSON.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "../include/ui.h"
 
@@ -395,8 +396,13 @@ int get_decks(DeckInfo decks[MAX_DECKS])
                     strncpy(decks[i].set_name, fno.fname, len); //extract setname
                     decks[i].set_name[len] = '\0'; //null terminate
 
-                    decks[i].num_per_deck = atoi(delim + 1); // convert num after $ to int
-
+                    // decks[i].num_per_deck = atoi(delim + 1); // convert num after $ to int
+                    char *endptr;
+                    decks[i].num_per_deck = strtol(delim + 1, &endptr, 10); // convert num after $ to int
+                    if (*endptr != '\0') {
+                        // log_to_sd("Error converting number to int\n");
+                        decks[i].num_per_deck = 0; // set to 0 if conversion fails
+                    }
                 }
 
                 // strncpy(decks[i], fno.fname, strlen(fno.fname));
