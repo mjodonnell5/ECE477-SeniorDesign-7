@@ -8,6 +8,11 @@ struct commands_t {
     void      (*fn)(int argc, char *argv[]);
 };
 
+typedef struct{
+    char set_name[MAX_NAME_SIZE];
+    int num_per_deck;
+} DeckInfo;
+
 void command_shell(void);
 void mount();
 // void log_to_sd();

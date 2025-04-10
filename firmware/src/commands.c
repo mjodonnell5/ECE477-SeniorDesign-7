@@ -367,7 +367,7 @@ void delete_file(const char *filename){
 //     return i;
 // }
 
-int get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
+int get_decks(DeckInfo decks[MAX_DECKS])
 {
     FRESULT res;
     DIR dir;
@@ -391,13 +391,12 @@ int get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
                 char *delim = strchr(fno.fname, '$');
                 if (delim != NULL){
                     size_t len = delim - fno.fname;
-                    char set_name[MAX_NAME_SIZE];
-                    strncpy(set_name, fno.fname, len); //extract setname
-                    set_name[len] = '\0'; //null terminate
+                    // char set_name[MAX_NAME_SIZE];
+                    strncpy(decks[i].set_name, fno.fname, len); //extract setname
+                    decks[i].set_name[len] = '\0'; //null terminate
 
-                    int num_per_deck = atoi(delim + 1); // convert num after $ to int
+                    decks[i].num_per_deck = atoi(delim + 1); // convert num after $ to int
 
-                    snprintf(decks[i], MAX_NAME_SIZE, "%s$%d", set_name, num_per_deck); //save in decks array
                 }
 
                 // strncpy(decks[i], fno.fname, strlen(fno.fname));
