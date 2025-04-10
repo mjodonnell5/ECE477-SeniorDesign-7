@@ -4,6 +4,8 @@
 #include "../include/clock.h"
 #include "../include/rtc.h"
 
+struct dt dt = {0};
+
 /* Taken from ChatGPT */
 uint16_t dec_to_bcd(uint16_t val) {
     return ((val / 10) << 4) | (val % 10);

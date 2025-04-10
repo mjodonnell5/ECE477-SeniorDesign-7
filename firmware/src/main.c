@@ -71,7 +71,25 @@ int main(void)
 
     uart_init();
 
-    // mount();
+    // eink_clear(0xFF);
+    // eink_render_framebuffer();
+
+
+    
+    RCC->APB1ENR1 |= RCC_APB1ENR1_PWREN;
+    PWR->CR2 |= PWR_CR2_IOSV;
+    //
+    // RCC->AHB2ENR |= RCC_AHB2ENR_GPIOGEN; //enable gpiob
+    // GPIOG->MODER &= ~(GPIO_MODER_MODER12);
+    // GPIOG->MODER |= GPIO_MODER_MODER12_0;
+    // GPIOG->ODR &= ~GPIO_ODR_OD12;
+    // for (;;) {
+    //     delay_ms(150);
+    //     GPIOG->ODR &= ~GPIO_ODR_OD12;
+    //     delay_ms(150);
+    //     GPIOG->ODR |= GPIO_ODR_OD12;
+    // }
+    mount();
     // log_to_sd("mounted");
 
 
@@ -85,31 +103,30 @@ int main(void)
     // eink_clear(0xFF);
     // eink_render_framebuffer();
 
-    struct dt dt = {0};
-    rtc_init();
+    // rtc_init();
 
     /* Dummy read after init */
-    read_rtc(&dt);
-    delay_ms(1000);
+    // read_rtc(&dt);
+    // delay_ms(1000);
+    //
+    // char time[50];
+    // read_rtc(&dt);
+    // snprintf(time, 50, "20%02d-%02d-%02d | %02d:%02d:%02d", dt.year, dt.mon, dt.day, dt.hour, dt.min, dt.sec);
+    // eink_clear(0xFF);
+    // draw_centered_string_wrapped(large_font, time, BLACK);
+    // eink_render_framebuffer();
+    //
+    // delay_ms(3000);
+    // read_rtc(&dt);
+    // snprintf(time, 50, "20%02d-%02d-%02d | %02d:%02d:%02d", dt.year, dt.mon, dt.day, dt.hour, dt.min, dt.sec);
+    // eink_clear(0xFF);
+    // draw_centered_string_wrapped(large_font, time, BLACK);
+    // eink_render_framebuffer();
+    //
+    // for(;;);
 
-    char time[50];
-    read_rtc(&dt);
-    snprintf(time, 50, "20%02d-%02d-%02d | %02d:%02d:%02d", dt.year, dt.mon, dt.day, dt.hour, dt.min, dt.sec);
-    eink_clear(0xFF);
-    draw_centered_string_wrapped(large_font, time, BLACK);
-    eink_render_framebuffer();
-
-    delay_ms(3000);
-    read_rtc(&dt);
-    snprintf(time, 50, "20%02d-%02d-%02d | %02d:%02d:%02d", dt.year, dt.mon, dt.day, dt.hour, dt.min, dt.sec);
-    eink_clear(0xFF);
-    draw_centered_string_wrapped(large_font, time, BLACK);
-    eink_render_framebuffer();
-
-    for(;;);
-
-    // render_pending = 1;
-    // state_machine();
+    render_pending = 1;
+    state_machine();
 
     // eink_sleep();
 

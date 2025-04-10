@@ -15,4 +15,6 @@ struct dt {
 void rtc_init();
 void read_rtc(struct dt* dt);
 
+extern struct dt dt;
+
 #endif /* RTC_H */
