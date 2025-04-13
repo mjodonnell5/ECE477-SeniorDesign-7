@@ -25,4 +25,6 @@ int8_t i2c_senddata(uint8_t targadr, uint8_t data[], uint8_t size);
 int i2c_recvdata(uint8_t targadr, void *data, uint8_t size);
 void i2c_clearnack(void);
 int i2c_checknack(void);
+uint8_t is_charging();
+void charge_init();
 #endif

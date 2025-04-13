@@ -11,5 +11,6 @@ struct font {
 
 extern struct font small_font;
 extern struct font large_font;
+extern struct font xl_font;
 
 #endif /* FONT_H */

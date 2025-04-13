@@ -41,7 +41,7 @@ uint8_t sdcard_write(uint8_t b)
     *((volatile uint8_t*)&(SPI3->DR)) = b;
     int value = 0xff;
     while ((SPI3->SR & SPI_SR_RXNE) != SPI_SR_RXNE)
-        ;
+        ;                                                                                                                              
         value = *(volatile uint8_t *)&(SPI3->DR);
     while((SPI3->SR & SPI_SR_BSY) == SPI_SR_BSY)
         ;
@@ -133,6 +133,7 @@ int sdcard_writeblock(const BYTE buffer[], int len)
 /*-----------------------------------------------------------------------*/
 /* Inidialize a Drive                                                    */
 /*-----------------------------------------------------------------------*/
+#include "../include/clock.h"
 
 static DSTATUS sdcard_status = STA_NOINIT;
 

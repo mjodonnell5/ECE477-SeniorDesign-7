@@ -15,15 +15,17 @@
 #include "../include/uart.h"
 #include "../include/ff.h"
 
-volatile enum STATES state = STATE_MENU_NAVIGATION;
-// volatile enum STATES state = STATE_SETTINGS;
-// volatile enum STATES state = STATE_DOWNLOAD;
+// volatile enum STATES state = STATE_HOME_NAVIGATION;
+// volatile enum STATES state = STATE_MENU_NAVIGATION;
+volatile enum STATES state = STATE_DOWNLOAD;
+// volatile enum STATES state = STATE_SLEEPING;
 volatile uint8_t render_pending = 0;
 uint8_t fetch_decks = 1;
 
 extern volatile uint8_t curr_deck_selection;
 struct deck main_deck;
 uint8_t num_decks = 0;
+volatile uint8_t curr_menu_selection = 0;
 
 extern volatile uint8_t press;
 extern volatile uint8_t btn;
@@ -51,6 +53,23 @@ void shuffle_deck(struct deck* deck)
     }
 }
 
+char menu_names[3][MAX_NAME_SIZE] = {
+    "STUDY",
+    "DOWNLOAD",
+    "SETTINGS"
+};
+
+char settings_names[2][MAX_NAME_SIZE] = {
+    "SHUFFLE",
+    "LEARNING ALGO",
+};
+
+// char deck_names[MAX_DECKS][MAX_NAME_SIZE] = {
+//     "ECE 20002",
+//     "ECE 404",
+//     "PHIL 322"
+// };
+
 /* NOTE: This will always be running when there is no interrupt happening */
 void state_machine()
 {
@@ -62,7 +81,7 @@ void state_machine()
         delay_ms(10);
         switch (state) {
         case STATE_DOWNLOAD:
-            __disable_irq();
+            // __disable_irq();
 
             eink_clear(0xFF);
             draw_header("DOWNLOADING DECK");
@@ -74,6 +93,9 @@ void state_machine()
             uint32_t i = 0;
 
             while (c != UART_DELIM) {
+                // if (btn == BACKWARD && press == LONG_PRESS) {
+                //     break;
+                // }
                 c = uart_read_char();
                 if (c == UART_DELIM) {
                     filename[i] = 0;
@@ -81,6 +103,12 @@ void state_machine()
                 }
                 filename[i++] = c;
             }
+
+            // if (btn == BACKWARD && press == LONG_PRESS) {
+            //     state = STATE_HOME_NAVIGATION;
+            //     press = NO_PRESS;
+            //     break;
+            // }
 
             /* 2. Read in file contents until EOF or something so that we know its over */
             i = 0;
@@ -95,16 +123,16 @@ void state_machine()
             FIL fil;
             FRESULT fr = f_open(&fil, filename, FA_WRITE | FA_CREATE_NEW);
             if (fr) {
-                // log_to_sd("CANT OPEN\n");
-                // log_to_sd(filename);
-                // log_to_sd("\n");
+                log_to_sd("CANT OPEN\n");
+                log_to_sd(filename);
+                log_to_sd("\n");
             }
 
             fr = f_write(&fil, contents, strlen(contents), &wlen);
             if (fr) {
-                // log_to_sd("CANT WRITE\n");
-                // log_to_sd(contents);
-                // log_to_sd("\n");
+                log_to_sd("CANT WRITE\n");
+                log_to_sd(contents);
+                log_to_sd("\n");
             }
 
             f_sync(&fil);
@@ -118,6 +146,58 @@ void state_machine()
 
             break;
 
+        case STATE_HOME_NAVIGATION:
+            if (!render_pending) break;
+
+            if (btn == SELECT) {
+                if (press == SHORT_PRESS) {
+                    if (curr_menu_selection == 0) {
+                        state = STATE_MENU_NAVIGATION;
+                    } else if (curr_menu_selection == 1) {
+                        state = STATE_DOWNLOAD;
+                    } else if (curr_menu_selection == 2) {
+                        state = STATE_SETTINGS;
+                    }
+                    press = NO_PRESS;
+                    break;
+                } else if (press == LONG_PRESS) {
+                    press = NO_PRESS;
+                    break;
+                }
+                press = NO_PRESS;
+            } else if (btn == BACKWARD) {
+                if (press == SHORT_PRESS) {
+                    if (curr_menu_selection > 0) {
+                        curr_menu_selection--;
+                    }
+                } else if (press == LONG_PRESS) {
+                    state = STATE_DOWNLOAD;
+                    press = NO_PRESS;
+                    break;
+                }
+                press = NO_PRESS;
+            } else if (btn == FORWARD) {
+                if (press == SHORT_PRESS) {
+                    if (curr_menu_selection + 1 < 3) {
+                        curr_menu_selection++;
+                    }
+                } else if (press == LONG_PRESS) {
+                    state = STATE_SETTINGS;
+                    press = NO_PRESS;
+                    break;
+                }
+                press = NO_PRESS;
+            }
+
+            eink_clear(0xFF);
+            /* +1 because it is 0 indexed */
+            snprintf(header, 25, "SELECT AN OPTION: %d/%d", curr_menu_selection + 1, 3);
+            draw_header(header);
+            draw_menu(curr_menu_selection, menu_names, 3);
+            eink_render_framebuffer();
+            render_pending = 0;
+            break;
+
         case STATE_MENU_NAVIGATION:
             /* Get deck names if we don't have them yet */
             if (fetch_decks) {
@@ -125,7 +205,6 @@ void state_machine()
                 num_decks = get_decks(deck_names);
                 fetch_decks = 0;
             }
-
             if (!render_pending) break;
 
             if (btn == SELECT) {
@@ -149,7 +228,7 @@ void state_machine()
                         curr_deck_selection--;
                     }
                 } else if (press == LONG_PRESS) {
-                    state = STATE_DOWNLOAD;
+                    state = STATE_HOME_NAVIGATION;
                     press = NO_PRESS;
                     break;
                 }
@@ -238,7 +317,7 @@ void state_machine()
                     press = NO_PRESS;
                     break;
                 } else if (press == LONG_PRESS) {
-                    state = STATE_MENU_NAVIGATION;
+                    state = STATE_HOME_NAVIGATION;
                     press = NO_PRESS;
                     break;
                 }
@@ -262,6 +341,17 @@ void state_machine()
             draw_string(large_font, 15, 90, buf, BLACK);
             snprintf(buf, 100, "LEARNING ALGORITHM: %s", learning_algo ? "YES" : "NO");
             draw_string(large_font, 15, 110, buf, BLACK);
+            // draw_menu(curr_menu_selection, settings_names, 2);
+            eink_render_framebuffer();
+            render_pending = 0;
+            break;
+
+        case STATE_SLEEPING:
+            if (!render_pending) break;
+            eink_clear(0xFF);
+            draw_header("SLEEPING");
+            draw_string(large_font, 100, 50, "START STUDYING AGAIN SOON!", BLACK);
+            draw_sleep_image(100, 75);
             eink_render_framebuffer();
             render_pending = 0;
             break;

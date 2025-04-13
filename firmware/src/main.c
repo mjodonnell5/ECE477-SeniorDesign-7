@@ -11,6 +11,7 @@
 #include "../include/uart.h"
 #include "../include/commands.h"
 #include "../include/battery.h"
+#include "../include/rtc.h"
 
 /* Any EXTI line setup for interrupts will wakeup from stop 2 mode */
 void enter_stop_2()
@@ -56,27 +57,57 @@ void wake_up()
     NVIC_SystemReset();
 }
 
+
+
 int main(void)
 {
     clock_init();
 
-    // spi1_init();
+    spi1_init();
 
-    // eink_init();
+    eink_init();
 
-    // button_init();
+    button_init();
 
-    // uart_init();
+    uart_init();
+
+    charge_init();
+
+    rtc_init();
+
+    /* Allow us to use GPIOG (needed for SD card) */
+    RCC->APB1ENR1 |= RCC_APB1ENR1_PWREN;
+    PWR->CR2 |= PWR_CR2_IOSV;
 
     mount();
-    log_to_sd("mounted");
 
 
     // eink_clear(0xFF);
+    // draw_sleep_image(35, 35);
+    // eink_render_framebuffer();
+    // draw_centered_string_wrapped(large_font, "HI :))))", BLACK);
+    // eink_render_framebuffer();
+    // for(;;);
+    //
+    // eink_clear(0xFF);
     // eink_render_framebuffer();
 
-    // render_pending = 1;
-    // state_machine();
+    // char time[50];
+    // read_rtc(&dt);
+    // snprintf(time, 50, "20%02d-%02d-%02d | %02d:%02d:%02d", dt.year, dt.mon, dt.day, dt.hour, dt.min, dt.sec);
+    // eink_clear(0xFF);
+    // draw_centered_string_wrapped(large_font, time, BLACK);
+    // eink_render_framebuffer();
+    //
+    // delay_ms(3000);
+    // read_rtc(&dt);
+    // snprintf(time, 50, "20%02d-%02d-%02d | %02d:%02d:%02d", dt.year, dt.mon, dt.day, dt.hour, dt.min, dt.sec);
+    // eink_clear(0xFF);
+    // draw_centered_string_wrapped(large_font, time, BLACK);
+    // eink_render_framebuffer();
+    //
+    // for(;;);
+
     render_pending = 1;
     state_machine();
 
