@@ -7,6 +7,7 @@
 #include "cJSON.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "../include/ui.h"
 
@@ -367,7 +368,7 @@ void delete_file(const char *filename){
 //     return i;
 // }
 
-int get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
+int get_decks(DeckInfo decks[MAX_DECKS])
 {
     FRESULT res;
     DIR dir;
@@ -386,7 +387,25 @@ int get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
             char *ext = strrchr(fno.fname, '.'); //last .
             if (ext == NULL || ext == fno.fname) { //no extension or starts with .
                 if (i > MAX_DECKS) break; //not exceeding array
-                strncpy(decks[i], fno.fname, strlen(fno.fname));
+
+                //split filename into setname and number
+                char *delim = strchr(fno.fname, '$');
+                if (delim != NULL){
+                    size_t len = delim - fno.fname;
+                    // char set_name[MAX_NAME_SIZE];
+                    strncpy(decks[i].set_name, fno.fname, len); //extract setname
+                    decks[i].set_name[len] = '\0'; //null terminate
+
+                    // decks[i].num_per_deck = atoi(delim + 1); // convert num after $ to int
+                    char *endptr;
+                    decks[i].num_per_deck = strtol(delim + 1, &endptr, 10); // convert num after $ to int
+                    if (*endptr != '\0') {
+                        // log_to_sd("Error converting number to int\n");
+                        decks[i].num_per_deck = 0; // set to 0 if conversion fails
+                    }
+                }
+
+                // strncpy(decks[i], fno.fname, strlen(fno.fname));
                 i++;
             }
         }

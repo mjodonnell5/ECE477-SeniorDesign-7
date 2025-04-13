@@ -55,6 +55,7 @@ void shuffle_deck(struct deck* deck)
 void state_machine()
 {
     char deck_names[MAX_DECKS][MAX_NAME_SIZE] = {0};
+    DeckInfo deck_info[MAX_DECKS] = {0};
     char header[25];
 
     char buf[100];
@@ -122,7 +123,7 @@ void state_machine()
             /* Get deck names if we don't have them yet */
             if (fetch_decks) {
                 curr_deck_selection = 0;
-                num_decks = get_decks(deck_names);
+                num_decks = get_decks(deck_info);
                 fetch_decks = 0;
             }
 
@@ -171,6 +172,10 @@ void state_machine()
             /* +1 because it is 0 indexed */
             snprintf(header, 25, "SELECT A DECK: %d/%d", curr_deck_selection + 1, num_decks);
             draw_header(header);
+            //getting cole the set name and number of cards in set
+            char* set_name = deck_info[curr_deck_selection].set_name;
+            int num_per_deck = deck_info[curr_deck_selection].num_per_deck;
+
             draw_main_menu(curr_deck_selection, deck_names, num_decks);
             eink_render_framebuffer();
             render_pending = 0;
