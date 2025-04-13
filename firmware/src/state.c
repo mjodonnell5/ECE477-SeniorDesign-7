@@ -16,8 +16,8 @@
 #include "../include/ff.h"
 
 // volatile enum STATES state = STATE_HOME_NAVIGATION;
-volatile enum STATES state = STATE_MENU_NAVIGATION;
-// volatile enum STATES state = STATE_DOWNLOAD;
+// volatile enum STATES state = STATE_MENU_NAVIGATION;
+volatile enum STATES state = STATE_DOWNLOAD;
 // volatile enum STATES state = STATE_SLEEPING;
 volatile uint8_t render_pending = 0;
 uint8_t fetch_decks = 1;
@@ -120,32 +120,29 @@ void state_machine()
             }
 
             /* 3. Create and open file on SD card with that name */
-            // FIL fil;
-            // FRESULT fr = f_open(&fil, filename, FA_WRITE | FA_CREATE_NEW);
-            // if (fr) {
-                // log_to_sd("CANT OPEN\n");
-                // log_to_sd(filename);
-                // log_to_sd("\n");
-            // }
+            FIL fil;
+            FRESULT fr = f_open(&fil, filename, FA_WRITE | FA_CREATE_NEW);
+            if (fr) {
+                log_to_sd("CANT OPEN\n");
+                log_to_sd(filename);
+                log_to_sd("\n");
+            }
 
-            // fr = f_write(&fil, contents, strlen(contents), &wlen);
-            // if (fr) {
-                // log_to_sd("CANT WRITE\n");
-                // log_to_sd(contents);
-                // log_to_sd("\n");
-            // }
+            fr = f_write(&fil, contents, strlen(contents), &wlen);
+            if (fr) {
+                log_to_sd("CANT WRITE\n");
+                log_to_sd(contents);
+                log_to_sd("\n");
+            }
 
-            // f_sync(&fil);
-            // f_close(&fil);
+            f_sync(&fil);
+            f_close(&fil);
 
-            eink_clear(0xFF);
-            draw_centered_string_wrapped(large_font, contents, BLACK);
-            eink_render_framebuffer();
-            // __enable_irq();
+            __enable_irq();
 
-            // state = STATE_MENU_NAVIGATION;
-            // render_pending = 1;
-            // fetch_decks = 1;
+            state = STATE_MENU_NAVIGATION;
+            render_pending = 1;
+            fetch_decks = 1;
 
             break;
 
