@@ -2,6 +2,18 @@
 #include <stdio.h>
 #include "battery.h"
 
+void charge_init()
+{
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIODEN;
+    GPIOD->MODER &= ~GPIO_MODER_MODE9;
+}
+
+uint8_t is_charging()
+{
+    /* If this is LOW then battery is charging */
+    return !(GPIOD->IDR & GPIO_IDR_ID9);
+}
+
 
 // Function to read battery state of charge (SOC) from the BQ27441
 uint16_t BQ27441_ReadSOC(void) {

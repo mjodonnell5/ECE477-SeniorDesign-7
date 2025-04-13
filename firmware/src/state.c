@@ -17,6 +17,7 @@
 
 // volatile enum STATES state = STATE_HOME_NAVIGATION;
 volatile enum STATES state = STATE_MENU_NAVIGATION;
+// volatile enum STATES state = STATE_DOWNLOAD;
 // volatile enum STATES state = STATE_SLEEPING;
 volatile uint8_t render_pending = 0;
 uint8_t fetch_decks = 1;

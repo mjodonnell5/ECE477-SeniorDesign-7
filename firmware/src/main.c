@@ -71,26 +71,15 @@ int main(void)
 
     uart_init();
 
-    // eink_clear(0xFF);
-    // eink_render_framebuffer();
+    charge_init();
 
+    rtc_init();
 
-    
+    /* Allow us to use GPIOG (needed for SD card) */
     RCC->APB1ENR1 |= RCC_APB1ENR1_PWREN;
     PWR->CR2 |= PWR_CR2_IOSV;
-    //
-    // RCC->AHB2ENR |= RCC_AHB2ENR_GPIOGEN; //enable gpiob
-    // GPIOG->MODER &= ~(GPIO_MODER_MODER12);
-    // GPIOG->MODER |= GPIO_MODER_MODER12_0;
-    // GPIOG->ODR &= ~GPIO_ODR_OD12;
-    // for (;;) {
-    //     delay_ms(150);
-    //     GPIOG->ODR &= ~GPIO_ODR_OD12;
-    //     delay_ms(150);
-    //     GPIOG->ODR |= GPIO_ODR_OD12;
-    // }
+
     mount();
-    // log_to_sd("mounted");
 
 
     // eink_clear(0xFF);
@@ -103,12 +92,6 @@ int main(void)
     // eink_clear(0xFF);
     // eink_render_framebuffer();
 
-    // rtc_init();
-
-    /* Dummy read after init */
-    // read_rtc(&dt);
-    // delay_ms(1000);
-    //
     // char time[50];
     // read_rtc(&dt);
     // snprintf(time, 50, "20%02d-%02d-%02d | %02d:%02d:%02d", dt.year, dt.mon, dt.day, dt.hour, dt.min, dt.sec);

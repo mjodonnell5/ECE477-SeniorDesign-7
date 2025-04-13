@@ -54,8 +54,8 @@ void rtc_init()
     RTC->TR &= ~RTC_TR_PM;
 
     /* Set the time and date */
-    uint16_t hour = dec_to_bcd(15);
-    uint16_t min = dec_to_bcd(20);
+    uint16_t hour = dec_to_bcd(11);
+    uint16_t min = dec_to_bcd(33);
     uint16_t sec = dec_to_bcd(35);
     RTC->TR = (((hour & 0xF0) >> 4) << RTC_TR_HT_Pos) | ((hour & 0x0F) << RTC_TR_HU_Pos) |
               (((min & 0xF0) >> 4) << RTC_TR_MNT_Pos) | ((min & 0x0F) << RTC_TR_MNU_Pos) |
@@ -63,7 +63,7 @@ void rtc_init()
 
     uint16_t year = dec_to_bcd(25);
     uint16_t mon = dec_to_bcd(4);
-    uint16_t day = dec_to_bcd(10);
+    uint16_t day = dec_to_bcd(13);
     RTC->DR = (((year & 0xF0) >> 4) << RTC_DR_YT_Pos) | ((year & 0x0F) << RTC_DR_YU_Pos) |
               (((mon & 0xF0) >> 4) << RTC_DR_MT_Pos) | ((mon & 0x0F) << RTC_DR_MU_Pos) |
               (((day & 0xF0) >> 4) << RTC_DR_DT_Pos) | ((day & 0x0F) << RTC_DR_DU_Pos);
@@ -74,6 +74,9 @@ void rtc_init()
     /* These don't seem to be working */
     while (!(RTC->ISR & RTC_ISR_INITS));
     while (!(RTC->ISR & RTC_ISR_RSF));
+
+    /* Dummy read after init */
+    read_rtc(&dt);
 }
 
 void read_rtc(struct dt* dt)

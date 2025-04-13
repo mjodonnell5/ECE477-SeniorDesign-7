@@ -8,6 +8,7 @@
 #include "../include/ui.h"
 #include "../include/font.h"
 #include "../include/battery.h"
+#include "../include/rtc.h"
 
 #define MENU_ITEM_DIST (50)
 #define MENU_ITEM_HEIGHT (40)
@@ -39,9 +40,10 @@ void draw_header(char* title)
 
     /* Battery percentage */
     // uint16_t soc = BQ27441_ReadWord(BQ27441_COMMAND_SOC);
-    char battery_perc_str[9];
+    char battery_perc_str[10];
+    char chg_str[6] = "CHRG ";
     uint8_t battery_perc = 100;
-    snprintf(battery_perc_str, 9, "BAT:%d%%", battery_perc);
+    snprintf(battery_perc_str, sizeof(battery_perc_str), "%s%d%%", is_charging() ? chg_str : "", battery_perc);
     draw_string(large_font, EINK_WIDTH - (8 * strlen(battery_perc_str)), 0, battery_perc_str, WHITE);
 }
 
@@ -87,14 +89,24 @@ void draw_main_menu(uint8_t curr_selected_deck, char deck_names[][MAX_NAME_SIZE]
         decks_on_page = MAX_ITEMS_PER_PAGE;
     }
 
+    /* Need to make this happen and update once a deck is accessed */
+    char studied_date[6];
+    read_rtc(&dt);
+    snprintf(studied_date, sizeof(studied_date), "%02d/%02d", dt.mon, dt.day);
+
+    /* FIXME: Need to make this per deck */
+    char metadata[50];
+    uint16_t num_cards = 25;
+    snprintf(metadata, sizeof(metadata), "Cards: %d | Studied: %s", num_cards, studied_date);
+
     for (uint8_t i = 0; i < decks_on_page; ++i) {
         uint8_t index = i + (curr_page * MAX_ITEMS_PER_PAGE);
         if (index == curr_selected_deck) {
             /* Draw filled & inverted rectangle */
-            draw_filled_deck_menu_item(large_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, deck_names[index], "Cards: 100 | Last Studied: 03/19", BLACK);
+            draw_filled_deck_menu_item(large_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, deck_names[index], metadata, BLACK);
         } else {
             /* Normal */
-            draw_deck_menu_item(large_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, deck_names[index], "Cards: 100 | Last Studied: 03/19", BLACK);
+            draw_deck_menu_item(large_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, deck_names[index], metadata, BLACK);
         }
     }
 }
@@ -251,9 +263,9 @@ void draw_filled_deck_menu_item(struct font f, uint16_t s_x, uint16_t s_y, uint1
 
     draw_filled_rect(min_x, min_y, max_x, max_y, col);
 
-    draw_string(f, 75, text_y + f.height / 2, "> ", !col);
-    draw_string(f, 100, text_y, string, !col);
-    draw_string(small_font, 100, text_y + f.height, string2, !col);
+    draw_string(f, 65, text_y + f.height / 2, "> ", !col);
+    draw_string(f, 85, text_y, string, !col);
+    draw_string(small_font, 85, text_y + f.height + 4, string2, !col);
 }
 
 void draw_centered_string_in_rect(struct font f, uint16_t s_x, uint16_t s_y, uint16_t e_x, uint16_t e_y, char* string, uint8_t col)
@@ -295,8 +307,8 @@ void draw_deck_menu_item(struct font f, uint16_t s_x, uint16_t s_y, uint16_t e_x
 
     draw_rect(min_x, min_y, max_x, max_y, col);
 
-    draw_string(f, 100, text_y, string, col);
-    draw_string(small_font, 100, text_y + f.height, string2, col);
+    draw_string(f, 85, text_y, string, col);
+    draw_string(small_font, 85, text_y + f.height + 4, string2, col);
 }
 
 void draw_centered_string_wrapped(struct font f, char* string, uint8_t col)
