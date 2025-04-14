@@ -8,6 +8,7 @@ struct commands_t {
     void      (*fn)(int argc, char *argv[]);
 };
 
+
 void command_shell(void);
 void mount();
 // void log_to_sd();
@@ -17,7 +18,7 @@ void cat(const char *filename); // displaying a file contents
 void parseJson(const char *filename); //parsing a json file
 void ls(int argc, char *argv[]);
 int parseJSON_file(const char* filename, struct deck* deck);
-int get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE]);
+int get_decks(struct DeckInfo decks[MAX_DECKS]);
 
 
 #endif /* __COMMANDS_H_ */

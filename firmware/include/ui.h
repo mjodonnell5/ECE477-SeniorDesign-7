@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 #include "../include/font.h"
+// #include "../include/commands.h"
 
 #define FRONT (1)
 #define BACK  (0)
@@ -26,10 +27,15 @@ struct deck {
     struct flashcard cards[MAX_CARDS_PER_DECK];
 };
 
+struct DeckInfo{
+    char set_name[MAX_NAME_SIZE];
+    uint16_t num_per_deck;
+} ;
+
 void draw_sleep_image(uint16_t s_x, uint16_t s_y);
 
 void draw_menu(uint8_t curr_selected, char names[][MAX_NAME_SIZE], uint16_t num);
-void draw_main_menu(uint8_t curr_selected_deck, char deck_names[][MAX_NAME_SIZE], uint16_t num_decks);
+void draw_main_menu(uint8_t curr_selected_deck, struct DeckInfo deck_info[MAX_DECKS], uint16_t num_decks);
 void draw_hline(uint16_t x, uint16_t y, uint16_t length, uint8_t col);
 void draw_vline(uint16_t x, uint16_t y, uint16_t length, uint8_t col);
 void draw_rect(uint16_t s_x, uint16_t s_y, uint16_t e_x, uint16_t e_y, uint8_t col);

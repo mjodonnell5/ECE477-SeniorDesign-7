@@ -7,6 +7,7 @@
 #include "cJSON.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "../include/ui.h"
 
@@ -344,30 +345,7 @@ void delete_file(const char *filename){
     
 }
 
-// int get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
-// {
-//     FRESULT res;
-//     DIR dir;
-//     static FILINFO fno;
-//     const char *path = "";
-//     int i = 0;
-//         res = f_opendir(&dir, path);                       /* Open the directory */
-//         if (res != FR_OK) {
-//             return;
-//         }
-//         for (;;) {
-//             res = f_readdir(&dir, &fno);                   /* Read a directory item */
-//             if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
-
-//             if (i > MAX_DECKS) break;
-//             strncpy(decks[i], fno.fname, strlen(fno.fname));
-//             i++;
-//         }
-//         f_closedir(&dir);
-//     return i;
-// }
-
-int get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
+int get_decks(struct DeckInfo decks[MAX_DECKS])
 {
     FRESULT res;
     DIR dir;
@@ -386,7 +364,24 @@ int get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
             char *ext = strrchr(fno.fname, '.'); //last .
             if (ext == NULL || ext == fno.fname) { //no extension or starts with .
                 if (i > MAX_DECKS) break; //not exceeding array
-                strncpy(decks[i], fno.fname, strlen(fno.fname));
+
+                //split filename into setname and number
+                char *delim = strchr(fno.fname, '$');
+                if (delim != NULL){
+                    size_t len = delim - fno.fname;
+                    // char set_name[MAX_NAME_SIZE];
+                    strncpy(decks[i].set_name, fno.fname, len); //extract setname
+                    decks[i].set_name[len] = '\0'; //null terminate
+
+                    // decks[i].num_per_deck = atoi(delim + 1); // convert num after $ to int
+                    char *endptr;
+                    decks[i].num_per_deck = strtol(delim + 1, &endptr, 10); // convert num after $ to int
+                    if (*endptr != '\0') {
+                        // log_to_sd("Error converting number to int\n");
+                        decks[i].num_per_deck = 0; // set to 0 if conversion fails
+                    }
+                }
+
                 i++;
             }
         }

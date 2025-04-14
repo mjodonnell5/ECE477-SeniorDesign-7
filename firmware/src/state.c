@@ -16,8 +16,8 @@
 #include "../include/ff.h"
 
 // volatile enum STATES state = STATE_HOME_NAVIGATION;
-// volatile enum STATES state = STATE_MENU_NAVIGATION;
-volatile enum STATES state = STATE_DOWNLOAD;
+volatile enum STATES state = STATE_MENU_NAVIGATION;
+// volatile enum STATES state = STATE_DOWNLOAD;
 // volatile enum STATES state = STATE_SLEEPING;
 volatile uint8_t render_pending = 0;
 uint8_t fetch_decks = 1;
@@ -73,7 +73,7 @@ char settings_names[2][MAX_NAME_SIZE] = {
 /* NOTE: This will always be running when there is no interrupt happening */
 void state_machine()
 {
-    char deck_names[MAX_DECKS][MAX_NAME_SIZE] = {0};
+    struct DeckInfo deck_info[MAX_DECKS] = {0};
     char header[25];
 
     char buf[100];
@@ -202,7 +202,7 @@ void state_machine()
             /* Get deck names if we don't have them yet */
             if (fetch_decks) {
                 curr_deck_selection = 0;
-                num_decks = get_decks(deck_names);
+                num_decks = get_decks(deck_info);
                 fetch_decks = 0;
             }
             if (!render_pending) break;
@@ -250,7 +250,8 @@ void state_machine()
             /* +1 because it is 0 indexed */
             snprintf(header, 25, "SELECT A DECK: %d/%d", curr_deck_selection + 1, num_decks);
             draw_header(header);
-            draw_main_menu(curr_deck_selection, deck_names, num_decks);
+
+            draw_main_menu(curr_deck_selection, deck_info, num_decks);
             eink_render_framebuffer();
             render_pending = 0;
 
@@ -294,7 +295,7 @@ void state_machine()
             snprintf(header, 25, "CONFIRM DELETION");
             draw_header(header);
 
-            snprintf(buf, 100, "Long press SELECT to delete %s", deck_names[curr_deck_selection]);
+            snprintf(buf, 100, "Long press SELECT to delete %s", deck_info[curr_deck_selection].set_name);
             draw_string(large_font, 15, 50, buf, BLACK);
             snprintf(buf, 100, "Long press BACK to return to main menu");
             draw_string(large_font, 15, 70, buf, BLACK);
@@ -367,7 +368,7 @@ void state_machine()
 
         case STATE_FLASHCARD_NAVIGATION:
             if (get_deck_from_sd) {
-                parseJSON_file(deck_names[curr_deck_selection], &main_deck);
+                parseJSON_file(deck_info[curr_deck_selection].set_name, &main_deck);
                 get_deck_from_sd = 0;
                 if (shuffle) {
                     shuffle_deck(&main_deck);
@@ -417,7 +418,7 @@ void state_machine()
 
             eink_clear(0xFF);
             /* +1 because it is 0 indexed */
-            snprintf(header, 25, "%s | %d/%d", deck_names[curr_deck_selection], curr_card_selection + 1, main_deck.num_cards);
+            snprintf(header, 25, "%s | %d/%d", deck_info[curr_deck_selection].set_name, curr_card_selection + 1, main_deck.num_cards);
             draw_header(header);
             draw_flashcard(main_deck.cards[curr_card_selection], f_b, BLACK);
             eink_render_framebuffer();
