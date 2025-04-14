@@ -9,6 +9,7 @@
 #include "../include/font.h"
 #include "../include/battery.h"
 #include "../include/rtc.h"
+#include "../include/commands.h"
 
 #define MENU_ITEM_DIST (50)
 #define MENU_ITEM_HEIGHT (40)
@@ -79,7 +80,8 @@ void draw_menu(uint8_t curr_selected, char names[][MAX_NAME_SIZE], uint16_t num)
     }
 }
 
-void draw_main_menu(uint8_t curr_selected_deck, char deck_names[][MAX_NAME_SIZE], uint16_t num_decks)
+// void draw_main_menu(uint8_t curr_selected_deck, char deck_names[][MAX_NAME_SIZE], uint16_t num_decks)
+void draw_main_menu(uint8_t curr_selected_deck,struct DeckInfo deck_info[MAX_DECKS], uint16_t num_decks)
 {
     uint8_t curr_page = curr_selected_deck / MAX_ITEMS_PER_PAGE;
     uint8_t decks_on_page = num_decks - (curr_page * MAX_ITEMS_PER_PAGE);
@@ -96,17 +98,19 @@ void draw_main_menu(uint8_t curr_selected_deck, char deck_names[][MAX_NAME_SIZE]
 
     /* FIXME: Need to make this per deck */
     char metadata[50];
-    uint16_t num_cards = 25;
-    snprintf(metadata, sizeof(metadata), "Cards: %d | Studied: %s", num_cards, studied_date);
 
     for (uint8_t i = 0; i < decks_on_page; ++i) {
-        uint8_t index = i + (curr_page * MAX_ITEMS_PER_PAGE);
+
+        uint8_t index = i + (curr_page * MAX_ITEMS_PER_PAGE); /*Getting the index*/
+
+        uint16_t num_per_deck = deck_info[index].num_per_deck;  /*Calulating the number of cards in the set*/
+        snprintf(metadata, sizeof(metadata), "Cards: %d | Studied: %s", num_per_deck, studied_date); /*Printing info to the string*/
         if (index == curr_selected_deck) {
             /* Draw filled & inverted rectangle */
-            draw_filled_deck_menu_item(large_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, deck_names[index], metadata, BLACK);
+            draw_filled_deck_menu_item(large_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, deck_info[index].set_name, metadata, BLACK);
         } else {
             /* Normal */
-            draw_deck_menu_item(large_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, deck_names[index], metadata, BLACK);
+            draw_deck_menu_item(large_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, deck_info[index].set_name, metadata, BLACK);
         }
     }
 }
