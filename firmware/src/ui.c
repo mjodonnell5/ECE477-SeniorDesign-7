@@ -9,8 +9,9 @@
 #include "../include/font.h"
 #include "../include/battery.h"
 #include "../include/rtc.h"
+#include "../include/state.h"
 
-#define MENU_ITEM_DIST (50)
+#define MENU_ITEM_DIST (45)
 #define MENU_ITEM_HEIGHT (40)
 
 extern uint8_t font8x8_basic[128][8];
@@ -33,6 +34,20 @@ void draw_sleep_image(uint16_t s_x, uint16_t s_y)
         }
     }
 }
+
+void draw_hints()
+{
+    if (state == STATE_HOME_NAVIGATION || state == STATE_MENU_NAVIGATION) {
+        draw_char(large_font, 0, 50, 24, BLACK);
+        draw_char(large_font, 0, 160, 25, BLACK);
+        draw_char(large_font, 0, 275, 4, BLACK);
+    } else if (state == STATE_FLASHCARD_NAVIGATION) {
+        draw_char(large_font, 0, 50, 27, BLACK);
+        draw_char(large_font, 0, 160, 26, BLACK);
+        draw_char(large_font, 0, 275, 4, BLACK);
+    }
+}
+
 void draw_header(char* title)
 {
     /* Current title */
@@ -45,6 +60,8 @@ void draw_header(char* title)
     uint8_t battery_perc = 100;
     snprintf(battery_perc_str, sizeof(battery_perc_str), "%s%d%%", is_charging() ? chg_str : "", battery_perc);
     draw_string(large_font, EINK_WIDTH - (8 * strlen(battery_perc_str)), 0, battery_perc_str, WHITE);
+
+    draw_hints();
 }
 
 void draw_menu(uint8_t curr_selected, char names[][MAX_NAME_SIZE], uint16_t num)
@@ -114,9 +131,9 @@ void draw_main_menu(uint8_t curr_selected_deck, char deck_names[][MAX_NAME_SIZE]
 void draw_flashcard(struct flashcard fc, uint8_t f_b, uint8_t col)
 {
     if (f_b) {
-        draw_centered_string_wrapped(large_font, fc.front, col);
+        draw_centered_string_wrapped(curr_font, fc.front, col);
     } else {
-        draw_centered_string_wrapped(large_font, fc.back, col);
+        draw_centered_string_wrapped(curr_font, fc.back, col);
     }
 }
 
@@ -171,11 +188,13 @@ void draw_char(struct font f, uint16_t s_x, uint16_t s_y, uint16_t c, uint8_t co
     uint8_t bytes_per_row = (f.width + 7) / 8;
     const uint8_t* bitmap = &f.font[c * f.height * bytes_per_row];
 
-    for (uint8_t y = 0; y < f.height * bytes_per_row; ++y) {
+    for (uint8_t y = 0; y < f.height; ++y) {
         for (uint8_t x = 0; x < f.width; ++x) {
-            uint8_t is_set = bitmap[y] & (1 << (7 - x));
-            if (is_set) {
-                eink_draw_pixel(s_x + x, s_y + y, col);
+            for (uint8_t b = 0; b < bytes_per_row; ++b) {
+                uint8_t is_set = bitmap[y * bytes_per_row + b] & (1 << (7 - x));
+                if (is_set) {
+                    eink_draw_pixel(s_x + x + (b * 8), s_y + y, col);
+                }
             }
         }
     }
@@ -187,7 +206,7 @@ void draw_string(struct font f, uint16_t s_x, uint16_t s_y, char* string, uint8_
         draw_char(f, s_x, s_y, *string, col);
 
         string++;
-        s_x += 8;
+        s_x += f.width;
     }
 }
 

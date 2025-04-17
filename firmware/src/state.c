@@ -15,12 +15,14 @@
 #include "../include/uart.h"
 #include "../include/ff.h"
 
-// volatile enum STATES state = STATE_HOME_NAVIGATION;
+volatile enum STATES state = STATE_HOME_NAVIGATION;
 // volatile enum STATES state = STATE_MENU_NAVIGATION;
-volatile enum STATES state = STATE_DOWNLOAD;
+// volatile enum STATES state = STATE_DOWNLOAD;
 // volatile enum STATES state = STATE_SLEEPING;
 volatile uint8_t render_pending = 0;
 uint8_t fetch_decks = 1;
+
+struct font curr_font;
 
 extern volatile uint8_t curr_deck_selection;
 struct deck main_deck;
@@ -30,8 +32,10 @@ volatile uint8_t curr_menu_selection = 0;
 extern volatile uint8_t press;
 extern volatile uint8_t btn;
 
+
 volatile uint8_t shuffle = 0;
-volatile uint8_t learning_algo = 0;
+volatile uint8_t font_large = 1;
+uint8_t left_handed = 1;
 
 #define UART_DELIM    ((char)0xBC)
 #define UART_EOF      ((char)0x00)
@@ -57,11 +61,6 @@ char menu_names[3][MAX_NAME_SIZE] = {
     "STUDY",
     "DOWNLOAD",
     "SETTINGS"
-};
-
-char settings_names[2][MAX_NAME_SIZE] = {
-    "SHUFFLE",
-    "LEARNING ALGO",
 };
 
 // char deck_names[MAX_DECKS][MAX_NAME_SIZE] = {
@@ -295,9 +294,9 @@ void state_machine()
             draw_header(header);
 
             snprintf(buf, 100, "Long press SELECT to delete %s", deck_names[curr_deck_selection]);
-            draw_string(large_font, 15, 50, buf, BLACK);
+            draw_string(curr_font, 15, 50, buf, BLACK);
             snprintf(buf, 100, "Long press BACK to return to main menu");
-            draw_string(large_font, 15, 70, buf, BLACK);
+            draw_string(curr_font, 15, 70, buf, BLACK);
             eink_render_framebuffer();
             render_pending = 0;
 
@@ -314,6 +313,7 @@ void state_machine()
                 press = NO_PRESS;
             } else if (btn == BACKWARD) {
                 if (press == SHORT_PRESS) {
+                    left_handed = !left_handed;
                     press = NO_PRESS;
                     break;
                 } else if (press == LONG_PRESS) {
@@ -324,7 +324,7 @@ void state_machine()
                 press = NO_PRESS;
             } else if (btn == FORWARD) {
                 if (press == SHORT_PRESS) {
-                    learning_algo = !learning_algo;
+                    font_large = !font_large;
                 } else if (press == LONG_PRESS) {
                 }
                 press = NO_PRESS;
@@ -333,14 +333,24 @@ void state_machine()
             snprintf(header, 25, "SETTINGS");
             draw_header(header);
 
+            if (font_large) {
+                curr_font = xlarge_font;
+            } else {
+                curr_font = large_font;
+            }
             snprintf(buf, 100, "Press SELECT to toggle shuffling");
-            draw_string(large_font, 15, 50, buf, BLACK);
+            draw_string(curr_font, 15, 50, buf, BLACK);
             snprintf(buf, 100, "SHUFFLE: %s", shuffle ? "YES" : "NO");
-            draw_string(large_font, 15, 70, buf, BLACK);
-            snprintf(buf, 100, "Press FORWARD to toggle learning algo");
-            draw_string(large_font, 15, 90, buf, BLACK);
-            snprintf(buf, 100, "LEARNING ALGORITHM: %s", learning_algo ? "YES" : "NO");
-            draw_string(large_font, 15, 110, buf, BLACK);
+            draw_string(curr_font, 15, 70, buf, BLACK);
+            snprintf(buf, 100, "Press FORWARD to change font size");
+            draw_string(curr_font, 15, 90, buf, BLACK);
+            snprintf(buf, 100, "FONT SIZE: %s", font_large ? "LARGE" : "SMALL");
+            draw_string(curr_font, 15, 110, buf, BLACK);
+            snprintf(buf, 100, "Press BACKWARD to select dominant hand");
+            draw_string(curr_font, 15, 130, buf, BLACK);
+            snprintf(buf, 100, "DOMINANT HAND: %s", left_handed ? "LEFT-HANDED" : "RIGHT-HANDED");
+            draw_string(curr_font, 15, 150, buf, BLACK);
+            eink_init();
             // draw_menu(curr_menu_selection, settings_names, 2);
             eink_render_framebuffer();
             render_pending = 0;
@@ -350,7 +360,7 @@ void state_machine()
             if (!render_pending) break;
             eink_clear(0xFF);
             draw_header("SLEEPING");
-            draw_string(large_font, 100, 50, "START STUDYING AGAIN SOON!", BLACK);
+            draw_string(curr_font, 100, 50, "START STUDYING AGAIN SOON!", BLACK);
             draw_sleep_image(100, 75);
             eink_render_framebuffer();
             render_pending = 0;

@@ -16,6 +16,8 @@ enum STATES {
 
 extern volatile enum STATES state;
 extern volatile uint8_t render_pending;
+extern struct font curr_font;
+extern uint8_t left_handed;
 
 void state_machine();
 

@@ -6,6 +6,7 @@
 #include "../include/spi.h"
 #include "../include/eink.h"
 #include "../include/clock.h"
+#include "../include/state.h"
 
 uint8_t framebuffer[EINK_FRAMEBUFFER_SIZE] = {0xFF};
 
@@ -111,24 +112,49 @@ void eink_init()
     eink_wait_until_idle();
 
     eink_send_cmd(0x11);
-    eink_send_data(0x03);
+    if (left_handed) {
+        eink_send_data(0x03);
+    } else {
+        eink_send_data(0x00);
+    }
 
     eink_send_cmd(0x44); 
-    eink_send_data(0x00);
-    eink_send_data(0x31); 
+    if (left_handed) {
+        eink_send_data(0x00);
+        eink_send_data(0x31); 
+    } else {
+        eink_send_data(0x31); 
+        eink_send_data(0x00);
+    }
     
     eink_send_cmd(0x45);
-    eink_send_data(0x00);
-    eink_send_data(0x00);  
-    eink_send_data(0x2B);
-    eink_send_data(0x01);
+    if (left_handed) {
+        eink_send_data(0x00);
+        eink_send_data(0x00);  
+        eink_send_data(0x2B);
+        eink_send_data(0x01);
+    } else {
+        eink_send_data(0x2B);
+        eink_send_data(0x01);
+        eink_send_data(0x00);
+        eink_send_data(0x00);  
+    }
 
-    eink_send_cmd(0x4E); 
-    eink_send_data(0x00);
+    if (left_handed) {
+        eink_send_cmd(0x4E); 
+        eink_send_data(0x00);
 
-    eink_send_cmd(0x4F); 
-    eink_send_data(0x00);
-    eink_send_data(0x00);  
+        eink_send_cmd(0x4F); 
+        eink_send_data(0x00);
+        eink_send_data(0x00);  
+    } else {
+        eink_send_cmd(0x4E); 
+        eink_send_data(0x31);
+
+        eink_send_cmd(0x4F); 
+        eink_send_data(0x2B);
+        eink_send_data(0x01);  
+    }
     eink_wait_until_idle();
 }
 
