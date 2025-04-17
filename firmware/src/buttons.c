@@ -3,6 +3,7 @@
 #include "../include/ui.h" /* FIXME: REMOVE THIS AFTER MOVING FRONT AND BACK MACROS */
 #include "../include/state.h"
 #include "../include/buttons.h"
+#include "../include/eink.h"
 
 volatile uint8_t curr_deck_selection = 0;
 volatile uint8_t curr_card_selection = 0;
@@ -15,14 +16,31 @@ extern struct deck main_deck;
 
 void disable_buttons()
 {
-    EXTI->IMR1 &= ~(EXTI_IMR1_IM0
-               | EXTI_IMR1_IM6 | EXTI_IMR1_IM1);
+    EXTI->IMR1 &= ~(EXTI_IMR1_IM3
+               | EXTI_IMR1_IM4 | EXTI_IMR1_IM5);
 }
 
 void enable_buttons()
 {
-    EXTI->IMR1 |= EXTI_IMR1_IM0
-               | EXTI_IMR1_IM6 | EXTI_IMR1_IM1;
+    EXTI->IMR1 |= EXTI_IMR1_IM3
+               | EXTI_IMR1_IM4 | EXTI_IMR1_IM5;
+}
+
+void power_button_init()
+{
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOEEN;
+    GPIOE->MODER &= ~GPIO_MODER_MODE2;
+    GPIOE->PUPDR &= ~(GPIO_PUPDR_PUPD2);
+    GPIOE->PUPDR |= (GPIO_PUPDR_PUPD2_1);
+    SYSCFG->EXTICR[0] |= SYSCFG_EXTICR1_EXTI2_PE;
+
+    EXTI->RTSR1 |= EXTI_RTSR1_RT2;
+
+    EXTI->FTSR1 |= EXTI_FTSR1_FT2;
+
+    EXTI->IMR1 |= EXTI_IMR1_IM2;
+
+    NVIC->ISER[0] |= 1 << EXTI2_IRQn;
 }
 
 void button_init()
@@ -47,6 +65,8 @@ void button_init()
     EXTI->IMR1 |= EXTI_IMR1_IM5 | EXTI_IMR1_IM3 | EXTI_IMR1_IM4;
 
     NVIC->ISER[0] |= (1 << EXTI9_5_IRQn) | (1 << EXTI3_IRQn) | (1 << EXTI4_IRQn);
+
+    power_button_init();
     // NVIC_EnableIRQ(EXTI3_IRQn);
     // NVIC_EnableIRQ(EXTI4_IRQn);
 }
@@ -55,6 +75,77 @@ volatile uint32_t start_press_time = 0;
 
 volatile uint8_t press = NO_PRESS;
 volatile uint8_t btn = SELECT;
+
+
+
+/* Any EXTI line setup for interrupts will wakeup from stop 2 mode */
+void enter_stop_2()
+{
+    PWR->CR1 &= ~PWR_CR1_LPMS;
+    PWR->CR1 |= PWR_CR1_LPMS_STOP2;
+
+    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
+
+    // __WFI();
+}
+
+/* This will be falling edge of power switch interrupt */
+void power_off()
+{
+    /* Disable button interrupts; we ONLY want the power switch to be able to wakeup */
+    disable_buttons();
+
+    eink_clear(0xFF);
+    draw_header("SLEEPING");
+    draw_string(large_font, 100, 50, "START STUDYING AGAIN SOON!", BLACK);
+    draw_sleep_image(100, 75);
+    eink_render_framebuffer();
+
+    eink_sleep();
+
+    /* Buttons */
+    /* Set to analog */
+    /* Disable pull up/down */
+    // RCC->AHB2ENR &= ~RCC_AHB2ENR_GPIOBEN;
+    // RCC->AHB2ENR &= ~RCC_AHB2ENR_GPIOAEN;
+
+    /* E-ink */
+    // RCC->APB2ENR &= ~RCC_APB2ENR_SPI1EN;
+
+    /* SD card */
+    // RCC->APB1ENR1 &= ~RCC_APB1ENR1_SPI3EN;
+
+    /* Battery monitor */
+
+    enter_stop_2();
+}
+
+/* This will be rising edge of power switch interrupt */
+void wake_up()
+{
+    /* Upon wake up we just want to reset so that we can run the main function 
+     * again, we could just call all the functions again but this is simpler I think*/
+    enable_buttons();
+    NVIC_SystemReset();
+}
+
+
+
+void EXTI2_IRQHandler(void)
+{
+    EXTI->PR1 = EXTI_PR1_PIF2;
+    if (render_pending) {
+        return;
+    }
+
+    if (GPIOE->IDR & GPIO_IDR_ID2) {
+        /* Rising edge */
+        power_off();
+    } else {
+        /* Falling edge */
+        wake_up();
+    }
+}
 
 /* SELECT/FLIP */
 void EXTI9_5_IRQHandler(void)

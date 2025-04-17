@@ -175,11 +175,13 @@ void draw_char(struct font f, uint16_t s_x, uint16_t s_y, uint16_t c, uint8_t co
     uint8_t bytes_per_row = (f.width + 7) / 8;
     const uint8_t* bitmap = &f.font[c * f.height * bytes_per_row];
 
-    for (uint8_t y = 0; y < f.height * bytes_per_row; ++y) {
+    for (uint8_t y = 0; y < f.height; ++y) {
         for (uint8_t x = 0; x < f.width; ++x) {
-            uint8_t is_set = bitmap[y] & (1 << (7 - x));
-            if (is_set) {
-                eink_draw_pixel(s_x + x, s_y + y, col);
+            for (uint8_t b = 0; b < bytes_per_row; ++b) {
+                uint8_t is_set = bitmap[y * bytes_per_row + b] & (1 << (7 - x));
+                if (is_set) {
+                    eink_draw_pixel(s_x + x + (b * 8), s_y + y, col);
+                }
             }
         }
     }

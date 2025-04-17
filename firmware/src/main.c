@@ -13,51 +13,6 @@
 #include "../include/battery.h"
 #include "../include/rtc.h"
 
-/* Any EXTI line setup for interrupts will wakeup from stop 2 mode */
-void enter_stop_2()
-{
-    PWR->CR1 &= ~PWR_CR1_LPMS;
-    PWR->CR1 |= PWR_CR1_LPMS_STOP2;
-
-    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
-
-    __WFI();
-}
-
-/* This will be falling edge of power switch interrupt */
-void power_off()
-{
-    /* Disable button interrupts; we ONLY want the power switch to be able to wakeup */
-    disable_buttons();
-
-    eink_sleep();
-
-    /* Buttons */
-    /* Set to analog */
-    /* Disable pull up/down */
-    RCC->AHB2ENR &= ~RCC_AHB2ENR_GPIOBEN;
-    RCC->AHB2ENR &= ~RCC_AHB2ENR_GPIOAEN;
-
-    /* E-ink */
-    RCC->APB2ENR &= ~RCC_APB2ENR_SPI1EN;
-
-    /* SD card */
-    RCC->APB1ENR1 &= ~RCC_APB1ENR1_SPI3EN;
-
-    /* Battery monitor */
-
-    enter_stop_2();
-}
-
-/* This will be rising edge of power switch interrupt */
-void wake_up()
-{
-    /* Upon wake up we just want to reset so that we can run the main function 
-     * again, we could just call all the functions again but this is simpler I think*/
-    NVIC_SystemReset();
-}
-
-
 
 int main(void)
 {

@@ -17,6 +17,8 @@ void clock_init()
 
     SystemCoreClockUpdate();
 
+    RCC->CFGR |= RCC_CFGR_STOPWUCK;
+
     /* Setup delay_ms() */
     delay_init();
 }

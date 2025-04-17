@@ -296,9 +296,9 @@ void state_machine()
             draw_header(header);
 
             snprintf(buf, 100, "Long press SELECT to delete %s", deck_info[curr_deck_selection].set_name);
-            draw_string(large_font, 15, 50, buf, BLACK);
+            draw_string(xlarge_font, 15, 50, buf, BLACK);
             snprintf(buf, 100, "Long press BACK to return to main menu");
-            draw_string(large_font, 15, 70, buf, BLACK);
+            draw_string(xlarge_font, 15, 70, buf, BLACK);
             eink_render_framebuffer();
             render_pending = 0;
 
@@ -335,13 +335,13 @@ void state_machine()
             draw_header(header);
 
             snprintf(buf, 100, "Press SELECT to toggle shuffling");
-            draw_string(large_font, 15, 50, buf, BLACK);
+            draw_string(xlarge_font, 15, 50, buf, BLACK);
             snprintf(buf, 100, "SHUFFLE: %s", shuffle ? "YES" : "NO");
-            draw_string(large_font, 15, 70, buf, BLACK);
-            snprintf(buf, 100, "Press FORWARD to toggle learning algo");
-            draw_string(large_font, 15, 90, buf, BLACK);
+            draw_string(xlarge_font, 15, 70, buf, BLACK);
+            snprintf(buf, 100, "Press FORWARD to choose font sizs");
+            draw_string(xlarge_font, 15, 90, buf, BLACK);
             snprintf(buf, 100, "LEARNING ALGORITHM: %s", learning_algo ? "YES" : "NO");
-            draw_string(large_font, 15, 110, buf, BLACK);
+            draw_string(xlarge_font, 15, 110, buf, BLACK);
             // draw_menu(curr_menu_selection, settings_names, 2);
             eink_render_framebuffer();
             render_pending = 0;
@@ -351,7 +351,7 @@ void state_machine()
             if (!render_pending) break;
             eink_clear(0xFF);
             draw_header("SLEEPING");
-            draw_string(large_font, 100, 50, "START STUDYING AGAIN SOON!", BLACK);
+            draw_string(xlarge_font, 100, 50, "START STUDYING AGAIN SOON!", BLACK);
             draw_sleep_image(100, 75);
             eink_render_framebuffer();
             render_pending = 0;
