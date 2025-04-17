@@ -9,6 +9,7 @@
 #include "../include/font.h"
 #include "../include/battery.h"
 #include "../include/rtc.h"
+#include "cJSON.h"
 
 #define MENU_ITEM_DIST (50)
 #define MENU_ITEM_HEIGHT (40)
@@ -99,16 +100,63 @@ void draw_main_menu(uint8_t curr_selected_deck, char deck_names[][MAX_NAME_SIZE]
     uint16_t num_cards = 25;
     snprintf(metadata, sizeof(metadata), "Cards: %d | Studied: %s", num_cards, studied_date);
 
+    //accessing metadata info
+    FILE* dataFile = fopen("metadata.txt", "r");
+    if (!dataFile) {
+        return;
+    }
+
+    char jsonBuffer[4096];
+    size_t bytesRead = fread(jsonBuffer, 1, sizeof(jsonBuffer) - 1, dataFile);
+    fclose(dataFile); //close datafile
+    jsonBuffer[bytesRead] = '\0'; //null terminate
+
+    cJSON* metadataJSON = cJSON_Parse(jsonBuffer);
+    if (!metadataJSON) {
+        return;
+    }
+
+    cJSON* setsArray = cJSON_GetObjectItem(metadataJSON, "sets");
+    if (!cJSON_IsArray(setsArray)) {
+        printf("Error: Invalid metadata structure\n");
+        cJSON_Delete(metadataJSON);
+        return;
+    }
+
+    //iterate though the decks on the page
     for (uint8_t i = 0; i < decks_on_page; ++i) {
         uint8_t index = i + (curr_page * MAX_ITEMS_PER_PAGE);
-        if (index == curr_selected_deck) {
-            /* Draw filled & inverted rectangle */
-            draw_filled_deck_menu_item(large_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, deck_names[index], metadata, BLACK);
-        } else {
-            /* Normal */
-            draw_deck_menu_item(large_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, deck_names[index], metadata, BLACK);
+
+        //finding metadata for current deck
+        cJSON* set = NULL;
+        cJSON_ArrayForEach(set, setsArray) {
+            cJSON* setName = cJSON_GetObjectItem(set, "setName");
+            if (cJSON_IsString(setName) && strcmp(setName->valuestring, deck_names[index]) == 0) {
+                //extract numCards and last_studied
+                cJSON* numCards = cJSON_GetObjectItem(set, "numCards");
+                uint16_t numCardsInt = cJSON_IsNumber(numCards) ? numCards->valueint : 0; //converting to int
+                // cJSON* lastStudied = cJSON_GetObjectItem(set, "last_studied");
+                // uint32_t lastStudiedInt = lastStudied->valueint;
+                // snprintf(lastStudiedStr, sizeof(studied_date), "%02d/%02d", dt.mon, dt.day);
+                char studied_date[6];
+                read_rtc(&dt);
+                snprintf(studied_date, sizeof(studied_date), "%02d/%02d", dt.mon, dt.day);
+
+                char metadata[50];
+                snprintf(metadata, sizeof(metadata), "Cards: %d | Studied: %s", numCardsInt, studied_date);
+            }
+        
+
+            if (index == curr_selected_deck) {
+                /* Draw filled & inverted rectangle */
+                draw_filled_deck_menu_item(large_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, deck_names[index], metadata, BLACK);
+            } else {
+                /* Normal */
+                draw_deck_menu_item(large_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, deck_names[index], metadata, BLACK);
+            }
         }
     }
+    cJSON_Delete(metadataJSON); //delete JSON object
 }
 
 void draw_flashcard(struct flashcard fc, uint8_t f_b, uint8_t col)

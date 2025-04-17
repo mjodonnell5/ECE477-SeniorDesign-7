@@ -18,6 +18,9 @@ void parseJson(const char *filename); //parsing a json file
 void ls(int argc, char *argv[]);
 int parseJSON_file(const char* filename, struct deck* deck);
 int get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE]);
+void updateMetadata_newSet(const char* filename);
+void updateMetadata_date(const char* filename);
+void updateMetadata_delete(const char* filename);
 
 
 #endif /* __COMMANDS_H_ */

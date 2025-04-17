@@ -627,6 +627,201 @@ int parseJSON_file(const char* filename, struct deck* deck){
     
 }
 
+/*this will add a new set to the metadata.txt json file that stores set info including setname, numbers in the deck, and last time studied*/
+void updateMetadata_newSet(const char* filename){
+    //open the json file
+    FILE* dataFile = fopen(filename, "r");
+    if (!dataFile) {
+        return;
+    }
+    //read JSON into a buffer
+    char jsonBuffer[4096];
+    size_t bytesRead = fread(jsonBuffer, 1, sizeof(jsonBuffer) - 1, dataFile);
+    fclose(dataFile); //close datafile
+    jsonBuffer[bytesRead] = '\0'; //null terminate
+
+    //parse the JSON
+    cJSON* json = cJSON_Parse(jsonBuffer);
+    if (!json) {
+        return;
+    }
+    //extract number of flashcards (numCards)
+    cJSON* setName = cJSON_GetObjectItem(json, "flashcardSetName");
+    cJSON* numCards = cJSON_GetObjectItem(json, "numCards");
+
+    //get current time, placeholder for now
+    uint32_t currentTime = get_fattime(); //get current time in FAT format
+
+    //open metadata file for writing
+    FILE* metadataFile = fopen("metadata.txt", "a");
+    cJSON* metadataJson = NULL;
+    if(metadataFile){
+        char metadataBuffer[4096];
+        size_t metaBytesRead = fread(metadataBuffer, 1, sizeof(metadataBuffer) - 1, metadataFile);
+        fclose(metadataFile); //close metadata file
+        metadataBuffer[metaBytesRead] = '\0'; //null terminate
+        //parse the metadata JSON
+        metadataJson = cJSON_Parse(metadataBuffer);
+    }
+
+    if(!metadataJson){
+        //create new metadata JSON object
+        metadataJson = cJSON_CreateObject();
+        cJSON_AddItemToObject(metadataJson, "sets", cJSON_CreateArray());
+    }
+
+    //Get the "sets" array from the metadata JSON
+    cJSON* setsArray = cJSON_GetObjectItem(metadataJson, "sets");
+    if (!cJSON_IsArray(setsArray)){
+        printf("Error: Invalid metadata structure\n");
+        cJSON_Delete(metadataJson);
+        cJSON_Delete(json);
+        return;
+    }
+
+    //create a new set in metadata file
+    cJSON* newSet = cJSON_CreateObject();
+    cJSON_AddStringToObject(newSet, "setName", setName->valuestring);
+    cJSON_AddNumberToObject(newSet, "numCards", numCards->valueint);
+    cJSON_AddNumberToObject(newSet, "timestamp", currentTime);
+    cJSON_AddItemToArray(setsArray, newSet);
+    //write the updated metadata JSON to the file
+    metadataFile = fopen("metadata.txt", "w");
+    if (!metadataFile) {
+        printf("Error: Could not open metadata file for writing\n");
+        cJSON_Delete(metadataJson);
+        cJSON_Delete(json);
+        return;
+    }
+    char* metadataString = cJSON_Print(metadataJson);
+    fprintf(metadataFile, "%s", metadataString);
+    fclose(metadataFile); //close metadata file
+    cJSON_free(metadataString); //free the string created by cJSON_Print
+    cJSON_Delete(metadataJson); //delete metadata JSON object
+    cJSON_Delete(json); //delete JSON object
+}
+
+void updateMetadata_date(const char* filename){
+    //open the json file
+    FILE* dataFile = fopen("metadata.txt", "r");
+    //check if file opened successfully
+    if (!dataFile) {
+        return;
+    }
+    //read JSON into a buffer
+    char jsonBuffer[4096];
+    size_t bytesRead = fread(jsonBuffer, 1, sizeof(jsonBuffer) - 1, dataFile);
+    fclose(dataFile); //close datafile
+    jsonBuffer[bytesRead] = '\0'; //null terminate
+
+    //parse the json
+    cJSON* json = cJSON_Parse(jsonBuffer);
+    if (!json) {
+        return;
+    }
+    //get the "sets" array
+    cJSON* setsArray = cJSON_GetObjectItem(json, "sets");
+    if (!cJSON_IsArray(setsArray)) {
+        printf("Error: Invalid metadata structure\n");
+        cJSON_Delete(json);
+        return;
+    }
+
+    //itterate through sets array to find the set to update
+    cJSON* set = NULL;
+    cJSON_ArrayForEach(set, setsArray) {
+        cJSON* setName = cJSON_GetObjectItem(set, "setName");
+        if (cJSON_IsString(setName) && strcmp(setName->valuestring, filename) == 0) {
+            //found the set to update
+            //get current time
+            uint32_t currentTime = get_fattime(); //get current time in FAT format
+            cJSON* timestamp = cJSON_GetObjectItem(set, "last_studied");
+            if (timestamp) {
+                //update the timestamp with current time
+                cJSON_SetNumberValue(timestamp, currentTime);
+            }
+            else {
+                //if timestamp doesn't exist, create it
+                cJSON_AddNumberToObject(set, "last_studied", currentTime);
+            }
+            break;
+        }
+    }
+
+    //write the updated metadata JSON to the file
+    FILE* metadataFile = fopen("metadata.txt", "w");
+    if (!metadataFile) {
+        printf("Error: Could not open metadata file for writing\n");
+        cJSON_Delete(json);
+        return;
+    }
+
+    char* metadataString = cJSON_Print(json);
+    fprintf(metadataFile, "%s", metadataString);
+    fclose(metadataFile); //close metadata file
+
+    //cleanup
+    cJSON_free(metadataString); //free the string created by cJSON_Print
+    cJSON_Delete(json); //delete JSON object
+
+}
+
+void updateMetadata_delete(const char* filename){
+    //open the json file
+    FILE* dataFile = fopen("metadata.txt", "r");
+    //check if file opened successfully
+    if (!dataFile) {
+        return;
+    }
+    //read JSON into a buffer
+    char jsonBuffer[4096];
+    size_t bytesRead = fread(jsonBuffer, 1, sizeof(jsonBuffer) - 1, dataFile);
+    fclose(dataFile); //close datafile
+    jsonBuffer[bytesRead] = '\0'; //null terminate
+
+    //parse the json
+    cJSON* json = cJSON_Parse(jsonBuffer);
+    if (!json) {
+        return;
+    }
+
+    //get the sets array
+    cJSON* setsArray = cJSON_GetObjectItem(json, "sets");
+    if (!cJSON_IsArray(setsArray)) {
+        printf("Error: Invalid metadata structure\n");
+        cJSON_Delete(json);
+        return;
+    }
+    //itterate through sets array to find the set to delete
+    cJSON* set = NULL;
+    // cJSON* prevSet = NULL;
+    cJSON_ArrayForEach(set, setsArray) {
+        cJSON* setName = cJSON_GetObjectItem(set, "setName");
+        if (setName && strcmp(setName->valuestring, filename) == 0) {
+            //found the set to delete
+            cJSON_DeleteItemFromArray(setsArray, cJSON_GetArraySize(setsArray) - 1);
+            break;
+        }
+        // prevSet = set;
+    }
+
+    //write the updated metadata JSON to the file
+    FILE* metadataFile = fopen("metadata.txt", "w");
+    if (!metadataFile) {
+        printf("Error: Could not open metadata file for writing\n");
+        cJSON_Delete(json);
+        return;
+    }
+    char* metadataString = cJSON_Print(json);
+    fprintf(metadataFile, "%s", metadataString);
+    fclose(metadataFile); //close metadata file
+
+    //cleanup
+    cJSON_free(metadataString); //free the string created by cJSON_Print
+    cJSON_Delete(json); //delete JSON object
+
+}
+
 
 
 //yeah ignore dis shi

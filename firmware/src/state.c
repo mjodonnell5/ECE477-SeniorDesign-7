@@ -119,6 +119,12 @@ void state_machine()
                 contents[i++] = c;
             }
 
+            /*3a. Delete metadata contents if it already exists*/
+            if (f_stat(filename, NULL) == FR_OK){
+                updateMetadata_delete(filename);
+                //maybe delete the file here but should do some testing.
+            }
+
             /* 3. Create and open file on SD card with that name */
             FIL fil;
             FRESULT fr = f_open(&fil, filename, FA_WRITE | FA_CREATE_NEW);
@@ -134,6 +140,8 @@ void state_machine()
                 log_to_sd(contents);
                 log_to_sd("\n");
             }
+            //update metadata file here
+            updateMetadata_newSet(filename);
 
             f_sync(&fil);
             f_close(&fil);
@@ -210,6 +218,7 @@ void state_machine()
             if (btn == SELECT) {
                 if (press == SHORT_PRESS) {
                     state = STATE_FLASHCARD_NAVIGATION;
+                    updateMetadata_date(deck_names[curr_deck_selection]); //updating the date of the deck
                     get_deck_from_sd = 1;
                     press = NO_PRESS;
                     break;
@@ -264,9 +273,11 @@ void state_machine()
                     break;
                 } else if (press == LONG_PRESS) {
                     /* Delete highlighted deck */
+                    updateMetadata_delete(deck_names[curr_deck_selection]); //deleting from the metadata file
                     // delete_file(deck_names[curr_deck_selection]);
                     fetch_decks = 1;
                     // render_pending = 1;
+                    //update metatadata file here
                     state = STATE_MENU_NAVIGATION;
                     press = NO_PRESS;
                     break;
