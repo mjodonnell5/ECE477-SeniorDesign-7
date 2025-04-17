@@ -170,7 +170,7 @@ void state_machine()
                         curr_menu_selection--;
                     }
                 } else if (press == LONG_PRESS) {
-                    state = STATE_DOWNLOAD;
+                    // state = STATE_DOWNLOAD;
                     press = NO_PRESS;
                     break;
                 }

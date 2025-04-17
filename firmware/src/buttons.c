@@ -4,6 +4,7 @@
 #include "../include/state.h"
 #include "../include/buttons.h"
 #include "../include/eink.h"
+#include "../include/clock.h"
 
 volatile uint8_t curr_deck_selection = 0;
 volatile uint8_t curr_card_selection = 0;
@@ -123,15 +124,19 @@ void wake_up()
     /* Upon wake up we just want to reset so that we can run the main function 
      * again, we could just call all the functions again but this is simpler I think*/
     enable_buttons();
+
+    eink_clear(0xFF);
+    draw_centered_string_wrapped(xlarge_font, "E-ink Flashcards (logo somewhere here?)", BLACK);
+    eink_render_framebuffer();
+
+    delay_ms(1500);
+
     NVIC_SystemReset();
 }
 
 void EXTI2_IRQHandler(void)
 {
     EXTI->PR1 = EXTI_PR1_PIF2;
-    if (render_pending) {
-        return;
-    }
 
     if (GPIOE->IDR & GPIO_IDR_ID2) {
         /* Rising edge */
@@ -172,11 +177,11 @@ void EXTI9_5_IRQHandler(void)
     }
 }
 
-
 /* DOWN/BACKWARDS */
 void EXTI3_IRQHandler(void)
 {
     EXTI->PR1 = EXTI_PR1_PIF3;
+
     if (render_pending) {
         return;
     }

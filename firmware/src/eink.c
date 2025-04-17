@@ -192,7 +192,7 @@ void eink_render_framebuffer()
 
     eink_wait_until_idle();
     eink_turn_on_display();
-    delay_ms(900);
+    delay_ms(1000);
 }
 
 void eink_clear(uint8_t col)

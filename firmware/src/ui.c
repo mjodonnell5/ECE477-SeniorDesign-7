@@ -37,14 +37,20 @@ void draw_sleep_image(uint16_t s_x, uint16_t s_y)
 
 void draw_hints()
 {
+    /* NOTE: y position is messed up in right handed mode because screen is
+     * not centered at the moment */
+    uint16_t x_location = 0;
+    if (!left_handed) {
+        x_location = EINK_WIDTH - 10;
+    }
     if (state == STATE_HOME_NAVIGATION || state == STATE_MENU_NAVIGATION) {
-        draw_char(large_font, 0, 50, 24, BLACK);
-        draw_char(large_font, 0, 160, 25, BLACK);
-        draw_char(large_font, 0, 275, 4, BLACK);
+        draw_char(xlarge_font, x_location, 40, 24, BLACK);
+        draw_char(xlarge_font, x_location, 160, 25, BLACK);
+        draw_char(xlarge_font, x_location, 275, 4, BLACK);
     } else if (state == STATE_FLASHCARD_NAVIGATION) {
-        draw_char(large_font, 0, 50, 27, BLACK);
-        draw_char(large_font, 0, 160, 26, BLACK);
-        draw_char(large_font, 0, 275, 4, BLACK);
+        draw_char(xlarge_font, x_location, 50, 27, BLACK);
+        draw_char(xlarge_font, x_location, 160, 26, BLACK);
+        draw_char(xlarge_font, x_location, 275, 4, BLACK);
     }
 }
 
@@ -282,7 +288,7 @@ void draw_filled_deck_menu_item(struct font f, uint16_t s_x, uint16_t s_y, uint1
 
     draw_filled_rect(min_x, min_y, max_x, max_y, col);
 
-    draw_string(f, 65, text_y + f.height / 2, "> ", !col);
+    draw_char(xlarge_font, 65, text_y + f.height / 2, 26, !col);
     draw_string(f, 85, text_y, string, !col);
     draw_string(small_font, 85, text_y + f.height + 4, string2, !col);
 }

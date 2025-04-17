@@ -63,7 +63,7 @@ int main(void)
     // for(;;);
 
 
-    /* Set initial font, this is a bad place to do it but the code is messy
+    /* FIXME: Set initial font, this is a bad place to do it but the code is messy
      * and I don't know where to do it lol */
     curr_font = xlarge_font;
     render_pending = 1;
