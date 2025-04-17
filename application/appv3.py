@@ -132,6 +132,7 @@ class MainPage(ctk.CTkFrame):
             data_payload = file.read()
 
         ports = [port.device for port in serial.tools.list_ports.comports()]
+        print(filename.encode() + b'\xBC' + data_payload.encode() + b'\x00')
 
         if not ports:
             messagebox.showerror("Error", "No serial devices found!")
