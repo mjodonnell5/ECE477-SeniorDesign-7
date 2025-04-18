@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define LONG_PRESS_TIME_MS (250)
+#define LONG_PRESS_TIME_MS (750)
 
 #define NO_PRESS    (0)
 #define SHORT_PRESS (1)
