@@ -147,6 +147,7 @@ void EXTI2_IRQHandler(void)
     }
 }
 
+
 /* SELECT/FLIP */
 void EXTI9_5_IRQHandler(void)
 {
@@ -174,6 +175,13 @@ void EXTI9_5_IRQHandler(void)
 
         render_pending = 1;
 
+        /* BUSY LOW */
+    } else if (EXTI->PR1 & EXTI_PR1_PIF6) {
+        EXTI->PR1 = EXTI_PR1_PIF6;
+        // GPIOE->ODR |= GPIO_ODR_OD1;
+        // delay_ms(50);
+        // GPIOE->ODR &= ~GPIO_ODR_OD1;
+        eink_busy = 0;
     }
 }
 

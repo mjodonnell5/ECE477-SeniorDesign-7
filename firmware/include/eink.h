@@ -15,6 +15,8 @@
 #define WHITE (1)
 #define BLACK (0)
 
+extern volatile uint8_t eink_busy;
+
 void eink_init();
 void eink_sleep();
 void eink_render_framebuffer();

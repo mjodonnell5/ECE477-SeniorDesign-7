@@ -9,6 +9,7 @@
 #include "../include/state.h"
 
 uint8_t framebuffer[EINK_FRAMEBUFFER_SIZE] = {0xFF};
+volatile uint8_t eink_busy = 0;
 
 static void eink_send_cmd(uint8_t cmd)
 {
@@ -45,6 +46,12 @@ static void eink_pin_init()
 
     /* BUSY - PA6 (INPUT) ; RESET - PA9 ; D/C - PA8 */
     GPIOA->MODER &= ~(GPIO_MODER_MODER6 );
+    RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
+    SYSCFG->EXTICR[1] |= SYSCFG_EXTICR2_EXTI6_PA;
+    EXTI->FTSR1 |= EXTI_FTSR1_FT6;
+    EXTI->IMR1 |= EXTI_IMR1_IM6;
+
+    NVIC->ISER[0] |= (1 << EXTI9_5_IRQn);
     // GPIOA->MODER |= (GPIO_MODER_MODER8_0 | GPIO_MODER_MODER9_0);
 
     /*; RESET - PC5 ; D/C - PC4 */
@@ -57,14 +64,16 @@ static void eink_pin_init()
 
 }
 
+
 void eink_wait_until_idle()
 {
     /* The all mightly magical command */
     // eink_send_cmd(0x71);
 
-    while((GPIOA->IDR & GPIO_IDR_ID6) == 1) {
-        // eink_send_cmd(0x71);
-    }
+    // while((GPIOA->IDR & GPIO_IDR_ID6) == 1) {
+    //     eink_send_cmd(0x71);
+    // }
+    while (eink_busy == 1) {};
 
     delay_ms(100);
 }
@@ -93,6 +102,7 @@ void eink_init()
     eink_reset();
     eink_send_cmd(0x12);
     eink_wait_until_idle();
+    delay_ms(100);
 
     delay_ms(10);
 
@@ -110,6 +120,7 @@ void eink_init()
     eink_send_data(0x91);
     eink_send_cmd(0x20);
     eink_wait_until_idle();
+    delay_ms(100);
 
     eink_send_cmd(0x11);
     if (left_handed) {
@@ -156,6 +167,7 @@ void eink_init()
         eink_send_data(0x01);  
     }
     eink_wait_until_idle();
+    // delay_ms(100);
 }
 
 inline void eink_draw_pixel(uint16_t x, uint16_t y, uint8_t col)
@@ -181,8 +193,14 @@ static void eink_turn_on_display()
     eink_wait_until_idle();
 }
 
+extern uint32_t first;
+extern uint32_t start;
+extern uint32_t end;
+
 void eink_render_framebuffer()
 {
+    eink_busy = 1;
+    first = TIM2->CNT;
     /* Start writing into B/W ram */
     eink_send_cmd(0x24);
 
@@ -190,9 +208,13 @@ void eink_render_framebuffer()
         eink_send_data(framebuffer[i]);
     }
 
-    eink_wait_until_idle();
+    // eink_wait_until_idle();
+    start = TIM2->CNT;
+    // GPIOE->ODR |= GPIO_ODR_OD1;
     eink_turn_on_display();
-    delay_ms(1000);
+    // GPIOE->ODR &= ~GPIO_ODR_OD1;
+    end = TIM2->CNT;
+    // delay_ms(1200);
 }
 
 void eink_clear(uint8_t col)

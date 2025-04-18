@@ -13,6 +13,10 @@
 #include "../include/battery.h"
 #include "../include/rtc.h"
 
+uint32_t first = 0;
+uint32_t start = 0;
+uint32_t end = 0;
+
 int main(void)
 {
     clock_init();
@@ -46,7 +50,7 @@ int main(void)
     // eink_clear(0xFF);
     // eink_render_framebuffer();
 
-    // char time[50];
+    char time[50];
     // read_rtc(&dt);
     // snprintf(time, 50, "20%02d-%02d-%02d | %02d:%02d:%02d", dt.year, dt.mon, dt.day, dt.hour, dt.min, dt.sec);
     // eink_clear(0xFF);
@@ -59,15 +63,31 @@ int main(void)
     // eink_clear(0xFF);
     // draw_centered_string_wrapped(large_font, time, BLACK);
     // eink_render_framebuffer();
+    // delay_ms(3000);
     //
-    // for(;;);
+    
+    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOEEN;
+    GPIOE->MODER &= ~GPIO_MODER_MODE1;
+    GPIOE->MODER |= GPIO_MODER_MODE1_0;
 
+    // eink_clear(0xFF);
+    // draw_centered_string_wrapped(large_font, "TEST 1st RENDER", BLACK);
+    // eink_render_framebuffer();
+
+    // delay_ms(1000);
+    // char buf[100];
+    // snprintf(buf, 100, "Start of render: %d | Start of wait: %d | end of wait: %d | curr time: %d", first, start, end, TIM2->CNT);
+    // eink_clear(0xFF);
+    // draw_centered_string_wrapped(large_font, buf, BLACK);
+    // eink_render_framebuffer();
+
+    // for(;;);
 
     /* FIXME: Set initial font, this is a bad place to do it but the code is messy
      * and I don't know where to do it lol */
     curr_font = xlarge_font;
-    render_pending = 1;
-    state_machine();
+    // render_pending = 1;
+    // state_machine();
 
     // eink_sleep();
 
@@ -87,8 +107,12 @@ int main(void)
     sprintf(log_buffer, "Voltage: %.3f V\n", voltage / 1000.0);
     log_to_sd(log_buffer);
 
-    sprintf(log_buffer, "State of Charge: %d%%\n", soc);
+    sprintf(log_buffer, "State of Charge: %d%%", soc);
     log_to_sd(log_buffer);
+
+    eink_clear(0xFF);
+    draw_centered_string_wrapped(xlarge_font, log_buffer, BLACK);
+    eink_render_framebuffer();
 
     sprintf(log_buffer, "Remaining Capacity: %d mAh\n", capacity);
     log_to_sd(log_buffer);
