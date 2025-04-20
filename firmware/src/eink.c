@@ -75,7 +75,7 @@ void eink_wait_until_idle()
     // }
     while (eink_busy == 1) {};
 
-    delay_ms(100);
+    // delay_ms(100);
 }
 
 static void eink_reset()

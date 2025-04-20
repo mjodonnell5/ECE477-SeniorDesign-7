@@ -177,7 +177,7 @@ void state_machine()
         delay_ms(10);
         if (interrupts == 0) continue;
 
-        coalesce_events();
+        // coalesce_events();
         // enum EVENT event = evq_pop();
         // event_handler handler = event_handlers[state][event];
         // if (event != EVENT_NONE) handler();
@@ -249,6 +249,7 @@ void state_machine()
             } else {
                 curr_font = large_font;
             }
+            uint8_t old_left = left_handed;
             snprintf(buf, 100, "Press SELECT to toggle shuffling");
             draw_string(curr_font, 15, 50, buf, BLACK);
             snprintf(buf, 100, "SHUFFLE: %s", shuffle ? "YES" : "NO");
@@ -261,7 +262,10 @@ void state_machine()
             draw_string(curr_font, 15, 130, buf, BLACK);
             snprintf(buf, 100, "DOMINANT HAND: %s", left_handed ? "LEFT-HANDED" : "RIGHT-HANDED");
             draw_string(curr_font, 15, 150, buf, BLACK);
-            eink_init();
+            /* Reinit to update orientation if it changed */
+            if (old_left != left_handed) {
+                eink_init();
+            }
             // draw_menu(curr_menu_selection, settings_names, 2);
             eink_render_framebuffer();
             render_pending = 0;

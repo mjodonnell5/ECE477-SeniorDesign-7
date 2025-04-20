@@ -80,7 +80,7 @@ void enter_stop_2()
 
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 
-    // __WFI();
+    __WFI();
 }
 
 /* This will be falling edge of power switch interrupt */
@@ -111,7 +111,7 @@ void power_off()
 
     /* Battery monitor */
 
-    enter_stop_2();
+    // enter_stop_2();
 }
 
 /* This will be rising edge of power switch interrupt */
@@ -121,11 +121,11 @@ void wake_up()
      * again, we could just call all the functions again but this is simpler I think*/
     enable_buttons();
 
-    eink_clear(0xFF);
-    draw_centered_string_wrapped(xlarge_font, "E-ink Flashcards (logo somewhere here?)", BLACK);
-    eink_render_framebuffer();
-
-    delay_ms(1500);
+    // eink_clear(0xFF);
+    // draw_centered_string_wrapped(xlarge_font, "E-ink Flashcards (logo somewhere here?)", BLACK);
+    // eink_render_framebuffer();
+    //
+    // delay_ms(1500);
 
     NVIC_SystemReset();
 }
@@ -136,6 +136,7 @@ void EXTI2_IRQHandler(void)
 {
     EXTI->PR1 = EXTI_PR1_PIF2;
 
+    interrupts++;
     if (GPIOE->IDR & GPIO_IDR_ID2) {
         /* Rising edge */
         power_off();
