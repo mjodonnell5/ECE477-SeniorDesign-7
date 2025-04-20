@@ -160,6 +160,15 @@ void draw_home_menu()
 extern volatile uint8_t interrupts;
 char deck_names[MAX_DECKS][MAX_NAME_SIZE] = {0};
 
+void coalesce_events()
+{
+    enum EVENT event;
+    while ((event = evq_pop()) != EVENT_NONE) {
+        event_handler handler = event_handlers[state][event];
+        handler();
+    }
+}
+
 /* NOTE: This will always be running when there is no interrupt happening */
 void state_machine()
 {
@@ -299,6 +308,7 @@ void state_machine()
 
             break;
         }
-        // __WFI();
+
+        /* FIXME: Maybe call coalesce_events here? */
     }
 }
