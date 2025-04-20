@@ -16,9 +16,6 @@
 #include "../include/ff.h"
 
 volatile enum STATES state = STATE_HOME_NAVIGATION;
-// volatile enum STATES state = STATE_MENU_NAVIGATION;
-// volatile enum STATES state = STATE_DOWNLOAD;
-// volatile enum STATES state = STATE_SLEEPING;
 volatile uint8_t render_pending = 0;
 uint8_t fetch_decks = 1;
 
@@ -28,10 +25,6 @@ extern volatile uint8_t curr_deck_selection;
 struct deck main_deck;
 uint8_t num_decks = 0;
 volatile uint8_t curr_menu_selection = 0;
-
-extern volatile uint8_t press;
-extern volatile uint8_t btn;
-
 
 volatile uint8_t shuffle = 0;
 volatile uint8_t font_large = 1;
@@ -57,195 +50,158 @@ void shuffle_deck(struct deck* deck)
     }
 }
 
+volatile struct evq q = {0};
+
+uint8_t evq_push(enum EVENT e)
+{
+    __disable_irq();
+    uint8_t next = (q.head + 1) % EVQ_SIZE;
+    if (next == q.tail) {
+        __enable_irq();
+        return 0;    // full
+    }
+    q.buf[q.head] = e;
+    q.head = next;
+    __enable_irq();
+    return 1;
+}
+
+enum EVENT evq_pop()
+{
+    __disable_irq();
+    if (q.head == q.tail) {
+        __enable_irq();
+        return EVENT_NONE; // empty
+    }
+    enum EVENT e = q.buf[q.tail];
+    q.tail = (q.tail + 1) % EVQ_SIZE;
+    __enable_irq();
+    return e;
+}
+
 char menu_names[3][MAX_NAME_SIZE] = {
     "STUDY",
     "DOWNLOAD",
     "SETTINGS"
 };
 
-// char deck_names[MAX_DECKS][MAX_NAME_SIZE] = {
-//     "ECE 20002",
-//     "ECE 404",
-//     "PHIL 322"
-// };
+void download_deck()
+{
+    // __disable_irq();
+
+    eink_clear(0xFF);
+    draw_header("DOWNLOADING DECK");
+    eink_render_framebuffer();
+
+    char contents[UART_BUF_SIZE] = {0};
+    char filename[MAX_NAME_SIZE] = {0};
+    char c = 0;
+    uint32_t i = 0;
+
+    while (c != UART_DELIM) {
+        c = uart_read_char();
+        if (c == UART_DELIM) {
+            filename[i] = 0;
+            break;
+        }
+        filename[i++] = c;
+    }
+
+    /* 2. Read in file contents until EOF or something so that we know its over */
+    i = 0;
+    UINT wlen;
+    while (c != UART_EOF) {
+        c = uart_read_char();
+        if (c == UART_EOF) break;
+        contents[i++] = c;
+    }
+
+    /* 3. Create and open file on SD card with that name */
+    FIL fil;
+    FRESULT fr = f_open(&fil, filename, FA_WRITE | FA_CREATE_NEW);
+    if (fr) {
+        log_to_sd("CANT OPEN\n");
+        log_to_sd(filename);
+        log_to_sd("\n");
+    }
+
+    fr = f_write(&fil, contents, strlen(contents), &wlen);
+    if (fr) {
+        log_to_sd("CANT WRITE\n");
+        log_to_sd(contents);
+        log_to_sd("\n");
+    }
+
+    f_sync(&fil);
+    f_close(&fil);
+
+    __enable_irq();
+
+    state = STATE_DECK_NAVIGATION;
+    render_pending = 1;
+    fetch_decks = 1;
+}
+
+void draw_home_menu()
+{
+    char header[25];
+    eink_clear(0xFF);
+    /* +1 because it is 0 indexed */
+    snprintf(header, 25, "SELECT AN OPTION: %d/%d", curr_menu_selection + 1, 3);
+    draw_header(header);
+    draw_menu(curr_menu_selection, menu_names, 3);
+    snprintf(header, 25, "%d, %d, %d, %d | %d, %d", q.buf[0], q.buf[1], q.buf[2], q.buf[3], q.head, q.tail);
+    draw_string(xlarge_font, 0, 180, header, BLACK);
+    eink_render_framebuffer();
+    render_pending = 0;
+}
+
+
+extern volatile uint8_t interrupts;
+char deck_names[MAX_DECKS][MAX_NAME_SIZE] = {0};
 
 /* NOTE: This will always be running when there is no interrupt happening */
 void state_machine()
 {
-    char deck_names[MAX_DECKS][MAX_NAME_SIZE] = {0};
-    char header[25];
-
     char buf[100];
+
     for (;;) {
         delay_ms(10);
+        if (interrupts == 0) continue;
+        interrupts--;
+
+        enum EVENT event = evq_pop();
+        event_handler handler = event_handlers[state][event];
+        if (event != EVENT_NONE) handler();
+        delay_ms(50);
+
         switch (state) {
         case STATE_DOWNLOAD:
-            // __disable_irq();
-
-            eink_clear(0xFF);
-            draw_header("DOWNLOADING DECK");
-            eink_render_framebuffer();
-
-            char contents[UART_BUF_SIZE] = {0};
-            char filename[MAX_NAME_SIZE] = {0};
-            char c = 0;
-            uint32_t i = 0;
-
-            while (c != UART_DELIM) {
-                // if (btn == BACKWARD && press == LONG_PRESS) {
-                //     break;
-                // }
-                c = uart_read_char();
-                if (c == UART_DELIM) {
-                    filename[i] = 0;
-                    break;
-                }
-                filename[i++] = c;
-            }
-
-            // if (btn == BACKWARD && press == LONG_PRESS) {
-            //     state = STATE_HOME_NAVIGATION;
-            //     press = NO_PRESS;
-            //     break;
-            // }
-
-            /* 2. Read in file contents until EOF or something so that we know its over */
-            i = 0;
-            UINT wlen;
-            while (c != UART_EOF) {
-                c = uart_read_char();
-                if (c == UART_EOF) break;
-                contents[i++] = c;
-            }
-
-            /* 3. Create and open file on SD card with that name */
-            FIL fil;
-            FRESULT fr = f_open(&fil, filename, FA_WRITE | FA_CREATE_NEW);
-            if (fr) {
-                log_to_sd("CANT OPEN\n");
-                log_to_sd(filename);
-                log_to_sd("\n");
-            }
-
-            fr = f_write(&fil, contents, strlen(contents), &wlen);
-            if (fr) {
-                log_to_sd("CANT WRITE\n");
-                log_to_sd(contents);
-                log_to_sd("\n");
-            }
-
-            f_sync(&fil);
-            f_close(&fil);
-
-            __enable_irq();
-
-            state = STATE_MENU_NAVIGATION;
-            render_pending = 1;
-            fetch_decks = 1;
+            download_deck();
 
             break;
 
         case STATE_HOME_NAVIGATION:
-            if (!render_pending) break;
+            // if (!render_pending) break;
 
-            if (btn == SELECT) {
-                if (press == SHORT_PRESS) {
-                    if (curr_menu_selection == 0) {
-                        state = STATE_MENU_NAVIGATION;
-                    } else if (curr_menu_selection == 1) {
-                        state = STATE_DOWNLOAD;
-                    } else if (curr_menu_selection == 2) {
-                        state = STATE_SETTINGS;
-                    }
-                    press = NO_PRESS;
-                    break;
-                } else if (press == LONG_PRESS) {
-                    press = NO_PRESS;
-                    break;
-                }
-                press = NO_PRESS;
-            } else if (btn == BACKWARD) {
-                if (press == SHORT_PRESS) {
-                    if (curr_menu_selection > 0) {
-                        curr_menu_selection--;
-                    }
-                } else if (press == LONG_PRESS) {
-                    // state = STATE_DOWNLOAD;
-                    press = NO_PRESS;
-                    break;
-                }
-                press = NO_PRESS;
-            } else if (btn == FORWARD) {
-                if (press == SHORT_PRESS) {
-                    if (curr_menu_selection + 1 < 3) {
-                        curr_menu_selection++;
-                    }
-                } else if (press == LONG_PRESS) {
-                    state = STATE_SETTINGS;
-                    press = NO_PRESS;
-                    break;
-                }
-                press = NO_PRESS;
-            }
+            if (event != EVENT_NONE) handler();
+            draw_home_menu();
 
-            eink_clear(0xFF);
-            /* +1 because it is 0 indexed */
-            snprintf(header, 25, "SELECT AN OPTION: %d/%d", curr_menu_selection + 1, 3);
-            draw_header(header);
-            draw_menu(curr_menu_selection, menu_names, 3);
-            eink_render_framebuffer();
-            render_pending = 0;
             break;
 
-        case STATE_MENU_NAVIGATION:
+        case STATE_DECK_NAVIGATION:
             /* Get deck names if we don't have them yet */
             if (fetch_decks) {
                 curr_deck_selection = 0;
                 num_decks = get_decks(deck_names);
                 fetch_decks = 0;
             }
-            if (!render_pending) break;
-
-            if (btn == SELECT) {
-                if (press == SHORT_PRESS) {
-                    state = STATE_FLASHCARD_NAVIGATION;
-                    get_deck_from_sd = 1;
-                    press = NO_PRESS;
-                    break;
-                } else if (press == LONG_PRESS) {
-                    /* Delete highlighted deck */
-                    /* TODO: Add confirmation */
-                    state = STATE_DELETE_DECK_CONFIRM;
-                    // render_pending = 1;
-                    press = NO_PRESS;
-                    break;
-                }
-                press = NO_PRESS;
-            } else if (btn == BACKWARD) {
-                if (press == SHORT_PRESS) {
-                    if (curr_deck_selection > 0) {
-                        curr_deck_selection--;
-                    }
-                } else if (press == LONG_PRESS) {
-                    state = STATE_HOME_NAVIGATION;
-                    press = NO_PRESS;
-                    break;
-                }
-                press = NO_PRESS;
-            } else if (btn == FORWARD) {
-                if (press == SHORT_PRESS) {
-                    if (curr_deck_selection + 1 < num_decks) {
-                        curr_deck_selection++;
-                    }
-                } else if (press == LONG_PRESS) {
-                    state = STATE_SETTINGS;
-                    press = NO_PRESS;
-                    break;
-                }
-                press = NO_PRESS;
-            }
+            // if (!render_pending) break;
+            if (event != EVENT_NONE) handler();
 
             eink_clear(0xFF);
+
+            char header[25];
             /* +1 because it is 0 indexed */
             snprintf(header, 25, "SELECT A DECK: %d/%d", curr_deck_selection + 1, num_decks);
             draw_header(header);
@@ -256,38 +212,8 @@ void state_machine()
             break;
 
         case STATE_DELETE_DECK_CONFIRM:
-            if (!render_pending) break;
-
-            if (btn == SELECT) {
-                if (press == SHORT_PRESS) {
-                    break;
-                } else if (press == LONG_PRESS) {
-                    /* Delete highlighted deck */
-                    // delete_file(deck_names[curr_deck_selection]);
-                    fetch_decks = 1;
-                    // render_pending = 1;
-                    state = STATE_MENU_NAVIGATION;
-                    press = NO_PRESS;
-                    break;
-                }
-                press = NO_PRESS;
-            } else if (btn == BACKWARD) {
-                if (press == SHORT_PRESS) {
-                    press = NO_PRESS;
-                    break;
-                } else if (press == LONG_PRESS) {
-                    // render_pending = 1;
-                    state = STATE_MENU_NAVIGATION;
-                    press = NO_PRESS;
-                    break;
-                }
-                press = NO_PRESS;
-            } else if (btn == FORWARD) {
-                if (press == SHORT_PRESS) {
-                } else if (press == LONG_PRESS) {
-                }
-                press = NO_PRESS;
-            }
+            // if (!render_pending) break;
+            if (event != EVENT_NONE) handler();
 
             eink_clear(0xFF);
             snprintf(header, 25, "CONFIRM DELETION");
@@ -303,32 +229,9 @@ void state_machine()
             break;
 
         case STATE_SETTINGS:
-            if (!render_pending) break;
+            // if (!render_pending) break;
+            if (event != EVENT_NONE) handler();
 
-            if (btn == SELECT) {
-                if (press == SHORT_PRESS) {
-                    shuffle = !shuffle;
-                } else if (press == LONG_PRESS) {
-                }
-                press = NO_PRESS;
-            } else if (btn == BACKWARD) {
-                if (press == SHORT_PRESS) {
-                    left_handed = !left_handed;
-                    press = NO_PRESS;
-                    break;
-                } else if (press == LONG_PRESS) {
-                    state = STATE_HOME_NAVIGATION;
-                    press = NO_PRESS;
-                    break;
-                }
-                press = NO_PRESS;
-            } else if (btn == FORWARD) {
-                if (press == SHORT_PRESS) {
-                    font_large = !font_large;
-                } else if (press == LONG_PRESS) {
-                }
-                press = NO_PRESS;
-            }
             eink_clear(0xFF);
             snprintf(header, 25, "SETTINGS");
             draw_header(header);
@@ -357,7 +260,7 @@ void state_machine()
             break;
 
         case STATE_SLEEPING:
-            if (!render_pending) break;
+            // if (!render_pending) break;
             eink_clear(0xFF);
             draw_header("SLEEPING");
             draw_string(curr_font, 100, 50, "START STUDYING AGAIN SOON!", BLACK);
@@ -383,47 +286,8 @@ void state_machine()
                     shuffle_deck(&main_deck);
                 }
             }
-            if (!render_pending) break;
-
-            if (btn == SELECT) {
-                if (press == SHORT_PRESS) {
-                    /* Flip */
-                    f_b = !f_b;
-                } else if (press == LONG_PRESS) {
-                }
-                press = NO_PRESS;
-            } else if (btn == BACKWARD) {
-                if (press == SHORT_PRESS) {
-                    if (curr_card_selection > 0) {
-                        curr_card_selection--;
-                    }
-
-                    /* Always start on the front */
-                    if (f_b == BACK) f_b = FRONT;
-                } else if (press == LONG_PRESS) {
-                    state = STATE_MENU_NAVIGATION;
-
-                    /* Don't save previous state when going back in the menu */
-                    curr_deck_selection = 0;
-                    curr_card_selection = 0;
-                    f_b = FRONT;
-
-                    press = NO_PRESS;
-                    break;
-                }
-                press = NO_PRESS;
-            } else if (btn == FORWARD) {
-                if (press == SHORT_PRESS) {
-                    if (curr_card_selection + 1 < main_deck.num_cards) {
-                        curr_card_selection++;
-                    }
-
-                    /* Always start on the front */
-                    if (f_b == BACK) f_b = FRONT;
-                } else if (press == LONG_PRESS) {
-                }
-                press = NO_PRESS;
-            }
+            // if (!render_pending) break;
+            if (event != EVENT_NONE) handler();
 
             eink_clear(0xFF);
             /* +1 because it is 0 indexed */

@@ -43,7 +43,7 @@ void draw_hints()
     if (!left_handed) {
         x_location = EINK_WIDTH - 10;
     }
-    if (state == STATE_HOME_NAVIGATION || state == STATE_MENU_NAVIGATION) {
+    if (state == STATE_HOME_NAVIGATION || state == STATE_DECK_NAVIGATION) {
         draw_char(xlarge_font, x_location, 40, 24, BLACK);
         draw_char(xlarge_font, x_location, 160, 25, BLACK);
         draw_char(xlarge_font, x_location, 275, 4, BLACK);

@@ -193,14 +193,9 @@ static void eink_turn_on_display()
     eink_wait_until_idle();
 }
 
-extern uint32_t first;
-extern uint32_t start;
-extern uint32_t end;
-
 void eink_render_framebuffer()
 {
     eink_busy = 1;
-    first = TIM2->CNT;
     /* Start writing into B/W ram */
     eink_send_cmd(0x24);
 
@@ -208,13 +203,7 @@ void eink_render_framebuffer()
         eink_send_data(framebuffer[i]);
     }
 
-    // eink_wait_until_idle();
-    start = TIM2->CNT;
-    // GPIOE->ODR |= GPIO_ODR_OD1;
     eink_turn_on_display();
-    // GPIOE->ODR &= ~GPIO_ODR_OD1;
-    end = TIM2->CNT;
-    // delay_ms(1200);
 }
 
 void eink_clear(uint8_t col)

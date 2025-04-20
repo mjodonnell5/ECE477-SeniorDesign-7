@@ -73,10 +73,6 @@ void button_init()
 
 volatile uint32_t start_press_time = 0;
 
-volatile uint8_t press = NO_PRESS;
-volatile uint8_t btn = SELECT;
-
-
 void enter_stop_2()
 {
     PWR->CR1 &= ~PWR_CR1_LPMS;
@@ -134,6 +130,8 @@ void wake_up()
     NVIC_SystemReset();
 }
 
+volatile uint8_t interrupts = 0;
+
 void EXTI2_IRQHandler(void)
 {
     EXTI->PR1 = EXTI_PR1_PIF2;
@@ -153,11 +151,10 @@ void EXTI9_5_IRQHandler(void)
 {
     if (EXTI->PR1 & EXTI_PR1_PIF5) {
         EXTI->PR1 = EXTI_PR1_PIF5;
-        if (render_pending) {
-            return;
-        }
+        // if (render_pending) {
+        //     return;
+        // }
 
-        btn = SELECT;
         if (GPIOE->IDR & GPIO_IDR_ID5) {
             /* Rising edge */
             start_press_time = TIM2->CNT;
@@ -166,21 +163,20 @@ void EXTI9_5_IRQHandler(void)
             /* Falling edge */
             if ((uint32_t)(TIM2->CNT - start_press_time) < LONG_PRESS_TIME_MS) {
                 /* Short press */
-                press = SHORT_PRESS;
+                evq_push(EVENT_BUTTON_SEL_SHORT);
             } else {
                 /* Long press */
-                press = LONG_PRESS;
+                evq_push(EVENT_BUTTON_SEL_LONG);
             }
         }
 
         render_pending = 1;
+        interrupts++;
 
         /* BUSY LOW */
     } else if (EXTI->PR1 & EXTI_PR1_PIF6) {
         EXTI->PR1 = EXTI_PR1_PIF6;
-        // GPIOE->ODR |= GPIO_ODR_OD1;
-        // delay_ms(50);
-        // GPIOE->ODR &= ~GPIO_ODR_OD1;
+
         eink_busy = 0;
     }
 }
@@ -190,11 +186,6 @@ void EXTI3_IRQHandler(void)
 {
     EXTI->PR1 = EXTI_PR1_PIF3;
 
-    if (render_pending) {
-        return;
-    }
-
-    btn = BACKWARD;
     if (GPIOE->IDR & GPIO_IDR_ID3) {
         /* Rising edge */
         start_press_time = TIM2->CNT;
@@ -203,13 +194,14 @@ void EXTI3_IRQHandler(void)
         /* Falling edge */
         if ((uint32_t)(TIM2->CNT - start_press_time) < LONG_PRESS_TIME_MS) {
             /* Short press */
-            press = SHORT_PRESS;
+            evq_push(EVENT_BUTTON_DOWN_SHORT);
         } else {
             /* Long press */
-            press = LONG_PRESS;
+            evq_push(EVENT_BUTTON_DOWN_LONG);
         }
     }
     render_pending = 1;
+    interrupts++;
 }
 
 /* UP/FORWARDS */
@@ -217,11 +209,12 @@ void EXTI4_IRQHandler(void)
 {
     EXTI->PR1 = EXTI_PR1_PIF4;
 
-    if (render_pending) {
-        return;
-    }
-    btn = FORWARD;
-    press = SHORT_PRESS;
+    // if (render_pending) {
+    //     return;
+    // }
+
+    evq_push(EVENT_BUTTON_UP_SHORT);
 
     render_pending = 1;
+    interrupts++;
 }
