@@ -47,7 +47,7 @@ static event_handler event_handlers[NUM_STATES][NUM_EVENTS] = {
         [EVENT_BUTTON_UP_SHORT] = deck_up_short,
         [EVENT_BUTTON_UP_LONG] = NULL,
         [EVENT_BUTTON_DOWN_SHORT] = deck_down_short,
-        [EVENT_BUTTON_DOWN_LONG] = deck_up_short,
+        [EVENT_BUTTON_DOWN_LONG] = deck_down_long,
         [EVENT_BUTTON_SEL_SHORT] = deck_sel_short,
         [EVENT_BUTTON_SEL_LONG] = deck_sel_long,
     },
@@ -77,7 +77,7 @@ static event_handler event_handlers[NUM_STATES][NUM_EVENTS] = {
     },
 };
 
-#define EVQ_SIZE 4
+#define EVQ_SIZE 8
 struct evq {
   volatile uint8_t head, tail;
   enum EVENT buf[EVQ_SIZE];

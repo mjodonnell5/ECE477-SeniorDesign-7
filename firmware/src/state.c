@@ -150,8 +150,6 @@ void draw_home_menu()
     snprintf(header, 25, "SELECT AN OPTION: %d/%d", curr_menu_selection + 1, 3);
     draw_header(header);
     draw_menu(curr_menu_selection, menu_names, 3);
-    snprintf(header, 25, "%d, %d, %d, %d | %d, %d", q.buf[0], q.buf[1], q.buf[2], q.buf[3], q.head, q.tail);
-    draw_string(xlarge_font, 0, 180, header, BLACK);
     eink_render_framebuffer();
     render_pending = 0;
 }
@@ -166,6 +164,7 @@ void coalesce_events()
     while ((event = evq_pop()) != EVENT_NONE) {
         event_handler handler = event_handlers[state][event];
         handler();
+        interrupts--;
     }
 }
 
@@ -177,12 +176,12 @@ void state_machine()
     for (;;) {
         delay_ms(10);
         if (interrupts == 0) continue;
-        interrupts--;
 
-        enum EVENT event = evq_pop();
-        event_handler handler = event_handlers[state][event];
-        if (event != EVENT_NONE) handler();
-        delay_ms(50);
+        coalesce_events();
+        // enum EVENT event = evq_pop();
+        // event_handler handler = event_handlers[state][event];
+        // if (event != EVENT_NONE) handler();
+        // delay_ms(50);
 
         switch (state) {
         case STATE_DOWNLOAD:
@@ -193,7 +192,7 @@ void state_machine()
         case STATE_HOME_NAVIGATION:
             // if (!render_pending) break;
 
-            if (event != EVENT_NONE) handler();
+            // if (event != EVENT_NONE) handler();
             draw_home_menu();
 
             break;
@@ -206,7 +205,7 @@ void state_machine()
                 fetch_decks = 0;
             }
             // if (!render_pending) break;
-            if (event != EVENT_NONE) handler();
+            // if (event != EVENT_NONE) handler();
 
             eink_clear(0xFF);
 
@@ -222,7 +221,7 @@ void state_machine()
 
         case STATE_DELETE_DECK_CONFIRM:
             // if (!render_pending) break;
-            if (event != EVENT_NONE) handler();
+            // if (event != EVENT_NONE) handler();
 
             eink_clear(0xFF);
             snprintf(header, 25, "CONFIRM DELETION");
@@ -239,7 +238,7 @@ void state_machine()
 
         case STATE_SETTINGS:
             // if (!render_pending) break;
-            if (event != EVENT_NONE) handler();
+            // if (event != EVENT_NONE) handler();
 
             eink_clear(0xFF);
             snprintf(header, 25, "SETTINGS");
@@ -296,7 +295,7 @@ void state_machine()
                 }
             }
             // if (!render_pending) break;
-            if (event != EVENT_NONE) handler();
+            // if (event != EVENT_NONE) handler();
 
             eink_clear(0xFF);
             /* +1 because it is 0 indexed */
