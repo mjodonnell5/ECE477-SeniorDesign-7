@@ -34,6 +34,8 @@ uint8_t left_handed = 1;
 #define UART_EOF      ((char)0x00)
 #define UART_BUF_SIZE (16384)
 
+extern volatile uint8_t interrupts;
+
 /* https://stackoverflow.com/questions/6127503/shuffle-array-in-c */
 void shuffle_deck(struct deck* deck)
 {
@@ -104,8 +106,10 @@ void download_deck()
             filename[i] = 0;
             break;
         }
-        filename[i++] = c;
+        filename[i] = c;
+        i++;
     }
+
 
     /* 2. Read in file contents until EOF or something so that we know its over */
     i = 0;
@@ -113,8 +117,13 @@ void download_deck()
     while (c != UART_EOF) {
         c = uart_read_char();
         if (c == UART_EOF) break;
-        contents[i++] = c;
+        contents[i] = c;
+        i++;
     }
+
+    // eink_clear(0xFF);
+    // draw_centered_string_wrapped(xlarge_font, contents, BLACK);
+    // eink_render_framebuffer();
 
     /* 3. Create and open file on SD card with that name */
     FIL fil;
@@ -155,7 +164,6 @@ void draw_home_menu()
 }
 
 
-extern volatile uint8_t interrupts;
 char deck_names[MAX_DECKS][MAX_NAME_SIZE] = {0};
 
 void coalesce_events()
@@ -175,9 +183,11 @@ void state_machine()
 
     for (;;) {
         delay_ms(10);
-        if (interrupts == 0) continue;
+        if (render_pending != 1) {
+            if (interrupts == 0) continue;
+        }
 
-        // coalesce_events();
+        coalesce_events();
         // enum EVENT event = evq_pop();
         // event_handler handler = event_handlers[state][event];
         // if (event != EVENT_NONE) handler();
@@ -272,7 +282,7 @@ void state_machine()
             break;
 
         case STATE_SLEEPING:
-            // if (!render_pending) break;
+            if (!render_pending) break;
             eink_clear(0xFF);
             draw_header("SLEEPING");
             draw_string(curr_font, 100, 50, "START STUDYING AGAIN SOON!", BLACK);

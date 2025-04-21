@@ -87,7 +87,7 @@ void enter_stop_2()
 void power_off()
 {
     /* Disable button interrupts; we ONLY want the power switch to be able to wakeup */
-    disable_buttons();
+    // disable_buttons();
 
     eink_clear(0xFF);
     draw_header("SLEEPING");
@@ -136,10 +136,12 @@ void EXTI2_IRQHandler(void)
 {
     EXTI->PR1 = EXTI_PR1_PIF2;
 
-    interrupts++;
     if (GPIOE->IDR & GPIO_IDR_ID2) {
         /* Rising edge */
-        power_off();
+        // power_off();
+        state = STATE_SLEEPING;
+        interrupts++;
+        render_pending = 1;
     } else {
         /* Falling edge */
         wake_up();
