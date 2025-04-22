@@ -1,6 +1,8 @@
 #ifndef HANDLERS_H
 #define HANDLERS_H
 
+void none();
+
 void home_sel_short();
 void home_down_short();
 void home_up_short();

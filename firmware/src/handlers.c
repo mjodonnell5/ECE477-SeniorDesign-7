@@ -2,6 +2,11 @@
 #include "../include/buttons.h"
 #include "../include/commands.h"
 
+void none()
+{
+    return;
+}
+
 /* HOME NAVIGATION */
 void home_sel_short()
 {
