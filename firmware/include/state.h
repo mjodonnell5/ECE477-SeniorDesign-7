@@ -8,7 +8,7 @@
 #include "ui.h"
 
 enum STATES {
-    STATE_DOWNLOAD = 0, /* DISABLE INTERRUPTS */
+    STATE_DOWNLOAD = 0,
     STATE_DECK_NAVIGATION,
     STATE_HOME_NAVIGATION,
     STATE_DELETE_DECK_CONFIRM,
@@ -62,8 +62,8 @@ static event_handler event_handlers[NUM_STATES][NUM_EVENTS] = {
         [EVENT_BUTTON_SEL_LONG] = delete_sel_long,
     },
     [STATE_SETTINGS] = {
-        [EVENT_BUTTON_UP_SHORT] = NONE,
-        [EVENT_BUTTON_UP_LONG] = settings_up_short,
+        [EVENT_BUTTON_UP_SHORT] = settings_up_short,
+        [EVENT_BUTTON_UP_LONG] = NONE,
         [EVENT_BUTTON_DOWN_SHORT] = settings_down_short,
         [EVENT_BUTTON_DOWN_LONG] = settings_down_long,
         [EVENT_BUTTON_SEL_SHORT] = settings_sel_short,

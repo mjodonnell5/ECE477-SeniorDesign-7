@@ -89,8 +89,6 @@ char menu_names[3][MAX_NAME_SIZE] = {
 
 void download_deck()
 {
-    // __disable_irq();
-
     eink_clear(0xFF);
     draw_header("DOWNLOADING DECK");
     eink_render_framebuffer();
@@ -121,10 +119,6 @@ void download_deck()
         i++;
     }
 
-    // eink_clear(0xFF);
-    // draw_centered_string_wrapped(xlarge_font, contents, BLACK);
-    // eink_render_framebuffer();
-
     /* 3. Create and open file on SD card with that name */
     FIL fil;
     FRESULT fr = f_open(&fil, filename, FA_WRITE | FA_CREATE_NEW);
@@ -144,11 +138,10 @@ void download_deck()
     f_sync(&fil);
     f_close(&fil);
 
-    __enable_irq();
-
     state = STATE_DECK_NAVIGATION;
     render_pending = 1;
     fetch_decks = 1;
+    delay_ms(10);
 }
 
 void draw_home_menu()
@@ -188,10 +181,6 @@ void state_machine()
         }
 
         coalesce_events();
-        // enum EVENT event = evq_pop();
-        // event_handler handler = event_handlers[state][event];
-        // if (event != EVENT_NONE) handler();
-        // delay_ms(50);
 
         switch (state) {
         case STATE_DOWNLOAD:
@@ -200,9 +189,6 @@ void state_machine()
             break;
 
         case STATE_HOME_NAVIGATION:
-            // if (!render_pending) break;
-
-            // if (event != EVENT_NONE) handler();
             draw_home_menu();
 
             break;
@@ -213,9 +199,8 @@ void state_machine()
                 curr_deck_selection = 0;
                 num_decks = get_decks(deck_names);
                 fetch_decks = 0;
+                delay_ms(10);
             }
-            // if (!render_pending) break;
-            // if (event != EVENT_NONE) handler();
 
             eink_clear(0xFF);
 
@@ -230,8 +215,6 @@ void state_machine()
             break;
 
         case STATE_DELETE_DECK_CONFIRM:
-            // if (!render_pending) break;
-            // if (event != EVENT_NONE) handler();
 
             eink_clear(0xFF);
             snprintf(header, 25, "CONFIRM DELETION");
@@ -247,18 +230,16 @@ void state_machine()
             break;
 
         case STATE_SETTINGS:
-            // if (!render_pending) break;
-            // if (event != EVENT_NONE) handler();
 
             eink_clear(0xFF);
             snprintf(header, 25, "SETTINGS");
             draw_header(header);
-
             if (font_large) {
                 curr_font = xlarge_font;
             } else {
                 curr_font = large_font;
             }
+
             uint8_t old_left = left_handed;
             snprintf(buf, 100, "Press SELECT to toggle shuffling");
             draw_string(curr_font, 15, 50, buf, BLACK);
@@ -272,32 +253,22 @@ void state_machine()
             draw_string(curr_font, 15, 130, buf, BLACK);
             snprintf(buf, 100, "DOMINANT HAND: %s", left_handed ? "LEFT-HANDED" : "RIGHT-HANDED");
             draw_string(curr_font, 15, 150, buf, BLACK);
-            /* Reinit to update orientation if it changed */
-            if (old_left != left_handed) {
-                eink_init();
-            }
-            // draw_menu(curr_menu_selection, settings_names, 2);
+
+            eink_init();
             eink_render_framebuffer();
+
             render_pending = 0;
             break;
 
         case STATE_SLEEPING:
             if (!render_pending) break;
+            interrupts--;
             eink_clear(0xFF);
             draw_header("SLEEPING");
-            draw_string(curr_font, 100, 50, "START STUDYING AGAIN SOON!", BLACK);
+            draw_string(curr_font, 70, 50, "START STUDYING AGAIN SOON!", BLACK);
             draw_sleep_image(100, 75);
             eink_render_framebuffer();
             render_pending = 0;
-            break;
-
-        case STATE_DECK_HOME_PAGE:
-        //     if (!render_pending) break;
-        //     eink_clear(0xFF);
-        //     snprintf(header, 25, "%s home", deck_names[curr_deck_selection]);
-        //     draw_header(header);
-        //     eink_render_framebuffer();
-        //     render_pending = 0;
             break;
 
         case STATE_FLASHCARD_NAVIGATION:
@@ -308,8 +279,6 @@ void state_machine()
                     shuffle_deck(&main_deck);
                 }
             }
-            // if (!render_pending) break;
-            // if (event != EVENT_NONE) handler();
 
             eink_clear(0xFF);
             /* +1 because it is 0 indexed */
@@ -321,7 +290,5 @@ void state_machine()
 
             break;
         }
-
-        /* FIXME: Maybe call coalesce_events here? */
     }
 }

@@ -142,6 +142,7 @@ void EXTI2_IRQHandler(void)
         state = STATE_SLEEPING;
         interrupts++;
         render_pending = 1;
+        delay_ms(10);
     } else {
         /* Falling edge */
         wake_up();
@@ -154,9 +155,6 @@ void EXTI9_5_IRQHandler(void)
 {
     if (EXTI->PR1 & EXTI_PR1_PIF5) {
         EXTI->PR1 = EXTI_PR1_PIF5;
-        // if (render_pending) {
-        //     return;
-        // }
 
         if (GPIOE->IDR & GPIO_IDR_ID5) {
             /* Rising edge */
@@ -211,10 +209,6 @@ void EXTI3_IRQHandler(void)
 void EXTI4_IRQHandler(void)
 {
     EXTI->PR1 = EXTI_PR1_PIF4;
-
-    // if (render_pending) {
-    //     return;
-    // }
 
     evq_push(EVENT_BUTTON_UP_SHORT);
 

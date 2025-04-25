@@ -63,7 +63,7 @@ void draw_header(char* title)
     // uint16_t soc = BQ27441_ReadWord(BQ27441_COMMAND_SOC);
     char battery_perc_str[10];
     char chg_str[6] = "CHRG ";
-    uint8_t battery_perc = 100;
+    uint8_t battery_perc = 87;
     snprintf(battery_perc_str, sizeof(battery_perc_str), "%s%d%%", is_charging() ? chg_str : "", battery_perc);
     draw_string(large_font, EINK_WIDTH - (8 * strlen(battery_perc_str)), 0, battery_perc_str, WHITE);
 
