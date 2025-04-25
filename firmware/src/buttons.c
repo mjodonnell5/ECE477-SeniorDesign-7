@@ -73,10 +73,6 @@ void button_init()
 
 volatile uint32_t start_press_time = 0;
 
-volatile uint8_t press = NO_PRESS;
-volatile uint8_t btn = SELECT;
-
-
 void enter_stop_2()
 {
     PWR->CR1 &= ~PWR_CR1_LPMS;
@@ -84,14 +80,14 @@ void enter_stop_2()
 
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 
-    // __WFI();
+    __WFI();
 }
 
 /* This will be falling edge of power switch interrupt */
 void power_off()
 {
     /* Disable button interrupts; we ONLY want the power switch to be able to wakeup */
-    disable_buttons();
+    // disable_buttons();
 
     eink_clear(0xFF);
     draw_header("SLEEPING");
@@ -115,7 +111,7 @@ void power_off()
 
     /* Battery monitor */
 
-    enter_stop_2();
+    // enter_stop_2();
 }
 
 /* This will be rising edge of power switch interrupt */
@@ -125,14 +121,16 @@ void wake_up()
      * again, we could just call all the functions again but this is simpler I think*/
     enable_buttons();
 
-    eink_clear(0xFF);
-    draw_centered_string_wrapped(xlarge_font, "E-ink Flashcards (logo somewhere here?)", BLACK);
-    eink_render_framebuffer();
-
-    delay_ms(1500);
+    // eink_clear(0xFF);
+    // draw_centered_string_wrapped(xlarge_font, "E-ink Flashcards (logo somewhere here?)", BLACK);
+    // eink_render_framebuffer();
+    //
+    // delay_ms(1500);
 
     NVIC_SystemReset();
 }
+
+volatile uint8_t interrupts = 0;
 
 void EXTI2_IRQHandler(void)
 {
@@ -140,7 +138,11 @@ void EXTI2_IRQHandler(void)
 
     if (GPIOE->IDR & GPIO_IDR_ID2) {
         /* Rising edge */
-        power_off();
+        // power_off();
+        state = STATE_SLEEPING;
+        interrupts++;
+        render_pending = 1;
+        delay_ms(10);
     } else {
         /* Falling edge */
         wake_up();
@@ -153,11 +155,7 @@ void EXTI9_5_IRQHandler(void)
 {
     if (EXTI->PR1 & EXTI_PR1_PIF5) {
         EXTI->PR1 = EXTI_PR1_PIF5;
-        if (render_pending) {
-            return;
-        }
 
-        btn = SELECT;
         if (GPIOE->IDR & GPIO_IDR_ID5) {
             /* Rising edge */
             start_press_time = TIM2->CNT;
@@ -166,21 +164,20 @@ void EXTI9_5_IRQHandler(void)
             /* Falling edge */
             if ((uint32_t)(TIM2->CNT - start_press_time) < LONG_PRESS_TIME_MS) {
                 /* Short press */
-                press = SHORT_PRESS;
+                evq_push(EVENT_BUTTON_SEL_SHORT);
             } else {
                 /* Long press */
-                press = LONG_PRESS;
+                evq_push(EVENT_BUTTON_SEL_LONG);
             }
         }
 
         render_pending = 1;
+        interrupts++;
 
         /* BUSY LOW */
     } else if (EXTI->PR1 & EXTI_PR1_PIF6) {
         EXTI->PR1 = EXTI_PR1_PIF6;
-        // GPIOE->ODR |= GPIO_ODR_OD1;
-        // delay_ms(50);
-        // GPIOE->ODR &= ~GPIO_ODR_OD1;
+
         eink_busy = 0;
     }
 }
@@ -190,11 +187,6 @@ void EXTI3_IRQHandler(void)
 {
     EXTI->PR1 = EXTI_PR1_PIF3;
 
-    if (render_pending) {
-        return;
-    }
-
-    btn = BACKWARD;
     if (GPIOE->IDR & GPIO_IDR_ID3) {
         /* Rising edge */
         start_press_time = TIM2->CNT;
@@ -203,13 +195,14 @@ void EXTI3_IRQHandler(void)
         /* Falling edge */
         if ((uint32_t)(TIM2->CNT - start_press_time) < LONG_PRESS_TIME_MS) {
             /* Short press */
-            press = SHORT_PRESS;
+            evq_push(EVENT_BUTTON_DOWN_SHORT);
         } else {
             /* Long press */
-            press = LONG_PRESS;
+            evq_push(EVENT_BUTTON_DOWN_LONG);
         }
     }
     render_pending = 1;
+    interrupts++;
 }
 
 /* UP/FORWARDS */
@@ -217,11 +210,8 @@ void EXTI4_IRQHandler(void)
 {
     EXTI->PR1 = EXTI_PR1_PIF4;
 
-    if (render_pending) {
-        return;
-    }
-    btn = FORWARD;
-    press = SHORT_PRESS;
+    evq_push(EVENT_BUTTON_UP_SHORT);
 
     render_pending = 1;
+    interrupts++;
 }

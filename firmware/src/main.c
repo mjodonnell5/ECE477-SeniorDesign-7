@@ -13,10 +13,6 @@
 #include "../include/battery.h"
 #include "../include/rtc.h"
 
-uint32_t first = 0;
-uint32_t start = 0;
-uint32_t end = 0;
-
 int main(void)
 {
     clock_init();
@@ -86,8 +82,11 @@ int main(void)
     /* FIXME: Set initial font, this is a bad place to do it but the code is messy
      * and I don't know where to do it lol */
     curr_font = xlarge_font;
-    // render_pending = 1;
-    // state_machine();
+    render_pending = 1;
+    
+    void draw_home_menu();
+    draw_home_menu();
+    state_machine();
 
     // eink_sleep();
 

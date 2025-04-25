@@ -369,6 +369,7 @@ void delete_file(const char *filename){
 
 int get_decks(char decks[MAX_DECKS][MAX_NAME_SIZE])
 {
+    memset(decks, 0, MAX_DECKS * MAX_NAME_SIZE);
     FRESULT res;
     DIR dir;
     static FILINFO fno;
