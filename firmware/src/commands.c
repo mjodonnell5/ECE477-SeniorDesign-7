@@ -7,6 +7,7 @@
 #include "cJSON.h"
 #include <string.h>
 #include <stdio.h>
+#include "../include/rtc.h"
 
 #include "../include/ui.h"
 
@@ -626,6 +627,82 @@ int parseJSON_file(const char* filename, struct deck* deck){
     return 0;
 
     
+}
+
+/*this will add a new set to the metadata.txt json file that stores set info including setname, numbers in the deck, and last time studied*/
+void updateMetadata_newSet(const char* filename){
+    //open the json file
+    FILE* dataFile = fopen(filename, "r");
+    if (!dataFile) {
+        return;
+    }
+    //read JSON into a buffer
+    char jsonBuffer[4096];
+    size_t bytesRead = fread(jsonBuffer, 1, sizeof(jsonBuffer) - 1, dataFile);
+    fclose(dataFile); //close datafile
+    jsonBuffer[bytesRead] = '\0'; //null terminate
+
+    //parse the JSON
+    cJSON* json = cJSON_Parse(jsonBuffer);
+    if (!json) {
+        return;
+    }
+    //extract number of flashcards (numCards)
+    cJSON* setName = cJSON_GetObjectItem(json, "flashcardSetName");
+    cJSON* numCards = cJSON_GetObjectItem(json, "numCards");
+
+    //get current time, placeholder for now
+    char studied_date[6];
+    read_rtc(&dt);
+    snprintf(studied_date, sizeof(studied_date), "%02d/%02d", dt.mon, dt.day);
+    
+    //open metadata file for writing
+    FILE* metadataFile = fopen("metadata.txt", "a");
+    cJSON* metadataJson = NULL;
+    if(metadataFile){
+        char metadataBuffer[4096];
+        size_t metaBytesRead = fread(metadataBuffer, 1, sizeof(metadataBuffer) - 1, metadataFile);
+        fclose(metadataFile); //close metadata file
+        metadataBuffer[metaBytesRead] = '\0'; //null terminate
+        //parse the metadata JSON
+        metadataJson = cJSON_Parse(metadataBuffer);
+    }
+
+    if(!metadataJson){
+        //create new metadata JSON object
+        metadataJson = cJSON_CreateObject();
+        cJSON_AddItemToObject(metadataJson, "sets", cJSON_CreateArray());
+    }
+
+    //Get the "sets" array from the metadata JSON
+    cJSON* setsArray = cJSON_GetObjectItem(metadataJson, "sets");
+    if (!cJSON_IsArray(setsArray)){
+        printf("Error: Invalid metadata structure\n");
+        cJSON_Delete(metadataJson);
+        cJSON_Delete(json);
+        return;
+    }
+
+    //create a new set in metadata file
+    cJSON* newSet = cJSON_CreateObject();
+    cJSON_AddStringToObject(newSet, "setName", setName->valuestring);
+    cJSON_AddNumberToObject(newSet, "numCards", numCards->valueint);
+    cJSON_AddStringToObject(newSet, "timestamp", studied_date);
+    cJSON_AddItemToArray(setsArray, newSet);
+    //write the updated metadata JSON to the file
+    metadataFile = fopen("metadata.txt", "w");
+    if (!metadataFile) {
+        printf("Error: Could not open metadata file for writing\n");
+        cJSON_Delete(metadataJson);
+        cJSON_Delete(json);
+        return;
+    }
+    char* metadataString = cJSON_Print(metadataJson);
+    fprintf(metadataFile, "%s", metadataString);
+    fclose(metadataFile); //close metadata file
+    cJSON_free(metadataString); //free the string created by cJSON_Print
+    cJSON_Delete(metadataJson); //delete metadata JSON object
+    cJSON_Delete(json); //delete JSON object
 }
 
 

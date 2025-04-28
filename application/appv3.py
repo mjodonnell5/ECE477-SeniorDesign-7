@@ -337,7 +337,8 @@ class EditPage(ctk.CTkFrame):
         if fc["term_entry"].get().strip() and fc["definition_entry"].get("1.0", "end-1c").strip()
     ]
 
-        data = {"flashcardSetName": set_name, "flashcards": flashcard_data} # fix to add set name to json so it can be parsed
+        # data = {"flashcardSetName": set_name, "flashcards": flashcard_data} # fix to add set name to json so it can be parsed
+        data = {"flashcardSetName": set_name, "numCards": len(flashcard_data),"flashcards": flashcard_data} # adding number of cards to the json file 4/17
 
         with open(filename, "w", encoding="utf-8") as file:
             json.dump(data, file, indent=4)

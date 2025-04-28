@@ -14,6 +14,7 @@
 #include "../include/commands.h"
 #include "../include/uart.h"
 #include "../include/ff.h"
+#include "../include/cJSON.h"
 
 volatile enum STATES state = STATE_HOME_NAVIGATION;
 volatile uint8_t render_pending = 0;
@@ -137,6 +138,8 @@ void download_deck()
 
     f_sync(&fil);
     f_close(&fil);
+
+    updateMetadata_newSet(filename); //updating the metadata file with a new set
 
     state = STATE_DECK_NAVIGATION;
     render_pending = 1;
