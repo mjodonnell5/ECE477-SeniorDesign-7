@@ -10,6 +10,7 @@
 #include "../include/battery.h"
 #include "../include/rtc.h"
 #include "../include/state.h"
+#include "cJSON.h"
 
 #define MENU_ITEM_DIST (45)
 #define MENU_ITEM_HEIGHT (40)
@@ -112,18 +113,67 @@ void draw_main_menu(uint8_t curr_selected_deck, char deck_names[][MAX_NAME_SIZE]
         decks_on_page = MAX_ITEMS_PER_PAGE;
     }
 
-    /* Need to make this happen and update once a deck is accessed */
-    char studied_date[6];
-    read_rtc(&dt);
-    snprintf(studied_date, sizeof(studied_date), "%02d/%02d", dt.mon, dt.day);
+    // Parse the metadata file
+    FILE* metadataFile = fopen("metadata.txt", "r");
+    if (!metadataFile) {
+        printf("Error: Could not open metadata.txt\n");
+        return;
+    }
 
-    /* FIXME: Need to make this per deck */
-    char metadata[50];
-    uint16_t num_cards = 25;
-    snprintf(metadata, sizeof(metadata), "Cards: %d | Studied: %s", num_cards, studied_date);
+    char metadataBuffer[4096];
+    size_t bytesRead = fread(metadataBuffer, 1, sizeof(metadataBuffer) - 1, metadataFile);
+    fclose(metadataFile);
+    metadataBuffer[bytesRead] = '\0'; // Null-terminate the buffer
+
+    cJSON* metadataJson = cJSON_Parse(metadataBuffer);
+    if (!metadataJson) {
+        printf("Error: Could not parse metadata.txt\n");
+        return;
+    }
+
+    cJSON* setsArray = cJSON_GetObjectItem(metadataJson, "sets");
+    if (!cJSON_IsArray(setsArray)) {
+        printf("Error: Invalid metadata structure\n");
+        cJSON_Delete(metadataJson);
+        return;
+    }
+
+    /* Need to make this happen and update once a deck is accessed */
+    // char studied_date[6];
+    // read_rtc(&dt);
+    // snprintf(studied_date, sizeof(studied_date), "%02d/%02d", dt.mon, dt.day);
+
+    // /* FIXME: Need to make this per deck */
+    // char metadata[50];
+    // uint16_t num_cards = 25;
+    // snprintf(metadata, sizeof(metadata), "Cards: %d | Studied: %s", num_cards, studied_date);
 
     for (uint8_t i = 0; i < decks_on_page; ++i) {
         uint8_t index = i + (curr_page * MAX_ITEMS_PER_PAGE);
+
+        // Find the metadata for the current deck
+        cJSON* matchingSet = NULL;
+        cJSON_ArrayForEach(matchingSet, setsArray) {
+            cJSON* name = cJSON_GetObjectItem(matchingSet, "flashcardSetName");
+            if (cJSON_IsString(name) && strcmp(name->valuestring, deck_names[index]) == 0) {
+                break; // Found the matching set
+            }
+        }
+
+        // Default metadata if no match is found
+        char metadata[50] = "Cards: 0 | Studied: N/A";
+
+        if (matchingSet) {
+            cJSON* cardCount = cJSON_GetObjectItem(matchingSet, "numCards");
+            cJSON* lastStudied = cJSON_GetObjectItem(matchingSet, "last_studied");
+
+            uint16_t num_cards = cJSON_IsNumber(cardCount) ? cardCount->valueint : 0;
+            const char* studied_date = cJSON_IsString(lastStudied) ? lastStudied->valuestring : "N/A";
+
+            snprintf(metadata, sizeof(metadata), "Cards: %d | Studied: %s", num_cards, studied_date);
+        }
+
+
         if (index == curr_selected_deck) {
             /* Draw filled & inverted rectangle */
             draw_filled_deck_menu_item(large_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, deck_names[index], metadata, BLACK);
