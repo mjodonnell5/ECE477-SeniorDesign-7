@@ -11,7 +11,6 @@ volatile uint8_t curr_card_selection = 0;
 volatile uint8_t get_deck_from_sd = 0;
 volatile uint8_t f_b = FRONT;
 
-extern uint8_t num_decks;
 extern uint8_t curr_page;
 extern struct deck main_deck;
 
