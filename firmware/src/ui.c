@@ -10,6 +10,7 @@
 #include "../include/battery.h"
 #include "../include/rtc.h"
 #include "../include/state.h"
+#include "../include/commands.h"
 
 #define MENU_ITEM_DIST (45)
 #define MENU_ITEM_HEIGHT (40)
@@ -61,11 +62,10 @@ void draw_header(char* title)
 
     /* Battery percentage */
     // uint16_t soc = BQ27441_ReadWord(BQ27441_COMMAND_SOC);
-    char battery_perc_str[10];
-    char chg_str[6] = "CHRG ";
+    char battery_perc_str[10] = " ";
     uint8_t battery_perc = 87;
-    snprintf(battery_perc_str, sizeof(battery_perc_str), "%s%d%%", is_charging() ? chg_str : "", battery_perc);
-    draw_string(large_font, EINK_WIDTH - (8 * strlen(battery_perc_str)), 0, battery_perc_str, WHITE);
+    snprintf(battery_perc_str, sizeof(battery_perc_str), "%s%d%%", is_charging() ? "CHRG " : "", battery_perc);
+    // draw_string(large_font, EINK_WIDTH - (8 * strlen(battery_perc_str)), 0, battery_perc_str, WHITE);
 
     draw_hints();
 }
@@ -102,6 +102,24 @@ void draw_menu(uint8_t curr_selected, char names[][MAX_NAME_SIZE], uint16_t num)
     }
 }
 
+struct metadata {
+    uint8_t num_cards;
+    char studied_date[6];
+};
+
+struct metadata mlist[MAX_DECKS] = {0};
+
+void parse_metadata(uint8_t num_decks, char deck_names[][MAX_NAME_SIZE])
+{
+    for (uint8_t i = 0; i < num_decks; i++) {
+        struct deck d = {0};
+        parseJSON_file(deck_names[i], &d);
+        mlist[i].num_cards = d.num_cards;
+        read_rtc(&dt);
+        snprintf(mlist[i].studied_date, 6, "%02d/%02d", dt.mon, dt.day);
+    }
+}
+
 void draw_main_menu(uint8_t curr_selected_deck, char deck_names[][MAX_NAME_SIZE], uint16_t num_decks)
 {
     uint8_t curr_page = curr_selected_deck / MAX_ITEMS_PER_PAGE;
@@ -119,11 +137,10 @@ void draw_main_menu(uint8_t curr_selected_deck, char deck_names[][MAX_NAME_SIZE]
 
     /* FIXME: Need to make this per deck */
     char metadata[50];
-    uint16_t num_cards = 25;
-    snprintf(metadata, sizeof(metadata), "Cards: %d | Studied: %s", num_cards, studied_date);
 
     for (uint8_t i = 0; i < decks_on_page; ++i) {
         uint8_t index = i + (curr_page * MAX_ITEMS_PER_PAGE);
+        snprintf(metadata, sizeof(metadata), "Cards: %d | Studied: %s", mlist[index].num_cards, mlist[index].studied_date);
         if (index == curr_selected_deck) {
             /* Draw filled & inverted rectangle */
             draw_filled_deck_menu_item(large_font, 0 + 50, 20 + MENU_ITEM_DIST * i, EINK_WIDTH - 1 - 50, 60 + MENU_ITEM_DIST * i, deck_names[index], metadata, BLACK);

@@ -624,8 +624,6 @@ int parseJSON_file(const char* filename, struct deck* deck){
     //cleanup
     cJSON_Delete(json);
     return 0;
-
-    
 }
 
 

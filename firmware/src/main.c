@@ -34,50 +34,12 @@ int main(void)
     PWR->CR2 |= PWR_CR2_IOSV;
 
     mount();
+    delay_ms(50);
 
 
-    // eink_clear(0xFF);
-    // draw_sleep_image(35, 35);
-    // eink_render_framebuffer();
-    // draw_centered_string_wrapped(large_font, "HI :))))", BLACK);
-    // eink_render_framebuffer();
-    // for(;;);
-    //
-    // eink_clear(0xFF);
-    // eink_render_framebuffer();
-
-    char time[50];
-    // read_rtc(&dt);
-    // snprintf(time, 50, "20%02d-%02d-%02d | %02d:%02d:%02d", dt.year, dt.mon, dt.day, dt.hour, dt.min, dt.sec);
-    // eink_clear(0xFF);
-    // draw_centered_string_wrapped(large_font, time, BLACK);
-    // eink_render_framebuffer();
-    //
-    // delay_ms(3000);
-    // read_rtc(&dt);
-    // snprintf(time, 50, "20%02d-%02d-%02d | %02d:%02d:%02d", dt.year, dt.mon, dt.day, dt.hour, dt.min, dt.sec);
-    // eink_clear(0xFF);
-    // draw_centered_string_wrapped(large_font, time, BLACK);
-    // eink_render_framebuffer();
-    // delay_ms(3000);
-    //
-    
-    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOEEN;
-    GPIOE->MODER &= ~GPIO_MODER_MODE1;
-    GPIOE->MODER |= GPIO_MODER_MODE1_0;
-
-    // eink_clear(0xFF);
-    // draw_centered_string_wrapped(large_font, "TEST 1st RENDER", BLACK);
-    // eink_render_framebuffer();
-
-    // delay_ms(1000);
-    // char buf[100];
-    // snprintf(buf, 100, "Start of render: %d | Start of wait: %d | end of wait: %d | curr time: %d", first, start, end, TIM2->CNT);
-    // eink_clear(0xFF);
-    // draw_centered_string_wrapped(large_font, buf, BLACK);
-    // eink_render_framebuffer();
-
-    // for(;;);
+    // RCC->AHB2ENR |= RCC_AHB2ENR_GPIOEEN;
+    // GPIOE->MODER &= ~GPIO_MODER_MODE1;
+    // GPIOE->MODER |= GPIO_MODER_MODE1_0;
 
     /* FIXME: Set initial font, this is a bad place to do it but the code is messy
      * and I don't know where to do it lol */

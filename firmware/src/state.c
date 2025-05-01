@@ -22,7 +22,7 @@ uint8_t fetch_decks = 1;
 struct font curr_font;
 
 extern volatile uint8_t curr_deck_selection;
-struct deck main_deck;
+struct deck main_deck = {0};
 uint8_t num_decks = 0;
 volatile uint8_t curr_menu_selection = 0;
 
@@ -32,7 +32,7 @@ uint8_t left_handed = 1;
 
 #define UART_DELIM    ((char)0xBC)
 #define UART_EOF      ((char)0x00)
-#define UART_BUF_SIZE (16384)
+#define UART_BUF_SIZE (4096)
 
 extern volatile uint8_t interrupts;
 
@@ -93,7 +93,7 @@ void download_deck()
     draw_header("DOWNLOADING DECK");
     eink_render_framebuffer();
 
-    char contents[UART_BUF_SIZE] = {0};
+    static char contents[UART_BUF_SIZE] = {0};
     char filename[MAX_NAME_SIZE] = {0};
     char c = 0;
     uint32_t i = 0;
@@ -199,6 +199,7 @@ void state_machine()
                 curr_deck_selection = 0;
                 num_decks = get_decks(deck_names);
                 fetch_decks = 0;
+                parse_metadata(num_decks, deck_names);
                 delay_ms(10);
             }
 

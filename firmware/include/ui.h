@@ -7,7 +7,7 @@
 
 #define FRONT (1)
 #define BACK  (0)
-#define MAX_FRONT_SIZE     (200)
+#define MAX_FRONT_SIZE     (100)
 #define MAX_BACK_SIZE      (200)
 #define MAX_NAME_SIZE      (25)
 #define MAX_CARDS_PER_DECK (20)
@@ -25,6 +25,8 @@ struct deck {
     uint8_t num_cards;
     struct flashcard cards[MAX_CARDS_PER_DECK];
 };
+
+void parse_metadata(uint8_t num_decks, char deck_names[][MAX_NAME_SIZE]);
 
 void draw_sleep_image(uint16_t s_x, uint16_t s_y);
 
